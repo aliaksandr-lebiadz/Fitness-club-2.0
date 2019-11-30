@@ -1,0 +1,56 @@
+.popup{
+    width: 30%;
+    height: 67%;
+    min-width: 395px;
+    min-height: 425px;
+    position: absolute;
+    top: 20%;
+    right: 35%;
+    background-color: rgba(44, 44, 44, 0.95);
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1001;
+}
+
+#assignment-popup-title{
+    display: block;
+    margin-left: 25px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+#assign-nutrition-type{
+    position: absolute;
+    bottom: 15px;
+    left: 155px;
+    width: 100px;
+}
+
+#date{
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 150px;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+#amount-of-sets, #amount-of-reps{
+    margin-top: 5px;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 150px;
+    height: 30px;
+    padding-left: 5px;
+}
+
+#add-assignment-button{
+    display: block;
+    width: 30%;
+    margin-top: 45px;
+    margin-left: 35%;
+}
+
+#assignment-popup{
+    min-height: 425px;
+}

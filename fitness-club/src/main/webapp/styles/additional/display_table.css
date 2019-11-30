@@ -1,0 +1,156 @@
+@media screen and (max-width: 1024px){
+    body .display-table td, th{
+        padding: 8px;
+    }
+    body .page-banner{
+        margin-top: -10px;
+    }
+}
+@media screen and (max-width: 768px){
+    body .display-table td, th{
+        padding: 7px;
+    }
+}
+@media screen and (max-width: 480px){
+    body .display-table td, th{
+        padding: 5px;
+        font-size: 12px;
+    }
+    body .page-links{
+        font-size: 12px;
+    }
+    body .page-banner{
+        font-size: 12px;
+    }
+    body .custom-button{
+        font-size: 12px;
+    }
+}
+@media screen and (max-width: 320px){
+    body .display-table td, th{
+        padding: 5px;
+        font-size: 10px;
+    }
+    body .page-links{
+        font-size: 10px;
+    }
+    body .page-banner{
+        font-size: 10px;
+    }
+    body .custom-button{
+        font-size: 10px;
+    }
+}
+body{
+    --border-color: #e1e9eb;
+}
+
+a{
+    color: black;
+}
+
+.display-table{
+    font-weight: 400;
+    font-family: "Open sans", sans-serif;
+    line-height: 1.5;
+    font-size: 14px;
+    margin-top: 2%;
+    margin-left: 2%;
+    width: 96%;
+    color: black;
+    border-collapse: collapse;
+    border: 2px solid rgba(80, 80, 80, 0.5);
+}
+
+.display-table td, th{
+    padding: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.display-table tbody tr{
+    cursor: pointer;
+    transition: background-color 0.2s linear;
+}
+
+.display-table thead th{
+    padding: 5px;
+    background-color: #58D3F7;
+    color: white;
+}
+
+.odd{
+    background-color: white;
+}
+
+.even{
+    background-color: #f2f7f7;
+}
+
+.page-links{
+    padding-top: 5px;
+}
+
+.page-banner{
+    display: inline-block;
+    padding-top: 20px;
+}
+
+hr{
+    width: 80%;
+    color: aliceblue;
+    margin-top: 15px;
+}
+
+.custom-button{
+    border: none;
+    border-radius: 3px;
+    padding: 5px;
+    color: inherit;
+    font-weight: inherit;
+    background-color: #58D3F7;
+    transition: background 0.2s linear;
+    margin-top: 10px;
+}
+
+.custom-button:hover{
+    background-color: #2f9492;
+    cursor: pointer;
+}
+
+
+.page-link{
+    display: inline;
+    background-color: #f2f7f7;
+    padding: 4px;
+    border-radius: 2px;
+}
+
+.pages{
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.separator{
+    display: inline-block;
+    width: 10px;
+}
+
+
+.display-table tr.selected{
+    background-color: #54e3ba;
+}
+
+.display-table tr.selected td{
+    border: none;
+}
+
+.close-icon{
+    float: right;
+    color: #fff;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.hidden{
+    display: none;
+}
