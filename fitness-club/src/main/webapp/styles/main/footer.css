@@ -1,0 +1,23 @@
+@media screen and (max-width:480px){
+    body #copyright{
+        font-size: 10px;
+    }
+}
+#footer{
+    width: 100%;
+    min-width: 300px;
+    height: 40px;
+    position: fixed;
+    bottom: 0;
+    opacity: 0.9;
+    background-color: #353535;
+    z-index: 1002;
+    text-align: center;
+}
+
+#copyright{
+    display: inline-block;
+    padding-top: 10px;
+    font-weight: 100;
+    font-size: 12px;
+}

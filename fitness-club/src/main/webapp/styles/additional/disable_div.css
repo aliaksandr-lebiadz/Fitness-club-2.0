@@ -1,0 +1,10 @@
+#disable-div {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    padding: 0;
+    background-color: black;
+    opacity: 0;
+    z-index: 1000;
+}
