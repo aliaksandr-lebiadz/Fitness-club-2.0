@@ -114,6 +114,13 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     }
 
     @Override
+    public void save(T entity) throws DaoException{
+        String saveQuery = getSaveQuery();
+        Object[] fields = getFields(entity);
+        executeUpdate(saveQuery, fields);
+    }
+
+    @Override
     public void deleteById(int id){
         throw new UnsupportedOperationException();
     }
@@ -124,6 +131,10 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      * @return the table name
      */
     protected abstract String getTableName();
+
+    protected abstract String getSaveQuery();
+
+    protected abstract Object[] getFields(T entity);
 
     /**
      * <p>Formats the supplied query inserting the table name into it.</p>
