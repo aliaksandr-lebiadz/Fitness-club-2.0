@@ -1,5 +1,6 @@
 package com.epam.fitness.validator;
 
+import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.validator.api.PaymentValidator;
 import com.epam.fitness.validator.impl.PaymentValidatorImpl;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -8,6 +9,11 @@ import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(DataProviderRunner.class)
 public class PaymentValidatorImplTest {
@@ -29,7 +35,10 @@ public class PaymentValidatorImplTest {
     private static final String INVALID_CVV_WITH_LETTERS = "8c1";
     private static final String INVALID_CVV_WITH_SIGNS = "!72";
 
-    private PaymentValidator validator = new PaymentValidatorImpl();
+    private static final SimpleDateFormat format = new SimpleDateFormat("MM/yy");
+
+    private DateUtils dateUtils = mock(DateUtils.class);
+    private PaymentValidator validator = new PaymentValidatorImpl(dateUtils);
 
     @DataProvider
     public static Object[][] invalidCardNumberDataProvider(){
@@ -77,15 +86,16 @@ public class PaymentValidatorImplTest {
         //given
 
         //when
-        boolean actual =validator.isCardNumberValid(cardNumber);
+        boolean actual = validator.isCardNumberValid(cardNumber);
 
         //then
         Assert.assertFalse(actual);
     }
 
     @Test
-    public void testIsExpirationDateValidShouldReturnTrueWhenValidExpirationDateSupplied(){
+    public void testIsExpirationDateValidShouldReturnTrueWhenValidExpirationDateSupplied() throws ParseException {
         //given
+        when(dateUtils.getCurrentDateWithoutTime()).thenReturn(format.parse("10/19"));
 
         //when
         boolean actual = validator.isExpirationDateValid(VALID_EXPIRATION_DATE);
@@ -96,11 +106,11 @@ public class PaymentValidatorImplTest {
 
     @Test
     @UseDataProvider("invalidExpirationDateDataProvider")
-    public void testIsExpirationDateValidShouldReturnFalseWhenInvalidExpirationDateSupplied(String thru){
+    public void testIsExpirationDateValidShouldReturnFalseWhenInvalidExpirationDateSupplied(String expirationDate){
         //given
 
         //when
-        boolean actual =validator.isExpirationDateValid(thru);
+        boolean actual = validator.isExpirationDateValid(expirationDate);
 
         //then
         Assert.assertFalse(actual);
@@ -123,7 +133,7 @@ public class PaymentValidatorImplTest {
         //given
 
         //when
-        boolean actual =validator.isCvvValid(cvv);
+        boolean actual = validator.isCvvValid(cvv);
 
         //then
         Assert.assertFalse(actual);
