@@ -1,4 +1,3 @@
-use fitness;
 INSERT INTO exercise(name)
 VALUES
 	('bench press'),
