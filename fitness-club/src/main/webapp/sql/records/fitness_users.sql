@@ -1,4 +1,3 @@
-use fitness;
 INSERT INTO fitness_user(email, password, role, first_name, second_name, discount)
 VALUES
 ('admin@mail.ru', md5('admin'), 'admin', NULL, NULL, 52),

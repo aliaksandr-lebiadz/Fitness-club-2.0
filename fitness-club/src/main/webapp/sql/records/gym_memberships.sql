@@ -1,4 +1,3 @@
-use fitness;
 INSERT INTO gym_membership (months_amount, price)
 VALUES
 	(1, 49.90),
