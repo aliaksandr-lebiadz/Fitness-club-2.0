@@ -1,6 +1,13 @@
+@media screen and (min-width:1025px){
+    body #login-container{
+        width: 16%;
+        height: 35%;
+    }
+}
 @media screen and (max-width:1024px){
     body #login-container{
         margin: 20px -50px;
+        height: 30%;
     }
 }
 @media screen and (max-width:768px){
@@ -73,6 +80,10 @@
     border-radius: 5px;
     border: none;
     text-align: center;
+}
+
+label{
+    display: block;
 }
 
 #login-form{
