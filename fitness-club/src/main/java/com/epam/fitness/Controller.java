@@ -4,7 +4,7 @@ import com.epam.fitness.command.Command;
 import com.epam.fitness.command.CommandResult;
 import com.epam.fitness.command.factory.CommandFactory;
 import com.epam.fitness.dao.factory.DaoFactory;
-import com.epam.fitness.dao.factory.impl.DaoFactoryImpl;
+import com.epam.fitness.dao.factory.impl.PostgreSqlDaoFactory;
 import com.epam.fitness.pool.ConnectionPool;
 import com.epam.fitness.pool.ProxyConnection;
 import com.epam.fitness.command.factory.impl.CommandFactoryImpl;
@@ -42,7 +42,7 @@ public class Controller extends HttpServlet{
         ConnectionPool connectionPool = ConnectionPool.getInstance();
 
         try(ProxyConnection connection = connectionPool.getConnection()){
-            DaoFactory daoFactory = new DaoFactoryImpl(connection);
+            DaoFactory daoFactory = new PostgreSqlDaoFactory(connection);
             CommandFactory commandFactory = new CommandFactoryImpl(daoFactory);
             Command command = commandFactory.create(commandValue);
             CommandResult commandResult = command.execute(request, response);
