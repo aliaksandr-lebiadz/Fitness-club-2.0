@@ -15,6 +15,7 @@ import com.epam.fitness.command.impl.assignment.ChangeAssignmentStatusCommand;
 import com.epam.fitness.command.impl.assignment.ShowAssignmentsCommand;
 import com.epam.fitness.command.impl.order.AssignNutritionTypeCommand;
 import com.epam.fitness.command.impl.user.SetUserDiscountCommand;
+import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.utils.OrderUtils;
 import com.epam.fitness.validator.impl.AssignmentValidatorImpl;
 import com.epam.fitness.validator.impl.OrderValidatorImpl;
@@ -63,7 +64,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case GET_MEMBERSHIP_COMMAND:
                 command =  new GetMembershipCommand(
                         getOrderService(),
-                        new PaymentValidatorImpl()
+                        new PaymentValidatorImpl(new DateUtils())
                 );
                 break;
             case SHOW_ORDERS_COMMAND:
