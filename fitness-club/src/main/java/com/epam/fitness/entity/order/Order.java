@@ -19,21 +19,12 @@ public class Order implements Identifiable, Serializable {
     private BigDecimal price;
     private NutritionType nutritionType;
 
-    public Order(int clientId, Date endDate, BigDecimal price){
-        this.clientId = clientId;
-        this.endDate = endDate;
-        this.price = price;
-        this.beginDate = new Date();
+    private Order(){
+        //private constructor
     }
 
-    public Order(Integer id, int clientId, int trainerId, Date beginDate, Date endDate, BigDecimal price,
-                 String feedback, NutritionType nutritionType){
-        this(clientId, endDate, price);
-        this.id = id;
-        this.trainerId = trainerId;
-        this.beginDate = beginDate;
-        this.feedback = feedback;
-        this.nutritionType = nutritionType;
+    public static Builder createBuilder(){
+        return new Order().new Builder();
     }
 
     @Override
@@ -75,5 +66,56 @@ public class Order implements Identifiable, Serializable {
 
     public void setNutritionType(NutritionType nutritionType) {
         this.nutritionType = nutritionType;
+    }
+
+    public class Builder{
+
+        private Builder() {
+            //private constructor
+        }
+
+        public Builder setId(Integer id){
+            Order.this.id = id;
+            return this;
+        }
+
+        public Builder setClientId(int clientId){
+            Order.this.clientId = clientId;
+            return this;
+        }
+
+        public Builder setTrainerId(int trainerId){
+            Order.this.trainerId = trainerId;
+            return this;
+        }
+
+        public Builder setBeginDate(Date beginDate){
+            Order.this.beginDate = beginDate;
+            return this;
+        }
+
+        public Builder setEndDate(Date endDate){
+            Order.this.endDate = endDate;
+            return this;
+        }
+
+        public Builder setFeedback(String feedback){
+            Order.this.feedback = feedback;
+            return this;
+        }
+
+        public Builder setPrice(BigDecimal price){
+            Order.this.price = price;
+            return this;
+        }
+
+        public Builder setNutritionType(NutritionType nutritionType){
+            Order.this.nutritionType = nutritionType;
+            return this;
+        }
+
+        public Order build(){
+            return Order.this;
+        }
     }
 }
