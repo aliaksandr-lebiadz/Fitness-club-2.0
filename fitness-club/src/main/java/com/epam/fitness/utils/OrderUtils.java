@@ -36,7 +36,7 @@ public class OrderUtils {
      */
     public BigDecimal calculatePriceWithDiscount(BigDecimal initialPrice, int discount){
         double discountRateValue = (MAX_DISCOUNT - discount) / MAX_DISCOUNT;
-        BigDecimal discountRate = new BigDecimal(discountRateValue);
+        BigDecimal discountRate = BigDecimal.valueOf(discountRateValue);
         return initialPrice.multiply(discountRate);
     }
 
