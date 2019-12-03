@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public abstract class AbstractLocalizer extends BodyTagSupport {
 
-    private JspWriter writer;
+    private transient JspWriter writer;
 
     @Override
     public int doStartTag(){

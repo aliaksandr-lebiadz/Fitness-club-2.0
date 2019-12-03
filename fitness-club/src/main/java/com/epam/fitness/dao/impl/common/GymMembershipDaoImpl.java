@@ -22,7 +22,9 @@ public class GymMembershipDaoImpl extends AbstractDao<GymMembership> implements 
     }
 
     @Override
-    public void save(GymMembership entity) {}
+    public void save(GymMembership gymMembership) {
+        //save operation is unsupported for GymMembership entity at this moment
+    }
 
     @Override
     protected String getTableName(){
