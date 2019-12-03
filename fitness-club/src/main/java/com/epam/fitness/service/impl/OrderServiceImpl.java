@@ -41,7 +41,13 @@ public class OrderServiceImpl implements OrderService {
             BigDecimal totalPrice = utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
             Date endDate = utils.getDateAfterMonthsAmount(monthsAmount);
             int clientId = client.getId();
-            Order order = new Order(clientId, endDate, totalPrice);
+            Date now = new Date();
+            Order order = Order.createBuilder()
+                    .setClientId(clientId)
+                    .setBeginDate(now)
+                    .setEndDate(endDate)
+                    .setPrice(totalPrice)
+                    .build();
             orderDao.save(order);
         } catch(DaoException ex){
             throw new ServiceException(ex.getMessage(), ex);

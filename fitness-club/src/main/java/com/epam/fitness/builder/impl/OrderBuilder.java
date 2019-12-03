@@ -44,6 +44,15 @@ public class OrderBuilder implements Builder<Order> {
         BigDecimal price = resultSet.getBigDecimal(PRICE_COLUMN);
         String nutritionTypeValue = resultSet.getString(NUTRITION_TYPE_COLUMN);
         NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
-        return new Order(id, clientId, trainerId, beginDate, endDate, price, feedback, nutritionType);
+        return Order.createBuilder()
+                .setId(id)
+                .setClientId(clientId)
+                .setTrainerId(trainerId)
+                .setBeginDate(beginDate)
+                .setEndDate(endDate)
+                .setPrice(price)
+                .setFeedback(feedback)
+                .setNutritionType(nutritionType)
+                .build();
     }
 }
