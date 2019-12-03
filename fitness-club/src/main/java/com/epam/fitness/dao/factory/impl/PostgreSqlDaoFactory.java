@@ -2,9 +2,9 @@ package com.epam.fitness.dao.factory.impl;
 
 import com.epam.fitness.builder.impl.*;
 import com.epam.fitness.dao.api.*;
-import com.epam.fitness.dao.factory.DaoFactory;
-import com.epam.fitness.dao.impl.*;
+import com.epam.fitness.dao.impl.postgresql.PostgreSqlAssignmentDao;
 import com.epam.fitness.dao.impl.postgresql.PostgreSqlOrderDao;
+import com.epam.fitness.dao.impl.postgresql.PostgreSqlUserDao;
 
 import java.sql.Connection;
 
@@ -19,7 +19,7 @@ public class PostgreSqlDaoFactory extends AbstractDaoFactory {
     }
 
     public UserDao createUserDao() {
-        return new UserDaoImpl(getConnection(), new UserBuilder());
+        return new PostgreSqlUserDao(getConnection(), new UserBuilder());
     }
 
     public OrderDao createOrderDao() {
@@ -27,7 +27,7 @@ public class PostgreSqlDaoFactory extends AbstractDaoFactory {
     }
 
     public AssignmentDao createAssignmentDao() {
-        return new AssignmentDaoImpl(getConnection(), new AssignmentBuilder());
+        return new PostgreSqlAssignmentDao(getConnection(), new AssignmentBuilder());
     }
 
 }

@@ -2,8 +2,9 @@ package com.epam.fitness.dao.factory.impl;
 
 import com.epam.fitness.builder.impl.*;
 import com.epam.fitness.dao.api.*;
-import com.epam.fitness.dao.impl.*;
+import com.epam.fitness.dao.impl.mysql.MySqlAssignmentDao;
 import com.epam.fitness.dao.impl.mysql.MySqlOrderDao;
+import com.epam.fitness.dao.impl.mysql.MySqlUserDao;
 
 import java.sql.Connection;
 
@@ -18,7 +19,7 @@ public class MySqlDaoFactory extends AbstractDaoFactory {
     }
 
     public UserDao createUserDao() {
-        return new UserDaoImpl(getConnection(), new UserBuilder());
+        return new MySqlUserDao(getConnection(), new UserBuilder());
     }
 
     public OrderDao createOrderDao() {
@@ -26,7 +27,7 @@ public class MySqlDaoFactory extends AbstractDaoFactory {
     }
 
     public AssignmentDao createAssignmentDao() {
-        return new AssignmentDaoImpl(getConnection(), new AssignmentBuilder());
+        return new MySqlAssignmentDao(getConnection(), new AssignmentBuilder());
     }
 
 }
