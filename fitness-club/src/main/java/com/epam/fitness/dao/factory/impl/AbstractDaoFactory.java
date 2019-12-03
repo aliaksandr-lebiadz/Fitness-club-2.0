@@ -5,8 +5,8 @@ import com.epam.fitness.builder.impl.GymMembershipBuilder;
 import com.epam.fitness.dao.api.ExerciseDao;
 import com.epam.fitness.dao.api.GymMembershipDao;
 import com.epam.fitness.dao.factory.DaoFactory;
-import com.epam.fitness.dao.impl.ExerciseDaoImpl;
-import com.epam.fitness.dao.impl.GymMembershipDaoImpl;
+import com.epam.fitness.dao.impl.common.ExerciseDaoImpl;
+import com.epam.fitness.dao.impl.common.GymMembershipDaoImpl;
 
 import java.sql.Connection;
 
