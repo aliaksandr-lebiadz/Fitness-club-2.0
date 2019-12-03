@@ -71,6 +71,7 @@ public class ConnectionPool {
                 throw new ConnectionPoolException("Over waiting time..");
             }
         } catch (InterruptedException ex){
+            Thread.currentThread().interrupt();
             throw new ConnectionPoolException(ex.getMessage(), ex);
         } finally{
             LOCK.unlock();
