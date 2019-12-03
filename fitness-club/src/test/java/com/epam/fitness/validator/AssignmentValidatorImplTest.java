@@ -1,12 +1,18 @@
 package com.epam.fitness.validator;
 
+import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.validator.api.AssignmentValidator;
 import com.epam.fitness.validator.impl.AssignmentValidatorImpl;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.mockito.Mockito.*;
 
 public class AssignmentValidatorImplTest {
 
@@ -14,8 +20,20 @@ public class AssignmentValidatorImplTest {
     private static final int NEGATIVE_AMOUNT = -2;
     private static final int ZERO_AMOUNT = 0;
     private static final int LARGE_AMOUNT = 110;
+    private static final String VALID_WORKOUT_DATE = "01/10/19";
+    private static final String INVALID_WORKOUT_DATE = "30/09/19";
 
-    private AssignmentValidator validator = new AssignmentValidatorImpl();
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+    private static final String CURRENT_DATE_WITHOUT_TIME = "01/10/19";
+
+    private DateUtils dateUtils = mock(DateUtils.class);
+    private AssignmentValidator validator = new AssignmentValidatorImpl(dateUtils);
+
+    @Before
+    public void createMocks() throws ParseException {
+        Date currentDateWithoutTime = DATE_FORMAT.parse(CURRENT_DATE_WITHOUT_TIME);
+        when(dateUtils.getCurrentDateWithoutTime()).thenReturn(currentDateWithoutTime);
+    }
 
     /* testing isAmountOfSetsValid method */
 
@@ -113,31 +131,34 @@ public class AssignmentValidatorImplTest {
     /* testing isWorkoutDateValid method */
 
     @Test
-    public void testIsWorkoutDateValidShouldReturnTrueWhenValidDateSupplied(){
+    public void testIsWorkoutDateValidShouldReturnTrueWhenValidDateSupplied() throws ParseException{
         //given
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        Date validDate = calendar.getTime();
+        Date validWorkoutDate = DATE_FORMAT.parse(VALID_WORKOUT_DATE);
 
         //when
-        boolean actual = validator.isWorkoutDateValid(validDate);
+        boolean actual = validator.isWorkoutDateValid(validWorkoutDate);
 
         //then
         Assert.assertTrue(actual);
+        verify(dateUtils, times(1)).getCurrentDateWithoutTime();
     }
 
     @Test
-    public void testIsWorkoutDateValidShouldReturnFalseWhenInvalidDateSupplied(){
+    public void testIsWorkoutDateValidShouldReturnFalseWhenInvalidDateSupplied() throws ParseException{
         //given
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        Date invalidDate = calendar.getTime();
+        Date invalidWorkoutDate = DATE_FORMAT.parse(INVALID_WORKOUT_DATE);
 
         //when
-        boolean actual = validator.isWorkoutDateValid(invalidDate);
+        boolean actual = validator.isWorkoutDateValid(invalidWorkoutDate);
 
         //then
         Assert.assertFalse(actual);
+        verify(dateUtils, times(1)).getCurrentDateWithoutTime();
+    }
+
+    @After
+    public void verifyMocks(){
+        verifyNoMoreInteractions(dateUtils);
     }
 
 }
