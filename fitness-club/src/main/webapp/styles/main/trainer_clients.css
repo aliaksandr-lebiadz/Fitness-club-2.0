@@ -1,3 +1,11 @@
+@media screen and (min-width: 1025px){
+    body #clients-container{
+    position: absolute;
+    left: 262px;
+    top: 18%;
+    height: 70%;
+}
+
 label{
     display:block;
     padding-top: 10px;
@@ -13,12 +21,12 @@ label{
 }
 
 #no-clients-container{
-    width: 26%;
+    width: 20%;
     height: 15%;
     position: absolute;
     right: 37%;
     top: 40%;
-    min-width: 330px;
+    min-width: 200px;
     min-height: 100px;
     background-color: rgba(80, 80, 80, 0.5);
     text-align: center;

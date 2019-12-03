@@ -1,3 +1,24 @@
+@media screen and (min-width: 1025px){
+    body #feedback-popup{
+        margin: 0 40px;
+        width: 20%;
+        height: 40%;
+        min-width: 380px;
+        min-height: 380px;
+    }
+    body #feedback-textarea{
+        height: 100px;
+        width: 250px;
+        margin: -10px 65px;
+    }
+    body #feedback-restriction{
+        margin: 15px -20px 0 0;
+    }
+    body #send-feedback{
+        margin-left: -10px;
+    }
+}
+
 @media screen and (max-width: 1024px){
     body #container{
         width: 75%;
@@ -11,11 +32,6 @@
         height: 60%;
         min-width: 310px;
         min-height: 330px;
-    }
-    body #feedback-textarea{
-        height: 100px;
-        width: 250px;
-        margin: -10px 65px;
     }
     body #feedback-restriction{
         margin: 15px 40px 0 0;
