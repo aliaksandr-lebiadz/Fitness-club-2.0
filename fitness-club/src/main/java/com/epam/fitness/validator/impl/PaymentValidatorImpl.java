@@ -38,7 +38,7 @@ public class PaymentValidatorImpl implements PaymentValidator {
 
     private boolean isCardActive(String expirationDateStr){
         Date expirationDate = formatDate(expirationDateStr);
-        Date currentDateWithoutTime = dateUtils.getCurrentDateWithoutTime();
+        Date currentDateWithoutTime = dateUtils.getFirstDayOfCurrentMonth();
         return !expirationDate.before(currentDateWithoutTime);
     }
 

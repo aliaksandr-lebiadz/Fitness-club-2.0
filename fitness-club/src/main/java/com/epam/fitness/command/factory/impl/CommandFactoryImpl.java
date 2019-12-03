@@ -104,7 +104,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case CHANGE_ASSIGNMENT_COMMAND:
                 command = new ChangeAssignmentCommand(
                         new AssignmentServiceImpl(factory),
-                        new AssignmentValidatorImpl()
+                        new AssignmentValidatorImpl(new DateUtils())
                 );
                 break;
             case SHOW_CLIENTS_COMMAND:
