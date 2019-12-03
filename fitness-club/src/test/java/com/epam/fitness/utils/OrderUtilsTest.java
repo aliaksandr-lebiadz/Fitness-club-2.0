@@ -1,8 +1,11 @@
 package com.epam.fitness.utils;
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import java.math.BigDecimal;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class OrderUtilsTest {
 
@@ -21,7 +24,7 @@ public class OrderUtilsTest {
         BigDecimal actual = utils.calculatePriceWithDiscount(initialPrice, discount);
 
         //then
-        Assert.assertEquals(expected, actual);
+        assertThat(actual, Matchers.comparesEqualTo(expected));
     }
 
     @Test
