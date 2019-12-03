@@ -10,13 +10,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * <p>An implementation of the user dao interface to
- * provide access to the user entity in the MySql database.</p>
- *
- * @see User
- */
-public class UserDaoImpl extends AbstractDao<User> implements UserDao {
+public abstract class AbstractUserDao extends AbstractDao<User> implements UserDao {
 
     private static final String USER_TABLE = "fitness_user";
     private static final String FIND_USER_BY_EMAIL_AND_PASSWORD_QUERY =
@@ -26,21 +20,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     "FROM fitness_user AS u " +
                     "JOIN client_order AS o ON u.id = o.client_id " +
                     "WHERE o.trainer_id = ?";
-    private static final String SAVE_USER_QUERY = "INSERT INTO fitness_user" +
-            "(id, email, password, first_name, second_name, role, discount) " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?) " +
-            "ON DUPLICATE KEY UPDATE " +
-            "id = VALUES(id)," +
-            "email = VALUES(email)," +
-            "password = VALUES(password)," +
-            "first_name = VALUES(first_name)," +
-            "second_name = VALUES(second_name)," +
-            "role = VALUES(role)," +
-            "discount = VALUES(discount)";
     private static final String GET_ALL_CLIENTS = "" +
             "SELECT * FROM fitness_user WHERE role = 'client'";
 
-    public UserDaoImpl(Connection connection, Builder<User> builder){
+    public AbstractUserDao(Connection connection, Builder<User> builder){
         super(connection, builder);
     }
 
@@ -59,30 +42,23 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         return executeQuery(GET_ALL_CLIENTS);
     }
 
-    /**
-     * <p>Inserts the user into the users table when
-     * no user with the supplied id exists in the table and
-     * updates the user otherwise.</p>
-     *
-     * @param user the user to save
-     */
     @Override
-    public void save(User user) throws DaoException {
+    protected String getTableName() {
+        return USER_TABLE;
+    }
+
+    @Override
+    protected Object[] getFields(User user) {
         UserRole role = user.getRole();
-        Object[] fields = {
+        String roleValue = role.toString();
+        return new Object[] {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getFirstName(),
                 user.getSecondName(),
-                role.toString(),
+                roleValue.toLowerCase(),
                 user.getDiscount()
         };
-        executeUpdate(SAVE_USER_QUERY, fields);
-    }
-
-    @Override
-    protected String getTableName(){
-        return USER_TABLE;
     }
 }
