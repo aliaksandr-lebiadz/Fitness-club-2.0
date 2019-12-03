@@ -93,7 +93,7 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      */
     protected Optional<T> executeForSingleResult(String query, Object... params) throws DaoException{
         List<T> items = executeQuery(query, params);
-        if(items.size() > 0){
+        if(isNotEmpty(items)){
             T item = items.get(0);
             return Optional.of(item);
         } else{
@@ -157,6 +157,10 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
         for(int i = 0; i < params.length; i++){
             statement.setObject(i + 1, params[i]);
         }
+    }
+
+    private boolean isNotEmpty(List<T> items){
+        return !items.isEmpty();
     }
 
 }
