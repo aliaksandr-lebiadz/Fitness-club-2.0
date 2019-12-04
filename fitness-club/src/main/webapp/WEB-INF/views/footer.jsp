@@ -17,8 +17,8 @@
 
     <body>
         <div id="footer">
-            <span id="copyright">${copyright}</span>
-            version: ${requestScope.version} timestamp: ${requestScope.timestamp}
+            <div id="copyright">${copyright}</div>
+            <div id="info">version: ${requestScope.version} timestamp: ${requestScope.timestamp}</div>
         </div>
     </body>
 </html>
