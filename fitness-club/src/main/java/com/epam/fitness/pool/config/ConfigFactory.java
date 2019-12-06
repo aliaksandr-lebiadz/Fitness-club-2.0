@@ -1,7 +1,8 @@
 package com.epam.fitness.pool.config;
 
+import com.epam.fitness.utils.PropertiesUtils;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -27,7 +28,7 @@ public class ConfigFactory {
      * @return a {@link DatabaseConfig} instance
      */
     public DatabaseConfig getConfig(String propertiesFileName) throws IOException{
-        Properties properties = getProperties(propertiesFileName);
+        Properties properties = PropertiesUtils.getProperties(propertiesFileName);
         String driverName = properties.getProperty(DRIVER_NAME_PROPERTY);
         String url = properties.getProperty(URL_PROPERTY);
         String user = properties.getProperty(USER_PROPERTY);
@@ -37,25 +38,5 @@ public class ConfigFactory {
         int maxWaitInSeconds = Integer.parseInt(maxWaitStr);
         int poolSize = Integer.parseInt(poolSizeStr);
         return new DatabaseConfig(driverName, url, user, password, maxWaitInSeconds, poolSize);
-    }
-
-    /**
-     * <p>Creates a {@link Properties} instance from the supplied properties file.</p>
-     *
-     * @param propertiesFileName a name of the properties file
-     * @return a {@link Properties} instance
-     * @throws IllegalArgumentException when the supplied properties file isn't
-     * found in the properties directory
-     */
-    private Properties getProperties(String propertiesFileName) throws IOException {
-        ClassLoader loader = getClass().getClassLoader();
-        InputStream inputStream = loader.getResourceAsStream(propertiesFileName);
-        if(inputStream != null){
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            return properties;
-        } else{
-            throw new IllegalArgumentException("Database properties file not found!");
-        }
     }
 }

@@ -10,7 +10,7 @@ public class CurrentPageGetter {
     private static final String SEPARATOR_BETWEEN_SERVER_NAME_AND_PORT = ":";
 
     private CurrentPageGetter(){
-        throw new UnsupportedOperationException("Utility class");
+        //private constructor
     }
 
     public static String getCurrentPage(HttpServletRequest request){

@@ -23,8 +23,7 @@ public class DatabaseConfig {
      *                         from the connection pool
      * @param poolSize a connection pool size
      */
-    public DatabaseConfig(String driverName, String url, String user, String password,
-                          int maxWaitInSeconds, int poolSize) {
+    public DatabaseConfig(String driverName, String url, String user, String password, int maxWaitInSeconds, int poolSize) {
         this.driverName = driverName;
         this.url = url;
         this.user = user;
