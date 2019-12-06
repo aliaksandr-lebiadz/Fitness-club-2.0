@@ -35,7 +35,7 @@ public class OrderBuilderTest {
         final int trainerId = 3;
         final Timestamp beginDate = Timestamp.valueOf("2019-10-12 18:48:05");
         final Timestamp endDate = Timestamp.valueOf("2020-04-12 18:48:05");
-        final String feedback = "feedback";
+        final String feedback = "MyFeedback";
         final BigDecimal price = BigDecimal.valueOf(111.5);
         final String nutritionTypeValue = "low calorie";
         NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);

@@ -17,8 +17,8 @@ public class OrderUtilsTest {
     public void testCalculatePriceWithDiscountShouldReturnSamePriceWhenZeroSupplied(){
         //given
         final int discount = 0;
-        final BigDecimal initialPrice = new BigDecimal(2.55);
-        final BigDecimal expected = new BigDecimal(2.55);
+        final BigDecimal initialPrice = BigDecimal.valueOf(2.55);
+        final BigDecimal expected = BigDecimal.valueOf(2.55);
 
         //when
         BigDecimal actual = utils.calculatePriceWithDiscount(initialPrice, discount);
@@ -31,7 +31,7 @@ public class OrderUtilsTest {
     public void testCalculatePriceWithDiscountShouldReturnZeroWhenOneHundredPercentDiscountSupplied(){
         //given
         final int discount = 100;
-        final BigDecimal initialPrice = new BigDecimal(52.1);
+        final BigDecimal initialPrice = BigDecimal.valueOf(52.1);
         final double expected = 0.0;
 
         //when
@@ -45,7 +45,7 @@ public class OrderUtilsTest {
     public void testCalculatePriceWithDiscountShouldReturnHalfOfPriceWhenFiftyPercentDiscountSupplied(){
         //given
         final int discount = 50;
-        final BigDecimal initialPrice = new BigDecimal(11.77);
+        final BigDecimal initialPrice = BigDecimal.valueOf(11.77);
         final double expected = 5.885;
 
         //when
