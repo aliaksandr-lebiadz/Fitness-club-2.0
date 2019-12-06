@@ -20,13 +20,14 @@ public class PropertiesUtils {
      */
     public static Properties getProperties(String propertiesFileName) throws IOException {
         ClassLoader loader = PropertiesUtils.class.getClassLoader();
-        InputStream inputStream = loader.getResourceAsStream(propertiesFileName);
-        if(inputStream != null){
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            return properties;
-        } else {
-            throw new IllegalArgumentException("Properties file is not found!");
+        try(InputStream inputStream = loader.getResourceAsStream(propertiesFileName)){
+            if(inputStream != null){
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                return properties;
+            } else {
+                throw new IllegalArgumentException("Properties file is not found!");
+            }
         }
     }
 
