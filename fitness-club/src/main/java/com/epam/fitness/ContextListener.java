@@ -2,24 +2,45 @@ package com.epam.fitness;
 
 import com.epam.fitness.exception.ConnectionPoolException;
 import com.epam.fitness.pool.ConnectionPool;
+import com.epam.fitness.utils.PropertiesUtils;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.*;
 import javax.servlet.annotation.WebListener;
+import java.io.IOException;
+import java.util.Properties;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {}
+    private static final String MAVEN_BUILD_PROPERTIES_FILE = "maven_build.properties";
+    private static final String VERSION_PROPERTY = "version";
+    private static final String TIMESTAMP_PROPERTY = "timestamp";
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext servletContext = servletContextEvent.getServletContext();
+        try{
+            setDataToApplicationScope(servletContext);
+        } catch (IOException ex){
+            throw new IllegalStateException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ConnectionPool pool = ConnectionPool.getInstance();
         try{
             pool.close();
         } catch (ConnectionPoolException ex){
             throw new IllegalStateException(ex.getMessage(), ex);
         }
+    }
+
+    private void setDataToApplicationScope(ServletContext servletContext) throws IOException{
+        Properties properties = PropertiesUtils.getProperties(MAVEN_BUILD_PROPERTIES_FILE);
+        String version = properties.getProperty(VERSION_PROPERTY);
+        String timestamp = properties.getProperty(TIMESTAMP_PROPERTY);
+        servletContext.setAttribute(VERSION_PROPERTY, version);
+        servletContext.setAttribute(TIMESTAMP_PROPERTY, timestamp);
     }
 }
