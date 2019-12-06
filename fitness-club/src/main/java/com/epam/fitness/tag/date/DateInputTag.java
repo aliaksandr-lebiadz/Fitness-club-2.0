@@ -26,14 +26,14 @@ public class DateInputTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        String date = getMinimumDateValue(); // min value and default value
+        String dateValue = getMinimumDateValue();
         try {
             JspWriter out = pageContext.getOut();
-            String inputTag = String.format(HTML_DATE_TAG, name, date, date);
+            String inputTag = String.format(HTML_DATE_TAG, name, dateValue, dateValue);
             out.write(inputTag);
         } catch (IOException e) {
             throw new JspException(e.getMessage(), e);
-        } // JspWriter doesn't need to be closed
+        }
         return SKIP_BODY;
     }
 
