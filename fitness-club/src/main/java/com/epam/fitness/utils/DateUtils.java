@@ -6,12 +6,15 @@ import java.util.Date;
 public class DateUtils {
 
     public Date getFirstDayOfCurrentMonth(){
-        Date now = new Date();
-        return org.apache.commons.lang.time.DateUtils.truncate(now, Calendar.MONTH);
+        return truncateCurrentDateByField(Calendar.MONTH);
     }
 
     public Date getCurrentDateWithoutTime(){
-        Date now = new Date();
-        return org.apache.commons.lang.time.DateUtils.truncate(now, Calendar.DAY_OF_MONTH);
+        return truncateCurrentDateByField(Calendar.DAY_OF_MONTH);
+    }
+
+    private Date truncateCurrentDateByField(int field){
+        Date currentDate = new Date();
+        return org.apache.commons.lang.time.DateUtils.truncate(currentDate, field);
     }
 }
