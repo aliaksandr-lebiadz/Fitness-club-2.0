@@ -17,9 +17,13 @@ public class AdminFilter extends AbstractFilter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         User user = getUser(request);
-        if(user != null && user.getRole() != UserRole.ADMIN){
+        if(isNotAdmin(user)){
             throw new ServletException("Unauthorized access!");
         }
         chain.doFilter(servletRequest, servletResponse);
+    }
+
+    private boolean isNotAdmin(User user){
+        return user != null && user.getRole() != UserRole.ADMIN;
     }
 }
