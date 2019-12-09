@@ -35,10 +35,8 @@ public class OrderServiceImpl implements OrderService {
             Optional<GymMembership> gymMembershipOptional = gymMembershipDao.findById(membershipId);
             GymMembership gymMembership = gymMembershipOptional
                     .orElseThrow(() -> new ServiceException("Gym membership with the id " + membershipId + " isn't found!"));
+            BigDecimal totalPrice = calculateTotalPrice(gymMembership, client);
             int monthsAmount = gymMembership.getMonthsAmount();
-            BigDecimal initialPrice = gymMembership.getPrice();
-            int clientDiscount = client.getDiscount();
-            BigDecimal totalPrice = utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
             Date endDate = utils.getDateAfterMonthsAmount(monthsAmount);
             int clientId = client.getId();
             Date now = new Date();
@@ -96,5 +94,11 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException ex){
             throw new ServiceException(ex.getMessage(), ex);
         }
+    }
+
+    private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){
+        BigDecimal initialPrice = gymMembership.getPrice();
+        int clientDiscount = client.getDiscount();
+        return  utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
     }
 }
