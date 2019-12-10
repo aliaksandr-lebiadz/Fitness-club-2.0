@@ -48,7 +48,7 @@
 
 ##### Additional information:
 -   Some useful links:
-    -   Sonarqube: http://localhost:9000/dashboard?id=github-jenkins-sonar
+    -   Sonarqube: http://epbyminw7599:9000/dashboard?id=github-jenkins-sonar
     -   Jenkins: http://epbyminw7599:8081/job/Final%20project%20job
     -   Deployment link: http://epbyminw7599:8080/fitness
 -   Jenkins credentials:
