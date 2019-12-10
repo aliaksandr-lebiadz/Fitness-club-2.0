@@ -34,6 +34,7 @@
     - password: trainer
 ##
 
+
 #### Website credentials:
 - **`Admin`** 
     - login: admin@mail.ru
@@ -45,6 +46,7 @@
     - login: trainer@mail.ru
     - password: trainer
 ##
+
 
 ##### Additional information:
 -   Some useful links:
