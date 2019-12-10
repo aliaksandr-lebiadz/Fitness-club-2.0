@@ -1,0 +1,40 @@
+#intro{
+    width: 100%;
+    height: 100vh;
+    background: url(../../images/main_background.jpg) center no-repeat;
+    background-size: cover;
+}
+
+#error{
+    width: 20%;
+    height: 20%;
+    min-width: 260px;
+    min-height: 140px;
+    position: absolute;
+    top: 40%;
+    right: 40%;
+    border-radius: 5px;
+    background-color: rgba(44, 44, 44, 0.85);
+    text-align: center;
+}
+
+#error-form{
+    padding-top: 15px;
+}
+
+#home-button{
+    margin-top: 60px;
+    font-weight: 600;
+    color: inherit;
+    border: 0;
+    border-radius: 3px;
+    width: 130px;
+    height: 25px;
+    background-color: var(--hover-color);
+    transition: background 0.2s linear;
+}
+
+#home-button:hover{
+    background-color: #2f9492;
+    cursor: pointer;
+}
