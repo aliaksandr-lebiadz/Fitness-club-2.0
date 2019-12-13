@@ -1,7 +1,5 @@
 package com.epam.fitness;
 
-import com.epam.fitness.exception.ConnectionPoolException;
-import com.epam.fitness.pool.ConnectionPool;
 import com.epam.fitness.utils.PropertiesUtils;
 
 import javax.servlet.*;
@@ -28,12 +26,7 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        ConnectionPool pool = ConnectionPool.getInstance();
-        try{
-            pool.close();
-        } catch (ConnectionPoolException ex){
-            throw new IllegalStateException(ex.getMessage(), ex);
-        }
+        SpringContextManager.closeApplicationContext();
     }
 
     private void setDataToApplicationScope(ServletContext servletContext) throws IOException{
