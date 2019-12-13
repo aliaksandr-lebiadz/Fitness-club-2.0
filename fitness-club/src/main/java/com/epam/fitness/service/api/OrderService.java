@@ -10,9 +10,9 @@ import java.util.List;
 public interface OrderService {
 
     void create(User client, int membershipId) throws ServiceException;
-    List<Order> getClientOrdersWithTrainerId(int clientId, int trainerId) throws ServiceException;
-    List<Order> getOrdersByClientId(int clientId) throws ServiceException;
     void updateFeedbackById(int id, String feedback) throws ServiceException;
     void updateNutritionById(int id, NutritionType nutritionType) throws ServiceException;
+    List<Order> getClientOrdersWithTrainerId(int clientId, int trainerId);
+    List<Order> getOrdersByClientId(int clientId);
 
 }

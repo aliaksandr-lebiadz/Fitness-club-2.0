@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface UserService {
 
-    Optional<User> login(String email, String password) throws ServiceException;
-    List<User> findUsersByTrainerId(int trainerId) throws ServiceException;
-    List<User> getAllClients() throws ServiceException;
     void setUserDiscount(int id, int discount) throws ServiceException;
+    Optional<User> login(String email, String password);
+    List<User> findUsersByTrainerId(int trainerId);
+    List<User> getAllClients();
 }
