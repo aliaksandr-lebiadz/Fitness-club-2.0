@@ -1,12 +1,11 @@
 package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import com.epam.fitness.exception.DaoException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,22 +22,22 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
     private static final String GET_ALL_CLIENTS = "" +
             "SELECT * FROM fitness_user WHERE role = 'client'";
 
-    public AbstractUserDao(Connection connection, Builder<User> builder){
-        super(connection, builder);
+    public AbstractUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper){
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override
-    public Optional<User> findUserByEmailAndPassword(String email, String password) throws DaoException {
+    public Optional<User> findUserByEmailAndPassword(String email, String password) {
         return executeForSingleResult(FIND_USER_BY_EMAIL_AND_PASSWORD_QUERY, email, password);
     }
 
     @Override
-    public List<User> findUsersByTrainerId(long trainerId) throws DaoException {
+    public List<User> findUsersByTrainerId(long trainerId) {
         return executeQuery(FIND_USERS_BY_TRAINER_ID_QUERY, trainerId);
     }
 
     @Override
-    public List<User> getAllClients() throws DaoException {
+    public List<User> getAllClients() {
         return executeQuery(GET_ALL_CLIENTS);
     }
 

@@ -1,11 +1,10 @@
 package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.entity.order.Order;
-import com.epam.fitness.exception.DaoException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.Connection;
 import java.util.List;
 
 public abstract  class AbstractOrderDao extends AbstractDao<Order> implements OrderDao {
@@ -17,17 +16,17 @@ public abstract  class AbstractOrderDao extends AbstractDao<Order> implements Or
     private static final String SELECT_ORDERS_BY_CLIENT_ID =
             "SELECT * FROM client_order AS o JOIN fitness_user AS u ON o.client_id = u.id WHERE u.id = ?";
 
-    public AbstractOrderDao(Connection connection, Builder<Order> builder){
-        super(connection, builder);
+    public AbstractOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper){
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override
-    public List<Order> findClientOrdersWithTrainerId(int clientId, int trainerId) throws DaoException {
+    public List<Order> findClientOrdersWithTrainerId(int clientId, int trainerId) {
         return executeQuery(SELECT_CLIENT_ORDERS_WITH_TRAINER_ID_QUERY, clientId, trainerId);
     }
 
     @Override
-    public List<Order> findOrdersByClientId(int clientId) throws DaoException {
+    public List<Order> findOrdersByClientId(int clientId) {
         return executeQuery(SELECT_ORDERS_BY_CLIENT_ID, clientId);
     }
 
