@@ -1,11 +1,13 @@
 package com.epam.fitness.dao.impl.postgresql;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.impl.AbstractUserDao;
 import com.epam.fitness.entity.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-
+@Repository
 public class PostgreSqlUserDao extends AbstractUserDao {
 
     private static final String SAVE_USER_QUERY = "INSERT INTO fitness_user" +
@@ -19,8 +21,9 @@ public class PostgreSqlUserDao extends AbstractUserDao {
             "role = EXCLUDED.role::user_role," +
             "discount = EXCLUDED.discount";
 
-    public PostgreSqlUserDao(Connection connection, Builder<User> builder){
-        super(connection, builder);
+    @Autowired
+    public PostgreSqlUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper) {
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override

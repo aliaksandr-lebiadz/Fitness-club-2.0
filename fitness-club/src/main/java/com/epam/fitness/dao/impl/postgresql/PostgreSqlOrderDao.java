@@ -1,11 +1,14 @@
 package com.epam.fitness.dao.impl.postgresql;
 
-import com.epam.fitness.builder.Builder;
+
 import com.epam.fitness.dao.impl.AbstractOrderDao;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -15,6 +18,7 @@ import java.util.Date;
  *
  * @see Order
  */
+@Repository
 public class PostgreSqlOrderDao extends AbstractOrderDao {
 
     private static final String SAVE_ORDER_QUERY = "INSERT INTO client_order " +
@@ -29,8 +33,9 @@ public class PostgreSqlOrderDao extends AbstractOrderDao {
             "feedback = EXCLUDED.feedback," +
             "nutrition_type = EXCLUDED.nutrition_type::nutrition_type";
 
-    public PostgreSqlOrderDao(Connection connection, Builder<Order> builder){
-        super(connection, builder);
+    @Autowired
+    public PostgreSqlOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper) {
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override

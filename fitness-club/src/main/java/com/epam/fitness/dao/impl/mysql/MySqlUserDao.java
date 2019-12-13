@@ -1,10 +1,11 @@
 package com.epam.fitness.dao.impl.mysql;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.impl.AbstractUserDao;
 import com.epam.fitness.entity.user.User;
-
-import java.sql.Connection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>An implementation of the user dao interface to
@@ -12,6 +13,7 @@ import java.sql.Connection;
  *
  * @see User
  */
+@Repository
 public class MySqlUserDao extends AbstractUserDao {
 
     private static final String SAVE_USER_QUERY = "INSERT INTO fitness_user" +
@@ -26,8 +28,9 @@ public class MySqlUserDao extends AbstractUserDao {
             "role = VALUES(role)," +
             "discount = VALUES(discount)";
 
-    public MySqlUserDao(Connection connection, Builder<User> builder){
-        super(connection, builder);
+    @Autowired
+    public MySqlUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper){
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override
