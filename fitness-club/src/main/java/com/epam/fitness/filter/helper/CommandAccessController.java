@@ -3,7 +3,7 @@ package com.epam.fitness.filter.helper;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 
-import static com.epam.fitness.command.factory.impl.CommandFactoryImpl.*;
+import static com.epam.fitness.command.Commands.*;
 
 public class CommandAccessController {
 
