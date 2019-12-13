@@ -9,9 +9,7 @@ public class CurrentPageGetter {
     private static final String SEPARATOR_BETWEEN_SCHEME_AND_SERVER_NAME = "://";
     private static final String SEPARATOR_BETWEEN_SERVER_NAME_AND_PORT = ":";
 
-    private CurrentPageGetter(){
-        //private constructor
-    }
+    private CurrentPageGetter() {}
 
     public static String getCurrentPage(HttpServletRequest request){
         String header = request.getHeader(REFERER);
