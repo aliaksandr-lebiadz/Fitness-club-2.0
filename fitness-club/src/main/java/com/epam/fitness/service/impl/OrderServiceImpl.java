@@ -40,16 +40,8 @@ public class OrderServiceImpl implements OrderService {
         GymMembership gymMembership = gymMembershipOptional
                 .orElseThrow(() -> new ServiceException("Gym membership with the id " + membershipId + " isn't found!"));
         BigDecimal totalPrice = calculateTotalPrice(gymMembership, client);
-        int monthsAmount = gymMembership.getMonthsAmount();
-        Date endDate = utils.getDateAfterMonthsAmount(monthsAmount);
-        int clientId = client.getId();
-        Date now = new Date();
-        Order order = Order.createBuilder()
-                .setClientId(clientId)
-                .setBeginDate(now)
-                .setEndDate(endDate)
-                .setPrice(totalPrice)
-                .build();
+        Date endDate = calculateEndDate(gymMembership);
+        Order order = createOrderWithCurrentBeginDate(client, endDate, totalPrice);
         orderDao.save(order);
     }
 
@@ -85,5 +77,21 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal initialPrice = gymMembership.getPrice();
         int clientDiscount = client.getDiscount();
         return  utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
+    }
+
+    private Date calculateEndDate(GymMembership gymMembership){
+        int monthsAmount = gymMembership.getMonthsAmount();
+        return utils.getDateAfterMonthsAmount(monthsAmount);
+    }
+
+    private Order createOrderWithCurrentBeginDate(User client, Date endDate, BigDecimal price){
+        int clientId = client.getId();
+        Date beginDate = new Date();
+        return Order.createBuilder()
+                .setClientId(clientId)
+                .setBeginDate(beginDate)
+                .setEndDate(endDate)
+                .setPrice(price)
+                .build();
     }
 }
