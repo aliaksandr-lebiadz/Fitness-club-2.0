@@ -2,11 +2,13 @@ package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.validator.api.PaymentValidator;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Component
 public class PaymentValidatorImpl implements PaymentValidator {
 
     private static final String CARD_NUMBER_REGEXP = "\\d{16}";
