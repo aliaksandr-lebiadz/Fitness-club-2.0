@@ -35,8 +35,8 @@ public class Controller extends HttpServlet{
             throws ServletException {
         String commandValue = request.getParameter(COMMAND_PARAMETER);
         ApplicationContext context = SpringContextManager.getContext();
-        Command command = context.getBean(commandValue, Command.class);
         try{
+            Command command = context.getBean(commandValue, Command.class);
             CommandResult commandResult = command.execute(request, response);
             processCommandResult(commandResult, request, response);
         } catch(Exception ex) {
