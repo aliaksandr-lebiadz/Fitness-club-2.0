@@ -7,11 +7,16 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.validator.api.PaymentValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import static com.epam.fitness.command.Commands.GET_MEMBERSHIP_COMMAND;
+
+@Component(GET_MEMBERSHIP_COMMAND)
 public class GetMembershipCommand implements Command {
 
     private static final String ORDERS_PAGE = "/controller?command=showOrders";
@@ -24,6 +29,7 @@ public class GetMembershipCommand implements Command {
     private OrderService orderService;
     private PaymentValidator paymentValidator;
 
+    @Autowired
     public GetMembershipCommand(OrderService orderService, PaymentValidator paymentValidator){
         this.orderService = orderService;
         this.paymentValidator = paymentValidator;

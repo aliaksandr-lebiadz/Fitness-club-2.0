@@ -5,12 +5,17 @@ import com.epam.fitness.command.CommandResult;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static com.epam.fitness.command.Commands.LOGIN_COMMAND;
+
+@Component(LOGIN_COMMAND)
 public class LoginCommand implements Command {
 
     private static final String HOME_PAGE_URL = "/home";
@@ -22,6 +27,7 @@ public class LoginCommand implements Command {
 
     private UserService service;
 
+    @Autowired
     public LoginCommand(UserService service){
         this.service = service;
     }

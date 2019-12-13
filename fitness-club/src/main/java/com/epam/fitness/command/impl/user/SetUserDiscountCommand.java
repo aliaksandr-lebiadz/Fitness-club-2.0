@@ -7,10 +7,15 @@ import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.UserService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import com.epam.fitness.validator.api.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.epam.fitness.command.Commands.SET_USER_DISCOUNT_COMMAND;
+
+@Component(SET_USER_DISCOUNT_COMMAND)
 public class SetUserDiscountCommand implements Command {
 
     private static final String USER_ID_PARAMETER = "user_id";
@@ -19,6 +24,7 @@ public class SetUserDiscountCommand implements Command {
     private UserService service;
     private UserValidator validator;
 
+    @Autowired
     public SetUserDiscountCommand(UserService service, UserValidator validator){
         this.service = service;
         this.validator = validator;

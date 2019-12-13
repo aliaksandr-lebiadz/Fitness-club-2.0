@@ -8,10 +8,15 @@ import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import com.epam.fitness.validator.api.OrderValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.epam.fitness.command.Commands.SEND_FEEDBACK_COMMAND;
+
+@Component(SEND_FEEDBACK_COMMAND)
 public class SendFeedbackCommand implements Command {
 
     private static final String ORDER_ID_PARAMETER = "order_id";
@@ -20,6 +25,7 @@ public class SendFeedbackCommand implements Command {
     private OrderService service;
     private OrderValidator validator;
 
+    @Autowired
     public SendFeedbackCommand(OrderService service, OrderValidator validator){
         this.service = service;
         this.validator = validator;

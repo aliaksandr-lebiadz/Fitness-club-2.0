@@ -9,12 +9,17 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.service.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+import static com.epam.fitness.command.Commands.SHOW_TRAINER_CLIENTS_COMMAND;
+
+@Component(SHOW_TRAINER_CLIENTS_COMMAND)
 public class ShowTrainerClientsCommand implements Command {
 
     private static final String TRAINER_CLIENTS_URL = "/trainerClients";
@@ -28,6 +33,7 @@ public class ShowTrainerClientsCommand implements Command {
     private OrderService orderService;
     private ExerciseService exerciseService;
 
+    @Autowired
     public ShowTrainerClientsCommand(UserService userService, OrderService orderService,
                                      ExerciseService exerciseService){
         this.userService = userService;

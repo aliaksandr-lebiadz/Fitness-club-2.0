@@ -3,12 +3,16 @@ package com.epam.fitness.command.impl;
 import com.epam.fitness.command.Command;
 import com.epam.fitness.command.CommandResult;
 import com.epam.fitness.utils.CurrentPageGetter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Locale;
 
+import static com.epam.fitness.command.Commands.SET_LOCALE_COMMAND;
+
+@Component(SET_LOCALE_COMMAND)
 public class SetLocaleCommand implements Command {
 
     private static final String LOCALE = "locale";

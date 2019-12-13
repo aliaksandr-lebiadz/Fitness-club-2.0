@@ -8,11 +8,16 @@ import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.Exercise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.epam.fitness.command.Commands.SHOW_ASSIGNMENTS_COMMAND;
+
+@Component(SHOW_ASSIGNMENTS_COMMAND)
 public class ShowAssignmentsCommand implements Command {
 
     private static final String ASSIGNMENTS_PAGE_URL = "/assignments";
@@ -24,6 +29,7 @@ public class ShowAssignmentsCommand implements Command {
     private AssignmentService assignmentService;
     private ExerciseService exerciseService;
 
+    @Autowired
     public ShowAssignmentsCommand(AssignmentService assignmentService, ExerciseService exerciseService){
         this.assignmentService = assignmentService;
         this.exerciseService = exerciseService;
