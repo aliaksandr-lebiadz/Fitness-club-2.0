@@ -1,7 +1,6 @@
 package com.epam.fitness.dao.api;
 
 import com.epam.fitness.entity.Identifiable;
-import com.epam.fitness.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public interface Dao<T extends Identifiable> {
      *
      * @return list of entities
      */
-    List<T> getAll() throws DaoException;
+    List<T> getAll();
 
     /**
      * <p>Inserts an entity when it doesn't exist
@@ -28,14 +27,14 @@ public interface Dao<T extends Identifiable> {
      *
      * @param entity entity to save
      */
-    void save(T entity) throws DaoException;
+    void save(T entity);
 
     /**
      * <p>Deletes an entity by id.</p>
      *
      * @param id id of the entity to delete
      */
-    void deleteById(int id) throws DaoException;
+    void deleteById(int id);
 
     /**
      * <p>Finds an entity by id.</p>
@@ -44,6 +43,6 @@ public interface Dao<T extends Identifiable> {
      * @return optional of the entity when entity with the
      * supplied id exists and empty optional otherwise
      */
-    Optional<T> findById(int id) throws DaoException;
+    Optional<T> findById(int id);
 
 }

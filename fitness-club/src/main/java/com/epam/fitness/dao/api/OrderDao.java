@@ -1,7 +1,6 @@
 package com.epam.fitness.dao.api;
 
 import com.epam.fitness.entity.order.Order;
-import com.epam.fitness.exception.DaoException;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public interface OrderDao extends Dao<Order> {
      * @param trainerId trainer's id
      * @return list of found orders
      */
-    List<Order> findClientOrdersWithTrainerId(int clientId, int trainerId) throws DaoException;
+    List<Order> findClientOrdersWithTrainerId(int clientId, int trainerId);
 
     /**
      * <p>Finds orders with supplied client's id.</p>
@@ -28,6 +27,6 @@ public interface OrderDao extends Dao<Order> {
      * @param clientId client's id
      * @return list of found orders
      */
-    List<Order> findOrdersByClientId(int clientId) throws DaoException;
+    List<Order> findOrdersByClientId(int clientId);
 
 }
