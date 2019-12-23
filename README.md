@@ -35,19 +35,6 @@
 ##
 
 
-#### Website credentials:
-- **`Admin`** 
-    - login: admin@mail.ru
-    - password: admin
-- **`Client`**
-    - login: client@mail.ru
-    - password: client
-- **`Trainer`**
-    - login: trainer@mail.ru
-    - password: trainer
-##
-
-
 ##### Additional information:
 -   Some useful links:
     -   Sonarqube: http://epbyminw7599:9000/dashboard?id=github-jenkins-sonar
