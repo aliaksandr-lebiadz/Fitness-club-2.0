@@ -1,7 +1,6 @@
 package com.epam.fitness.dao.api;
 
 import com.epam.fitness.entity.user.User;
-import com.epam.fitness.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public interface UserDao extends Dao<User> {
      * @return optional of the user when the user with
      * given email and password is found and empty optional otherwise
      */
-    Optional<User> findUserByEmailAndPassword(String email, String password) throws DaoException;
+    Optional<User> findUserByEmailAndPassword(String email, String password);
 
     /**
      * <p>Finds users with the given trainer id.</p>
@@ -30,12 +29,12 @@ public interface UserDao extends Dao<User> {
      * @param trainerId trainer's id
      * @return list of users
      */
-    List<User> findUsersByTrainerId(long trainerId) throws DaoException;
+    List<User> findUsersByTrainerId(long trainerId);
 
     /**
      * <p>Finds all clients.</p>
      *
      * @return a list of found clients
      */
-    List<User> getAllClients() throws DaoException;
+    List<User> getAllClients();
 }

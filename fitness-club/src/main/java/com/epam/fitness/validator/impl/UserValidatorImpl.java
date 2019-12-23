@@ -1,7 +1,9 @@
 package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.validator.api.UserValidator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserValidatorImpl implements UserValidator {
 
     private static final int MIN_DISCOUNT = 0;

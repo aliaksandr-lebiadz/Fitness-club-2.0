@@ -6,10 +6,15 @@ import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.epam.fitness.command.Commands.ASSIGN_NUTRITION_TYPE_COMMAND;
+
+@Component(ASSIGN_NUTRITION_TYPE_COMMAND)
 public class AssignNutritionTypeCommand implements Command {
 
     private static final String NUTRITION_TYPE_PARAMETER = "nutrition_type";
@@ -17,6 +22,7 @@ public class AssignNutritionTypeCommand implements Command {
 
     private OrderService service;
 
+    @Autowired
     public AssignNutritionTypeCommand(OrderService service){
         this.service = service;
     }

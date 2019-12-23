@@ -1,5 +1,7 @@
 package com.epam.fitness.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
  * <p>An utils class for operations, related with a
  * {@link com.epam.fitness.entity.order.Order} entity.</p>
  */
+@Component
 public class OrderUtils {
 
     /**

@@ -2,9 +2,11 @@ package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.validator.api.AssignmentValidator;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class AssignmentValidatorImpl implements AssignmentValidator {
 
     private static final int MIN_AMOUNT_OF_REPS = 1;

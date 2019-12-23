@@ -1,4 +1,4 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.*;
 
-public class UserBuilderTest {
+public class UserMapperTest {
 
     private static final String ID_COLUMN = "id";
     private static final String EMAIL_COLUMN = "email";
@@ -20,7 +20,7 @@ public class UserBuilderTest {
     private static final String SECOND_NAME_COLUMN = "second_name";
     private static final String DISCOUNT_COLUMN = "discount";
 
-    private UserBuilder builder = new UserBuilder();
+    private UserMapper mapper = new UserMapper();
 
     @Test
     public void testBuildShouldReturnBuiltUserEntity() throws SQLException {
@@ -46,9 +46,10 @@ public class UserBuilderTest {
         when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(discount);
 
         //when
-        User actual = builder.build(resultSet);
+        User actual = mapper.mapRow(resultSet, anyInt());
 
         //then
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getEmail(), actual.getEmail());
         Assert.assertEquals(expected.getPassword(), actual.getPassword());

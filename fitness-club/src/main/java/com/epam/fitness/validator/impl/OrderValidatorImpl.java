@@ -1,7 +1,9 @@
 package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.validator.api.OrderValidator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderValidatorImpl implements OrderValidator {
 
     private static final int MIN_FEEDBACK_LENGTH = 10;

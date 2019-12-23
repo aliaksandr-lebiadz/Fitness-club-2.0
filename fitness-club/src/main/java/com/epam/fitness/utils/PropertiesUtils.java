@@ -6,9 +6,7 @@ import java.util.Properties;
 
 public class PropertiesUtils {
 
-    private PropertiesUtils(){
-        //private constructor
-    }
+    private PropertiesUtils() {}
 
     /**
      * <p>Creates a {@link Properties} instance from the supplied properties file.</p>

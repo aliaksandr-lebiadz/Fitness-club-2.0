@@ -1,4 +1,4 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
@@ -11,10 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.*;
 
-public class OrderBuilderTest {
+public class OrderMapperTest {
 
     private static final String ID_COLUMN = "id";
     private static final String CLIENT_ID_COLUMN = "client_id";
@@ -25,7 +25,7 @@ public class OrderBuilderTest {
     private static final String PRICE_COLUMN = "price";
     private static final String NUTRITION_TYPE_COLUMN = "nutrition_type";
 
-    private OrderBuilder builder = new OrderBuilder();
+    private OrderMapper mapper = new OrderMapper();
 
     @Test
     public void testBuildShouldReturnBuiltOrderEntity() throws SQLException {
@@ -62,9 +62,10 @@ public class OrderBuilderTest {
         when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(nutritionTypeValue);
 
         //when
-        Order actual = builder.build(resultSet);
+        Order actual = mapper.mapRow(resultSet, anyInt());
 
         //then
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getClientId(), actual.getClientId());
         Assert.assertEquals(expected.getTrainerId(), actual.getTrainerId());

@@ -1,12 +1,10 @@
 package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.Identifiable;
-import com.epam.fitness.exception.DaoException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +21,12 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM %s WHERE id = ?";
     private static final String GET_ALL_QUERY = "SELECT * FROM %s";
 
-    private Connection connection;
-    private Builder<T> builder;
+    private JdbcTemplate jdbcTemplate;
+    private RowMapper<T> rowMapper;
 
-    public AbstractDao(Connection connection, Builder<T> builder){
-        this.connection = connection;
-        this.builder = builder;
+    public AbstractDao(JdbcTemplate jdbcTemplate, RowMapper<T> rowMapper){
+        this.jdbcTemplate = jdbcTemplate;
+        this.rowMapper = rowMapper;
     }
 
     /**
@@ -38,19 +36,8 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      * @param params parameters for the prepared statement
      * @return a list of entities in the result of the query execution
      */
-    protected List<T> executeQuery(String query, Object... params) throws DaoException {
-        try(PreparedStatement statement = connection.prepareStatement(query)){
-            setStatementParameters(statement, params);
-            ResultSet resultSet = statement.executeQuery();
-            List<T> entities = new ArrayList<>();
-            while(resultSet.next()){
-                T entity = builder.build(resultSet);
-                entities.add(entity);
-            }
-            return entities;
-        } catch (SQLException ex){
-            throw new DaoException(ex.getMessage(), ex);
-        }
+    protected List<T> executeQuery(String query, Object... params){
+        return jdbcTemplate.query(query, params, rowMapper);
     }
 
     /**
@@ -60,13 +47,8 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      * @param query a query to prepare statement
      * @param params parameters for the prepared statement
      */
-     protected void executeUpdate(String query, Object... params) throws DaoException {
-        try(PreparedStatement statement = connection.prepareStatement(query)){
-            setStatementParameters(statement, params);
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DaoException(ex.getMessage(), ex);
-        }
+    protected void executeUpdate(String query, Object... params) {
+        jdbcTemplate.update(query, params);
     }
 
     /**
@@ -77,7 +59,7 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      * in the table and empty optional otherwise
      */
     @Override
-    public Optional<T> findById(int id) throws DaoException{
+    public Optional<T> findById(int id) {
         String formattedQuery = insertTableName(FIND_BY_ID_QUERY);
         return executeForSingleResult(formattedQuery, id);
     }
@@ -91,7 +73,7 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      * @return optional of the entity when size of the result list
      * greater than zero and empty optional otherwise
      */
-    protected Optional<T> executeForSingleResult(String query, Object... params) throws DaoException{
+    protected Optional<T> executeForSingleResult(String query, Object... params) {
         List<T> items = executeQuery(query, params);
         if(isNotEmpty(items)){
             T item = items.get(0);
@@ -101,20 +83,14 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
         }
     }
 
-    /**
-     * <p>Gets all entities from the table, uses the abstract method
-     * {@link #getTableName()} to find out the name of the table.</p>
-     *
-     * @return a list of all entities from the table
-     */
     @Override
-    public List<T> getAll() throws DaoException{
+    public List<T> getAll(){
         String formattedQuery = insertTableName(GET_ALL_QUERY);
         return executeQuery(formattedQuery);
     }
 
     @Override
-    public void save(T entity) throws DaoException{
+    public void save(T entity){
         String saveQuery = getSaveQuery();
         Object[] fields = getFields(entity);
         executeUpdate(saveQuery, fields);
@@ -145,18 +121,6 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     private String insertTableName(String query){
         String tableName = getTableName();
         return String.format(query, tableName);
-    }
-
-    /**
-     * <p>Sets parameters to the prepared statement.</p>
-     *
-     * @param statement a prepared statement
-     * @param params parameters to set
-     */
-    private void setStatementParameters(PreparedStatement statement, Object... params) throws SQLException{
-        for(int i = 0; i < params.length; i++){
-            statement.setObject(i + 1, params[i]);
-        }
     }
 
     private boolean isNotEmpty(List<T> items){

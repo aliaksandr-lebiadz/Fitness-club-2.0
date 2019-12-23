@@ -1,4 +1,4 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.assignment.Exercise;
 import org.junit.Assert;
@@ -9,12 +9,12 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.*;
 
-public class ExerciseBuilderTest {
+public class ExerciseMapperTest {
 
     private static final String ID_COLUMN = "id";
     private static final String NAME_COLUMN = "name";
 
-    private ExerciseBuilder builder = new ExerciseBuilder();
+    private ExerciseMapper mapper = new ExerciseMapper();
 
     @Test
     public void testBuildShouldReturnBuiltExerciseEntity() throws SQLException {
@@ -29,9 +29,10 @@ public class ExerciseBuilderTest {
         when(resultSet.getString(NAME_COLUMN)).thenReturn(name);
 
         //when
-        Exercise actual = builder.build(resultSet);
+        Exercise actual = mapper.mapRow(resultSet, anyInt());
 
         //then
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getName(), actual.getName());
     }

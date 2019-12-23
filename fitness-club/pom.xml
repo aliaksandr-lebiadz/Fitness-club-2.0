@@ -18,6 +18,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <build.number>SNAPSHOT</build.number>
         <build.timestamp>${build.timestamp}</build.timestamp>
+        <spring.version>5.2.1.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -86,7 +87,21 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>fitness</finalName>

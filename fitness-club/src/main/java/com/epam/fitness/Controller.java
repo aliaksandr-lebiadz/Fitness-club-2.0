@@ -2,15 +2,10 @@ package com.epam.fitness;
 
 import com.epam.fitness.command.Command;
 import com.epam.fitness.command.CommandResult;
-import com.epam.fitness.command.factory.CommandFactory;
-import com.epam.fitness.dao.factory.DaoFactory;
-import com.epam.fitness.dao.factory.impl.PostgreSqlDaoFactory;
-import com.epam.fitness.pool.ConnectionPool;
-import com.epam.fitness.pool.ProxyConnection;
-import com.epam.fitness.command.factory.impl.CommandFactoryImpl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -39,12 +34,9 @@ public class Controller extends HttpServlet{
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         String commandValue = request.getParameter(COMMAND_PARAMETER);
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-
-        try(ProxyConnection connection = connectionPool.getConnection()){
-            DaoFactory daoFactory = new PostgreSqlDaoFactory(connection);
-            CommandFactory commandFactory = new CommandFactoryImpl(daoFactory);
-            Command command = commandFactory.create(commandValue);
+        ApplicationContext context = SpringContextManager.getContext();
+        try{
+            Command command = context.getBean(commandValue, Command.class);
             CommandResult commandResult = command.execute(request, response);
             processCommandResult(commandResult, request, response);
         } catch(Exception ex) {

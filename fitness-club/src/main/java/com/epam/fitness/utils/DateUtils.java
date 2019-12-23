@@ -1,8 +1,11 @@
 package com.epam.fitness.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Calendar;
 import java.util.Date;
 
+@Component
 public class DateUtils {
 
     public Date getFirstDayOfCurrentMonth(){

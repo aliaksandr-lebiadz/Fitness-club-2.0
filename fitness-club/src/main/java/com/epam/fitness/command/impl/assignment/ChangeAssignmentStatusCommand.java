@@ -6,10 +6,15 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.utils.CurrentPageGetter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.epam.fitness.command.Commands.CHANGE_ASSIGNMENT_STATUS_COMMAND;
+
+@Component(CHANGE_ASSIGNMENT_STATUS_COMMAND)
 public class ChangeAssignmentStatusCommand implements Command {
 
     private static final String ASSIGNMENT_ID_PARAMETER = "assignment_id";
@@ -19,6 +24,7 @@ public class ChangeAssignmentStatusCommand implements Command {
 
     private AssignmentService service;
 
+    @Autowired
     public ChangeAssignmentStatusCommand(AssignmentService service){
         this.service = service;
     }

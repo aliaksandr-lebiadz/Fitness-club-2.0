@@ -1,11 +1,10 @@
 package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.api.AssignmentDao;
 import com.epam.fitness.entity.assignment.Assignment;
-import com.epam.fitness.exception.DaoException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,17 +19,17 @@ public abstract class AbstractAssignmentDao extends AbstractDao<Assignment> impl
                     "FROM assignment AS a " +
                     "JOIN exercise AS e ON a.exercise_id = e.id WHERE a.id = ?";
 
-    public AbstractAssignmentDao(Connection connection, Builder<Assignment> builder){
-        super(connection, builder);
+    public AbstractAssignmentDao(JdbcTemplate jdbcTemplate, RowMapper<Assignment> rowMapper) {
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override
-    public List<Assignment> getAllByOrderId(int orderId) throws DaoException {
+    public List<Assignment> getAllByOrderId(int orderId) {
         return executeQuery(GET_ALL_BY_ORDER_ID_QUERY, orderId);
     }
 
     @Override
-    public Optional<Assignment> findById(int id) throws DaoException {
+    public Optional<Assignment> findById(int id) {
         return executeForSingleResult(FIND_BY_ID_QUERY, id);
     }
 

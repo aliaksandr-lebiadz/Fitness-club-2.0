@@ -1,11 +1,12 @@
 package com.epam.fitness.dao.impl.mysql;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.impl.AbstractOrderDao;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
-
-import java.sql.Connection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>An implementation of the order dao interface to provide access
@@ -13,6 +14,7 @@ import java.sql.Connection;
  *
  * @see Order
  */
+@Repository
 public class MySqlOrderDao extends AbstractOrderDao {
 
     private static final String SAVE_ORDER_QUERY = "INSERT INTO client_order " +
@@ -27,8 +29,9 @@ public class MySqlOrderDao extends AbstractOrderDao {
             "feedback = VALUES(feedback)," +
             "nutrition_type = VALUES(nutrition_type)";
 
-    public MySqlOrderDao(Connection connection, Builder<Order> builder){
-        super(connection, builder);
+    @Autowired
+    public MySqlOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper){
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override

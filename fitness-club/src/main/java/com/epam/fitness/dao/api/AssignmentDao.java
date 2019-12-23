@@ -1,6 +1,5 @@
 package com.epam.fitness.dao.api;
 
-import com.epam.fitness.exception.DaoException;
 import com.epam.fitness.entity.assignment.Assignment;
 
 import java.util.List;
@@ -19,6 +18,6 @@ public interface AssignmentDao extends Dao<Assignment>{
      * @param orderId order's id
      * @return list of found assignments
      */
-    List<Assignment> getAllByOrderId(int orderId) throws DaoException;
+    List<Assignment> getAllByOrderId(int orderId);
 
 }

@@ -1,4 +1,4 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
@@ -6,13 +6,13 @@ import com.epam.fitness.entity.assignment.Exercise;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 
 import static org.mockito.Mockito.*;
 
-public class AssignmentBuilderTest {
+public class AssignmentMapperTest {
 
     private static final String ID_COLUMN = "id";
     private static final String ORDER_ID_COLUMN = "order_id";
@@ -23,7 +23,7 @@ public class AssignmentBuilderTest {
     private static final String EXERCISE_NAME_COLUMN = "name";
     private static final String STATUS_COLUMN = "status";
 
-    private AssignmentBuilder builder = new AssignmentBuilder();
+    private AssignmentMapper mapper = new AssignmentMapper();
 
     @Test
     public void testBuildShouldReturnBuiltAssignmentEntity() throws SQLException {
@@ -52,9 +52,10 @@ public class AssignmentBuilderTest {
         when(resultSet.getString(STATUS_COLUMN)).thenReturn(statusValue);
 
         //when
-        Assignment actual = builder.build(resultSet);
+        Assignment actual = mapper.mapRow(resultSet, anyInt());
 
         //then
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getOrderId(), actual.getOrderId());
         Assert.assertEquals(expected.getExercise().getId(), actual.getExercise().getId());

@@ -12,10 +12,10 @@ import java.util.Optional;
 
 public interface AssignmentService {
 
-    void create(Assignment assignment) throws ServiceException;
-    List<Assignment> getAllByOrderId(int orderId) throws ServiceException;
     NutritionType getNutritionTypeByOrderId(int orderId) throws ServiceException;
     void changeStatusById(int id, AssignmentStatus status) throws ServiceException;
     void updateById(int id, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate) throws ServiceException;
-    Optional<Assignment> findById(int id) throws ServiceException;
+    void create(Assignment assignment);
+    List<Assignment> getAllByOrderId(int orderId);
+    Optional<Assignment> findById(int id);
 }

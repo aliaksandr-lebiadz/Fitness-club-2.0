@@ -6,12 +6,17 @@ import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+import static com.epam.fitness.command.Commands.SHOW_ORDERS_COMMAND;
+
+@Component(SHOW_ORDERS_COMMAND)
 public class ShowOrdersCommand implements Command {
 
     private static final String ORDERS_PAGE_URL = "/orders";
@@ -20,6 +25,7 @@ public class ShowOrdersCommand implements Command {
 
     private OrderService service;
 
+    @Autowired
     public ShowOrdersCommand(OrderService service){
         this.service = service;
     }

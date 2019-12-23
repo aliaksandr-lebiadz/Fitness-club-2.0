@@ -1,19 +1,15 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * <p>Builds an instance of the {@link User} class.</p>
- *
- * @see Builder
- * @see User
- */
-public class UserBuilder implements Builder<User> {
+@Component
+public class UserMapper implements RowMapper<User> {
 
     private static final String EMAIL_COLUMN = "email";
     private static final String PASSWORD_COLUMN = "password";
@@ -23,15 +19,8 @@ public class UserBuilder implements Builder<User> {
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String SECOND_NAME_COLUMN = "second_name";
 
-    /**
-     * <p>Builds an instance of the {@link User} class from
-     * the supplied {@link ResultSet}.</p>
-     *
-     * @param resultSet a result set of parameters
-     * @return a built user
-     */
     @Override
-    public User build(ResultSet resultSet) throws SQLException {
+    public User mapRow(ResultSet resultSet, int index) throws SQLException {
         int id = resultSet.getInt(ID_COLUMN);
         String email = resultSet.getString(EMAIL_COLUMN);
         String password = resultSet.getString(PASSWORD_COLUMN);

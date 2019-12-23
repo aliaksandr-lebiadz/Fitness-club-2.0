@@ -1,11 +1,12 @@
 package com.epam.fitness.dao.impl.common;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.api.GymMembershipDao;
 import com.epam.fitness.dao.impl.AbstractDao;
 import com.epam.fitness.entity.GymMembership;
-
-import java.sql.Connection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>An implementation of the gym membership dao interface to provide
@@ -13,12 +14,14 @@ import java.sql.Connection;
  *
  * @see GymMembership
  */
+@Repository
 public class GymMembershipDaoImpl extends AbstractDao<GymMembership> implements GymMembershipDao {
 
     private static final String GYM_MEMBERSHIP_TABLE = "gym_membership";
 
-    public GymMembershipDaoImpl(Connection connection, Builder<GymMembership> builder){
-        super(connection, builder);
+    @Autowired
+    public GymMembershipDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<GymMembership> rowMapper){
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override

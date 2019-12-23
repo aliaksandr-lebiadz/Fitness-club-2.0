@@ -2,12 +2,16 @@ package com.epam.fitness.command.impl.user;
 
 import com.epam.fitness.command.Command;
 import com.epam.fitness.command.CommandResult;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Locale;
 
+import static com.epam.fitness.command.Commands.LOG_OUT_COMMAND;
+
+@Component(LOG_OUT_COMMAND)
 public class LogOutCommand implements Command {
 
     private static final String LOGIN_PAGE = "/login";

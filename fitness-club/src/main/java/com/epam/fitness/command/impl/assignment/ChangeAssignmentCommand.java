@@ -9,6 +9,8 @@ import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import com.epam.fitness.validator.api.AssignmentValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.epam.fitness.command.Commands.CHANGE_ASSIGNMENT_COMMAND;
+
+@Component(CHANGE_ASSIGNMENT_COMMAND)
 public class ChangeAssignmentCommand implements Command {
 
     private static final String ORDER_ID_PARAMETER = "order_id";
@@ -31,6 +36,7 @@ public class ChangeAssignmentCommand implements Command {
     private AssignmentService service;
     private AssignmentValidator validator;
 
+    @Autowired
     public ChangeAssignmentCommand(AssignmentService service, AssignmentValidator validator){
         this.service = service;
         this.validator = validator;

@@ -1,14 +1,17 @@
 package com.epam.fitness.dao.impl.postgresql;
 
-import com.epam.fitness.builder.Builder;
 import com.epam.fitness.dao.impl.AbstractAssignmentDao;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.util.Date;
 
+@Repository
 public class PostgreSqlAssignmentDao extends AbstractAssignmentDao {
 
     private static final String SAVE_ASSIGNMENT_QUERY = "INSERT INTO assignment" +
@@ -22,8 +25,9 @@ public class PostgreSqlAssignmentDao extends AbstractAssignmentDao {
             "workout_date = EXCLUDED.workout_date," +
             "status = EXCLUDED.status::status";
 
-    public PostgreSqlAssignmentDao(Connection connection, Builder<Assignment> builder){
-        super(connection, builder);
+    @Autowired
+    public PostgreSqlAssignmentDao(JdbcTemplate jdbcTemplate, RowMapper<Assignment> rowMapper) {
+        super(jdbcTemplate, rowMapper);
     }
 
     @Override

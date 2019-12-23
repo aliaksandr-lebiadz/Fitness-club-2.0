@@ -1,4 +1,4 @@
-package com.epam.fitness.builder.impl;
+package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.GymMembership;
 import org.hamcrest.Matchers;
@@ -12,13 +12,13 @@ import java.sql.SQLException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class GymMembershipBuilderTest {
+public class GymMembershipMapperTest {
 
     private static final String ID_COLUMN = "id";
     private static final String MONTHS_AMOUNT_COLUMN = "months_amount";
     private static final String PRICE_COLUMN = "price";
 
-    private GymMembershipBuilder builder = new GymMembershipBuilder();
+    private GymMembershipMapper mapper = new GymMembershipMapper();
 
     @Test
     public void testBuildShouldReturnBuiltGymMembershipEntity() throws SQLException {
@@ -35,9 +35,10 @@ public class GymMembershipBuilderTest {
         when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(price);
 
         //when
-        GymMembership actual = builder.build(resultSet);
+        GymMembership actual = mapper.mapRow(resultSet, anyInt());
 
         //then
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getMonthsAmount(), actual.getMonthsAmount());
         assertThat(actual.getPrice(), Matchers.comparesEqualTo(expected.getPrice()));
