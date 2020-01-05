@@ -25,9 +25,7 @@ public class ContextListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        SpringContextManager.closeApplicationContext();
-    }
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {}
 
     private void setDataToApplicationScope(ServletContext servletContext) throws IOException{
         Properties properties = PropertiesUtils.getProperties(MAVEN_BUILD_PROPERTIES_FILE);
