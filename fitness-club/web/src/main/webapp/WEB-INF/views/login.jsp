@@ -28,7 +28,7 @@
 
         <div id="intro"></div>
         <div id="login-container">
-            <form id="login-form" action="controller?command=login" method="post">
+            <form id="login-form" action="account/logIn" method="post">
                 <label for="email">${email_label}</label>
                 <input class="text-input" type="email" name="email" id="email" required autofocus/>
                 <label for="password">${password_label}</label>
