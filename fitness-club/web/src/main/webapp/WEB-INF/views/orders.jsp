@@ -3,6 +3,7 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix='fn' uri="http://java.sun.com/jsp/jstl/functions"%>
+<fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 <fmt:setLocale scope="session" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="orders.">
@@ -40,10 +41,10 @@
 
         <div id="intro"></div>
         <div id="disable-div"></div>
-        <c:if test="${fn:length(requestScope.orders) ne 0}">
+        <c:if test="${fn:length(orderList) ne 0}">
             <div id="container">
-                <form class="check-submit-form" id="orders-form" action="controller" method="get">
-                    <display:table class="display-table" name="requestScope.orders" uid="row" pagesize="5" export="false" requestURI="">
+                <form class="check-submit-form" id="orders-form" action="${pageContext.request.contextPath}/assignment/list">
+                    <display:table class="display-table" name="orderList" uid="row" pagesize="5" export="false" requestURI="">
                         <display:column property="id" class="hidden" headerClass="hidden"/>
                         <display:column title="${begin_date}">
                             <fmt:formatDate value="${row.beginDate}"/>
@@ -57,7 +58,6 @@
                     </display:table>
                     <hr>
                     <input type="hidden" name="order_id" class="hidden-id" required/>
-                    <input type="hidden" name="command" value="showAssignments"/>
                     <button type="button" class="custom-button" id="feedback-button"
                             onclick="showPopUp('#feedback-popup')">
                         ${leave_feedback_button}
@@ -68,10 +68,10 @@
                 </form>
             </div>
         </c:if>
-        <c:if test="${fn:length(requestScope.orders) eq 0}">
+        <c:if test="${fn:length(orderList) eq 0}">
             <div id="no-orders-container">
                 <p>${zero_orders}</p>
-                <form id="no-orders-form" action="controller?command=showOrderPage" method="post">
+                <form id="no-orders-form" action="${pageContext.request.contextPath}/client/order">
                     <input type="submit" class="custom-button" id="buy-membership-button" value="${buy_membership_button}"/>
                 </form>
             </div>
@@ -84,7 +84,7 @@
                 <span id="feedback-title">${feedback_title}</span>
                 <hr/>
             </div>
-            <form id="feedback-form" action="controller?command=sendFeedback" method="post">
+            <form id="feedback-form" action="${pageContext.request.contextPath}/order/feedback" method="post">
                 <label for="feedback-textarea"></label>
                 <textarea name="feedback" id="feedback-textarea" rows="7" cols="34" minlength="10" maxlength="1000"
                           placeholder="${feedback_placeholder}" required></textarea>

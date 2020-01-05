@@ -22,7 +22,7 @@
 
         <div id="intro"></div>
         <div id="error">
-            <form id="error-form" action="controller?command=showHomePage" method="post">
+            <form id="error-form" action="${pageContext.request.contextPath}/home">
                 <span>${error}</span>
                 <input type="submit" id="home-button" value="${home_button}"/>
             </form>

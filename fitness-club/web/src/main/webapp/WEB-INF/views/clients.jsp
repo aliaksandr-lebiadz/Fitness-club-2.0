@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix='fn' uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fc" uri="fitness-club" %>
+<fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 <fmt:setLocale scope="session" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="clients.">
@@ -43,9 +44,9 @@
         <div id="intro"></div>
         <div id="disable-div"></div>
 
-        <c:if test="${fn:length(requestScope.clients) ne 0}">
+        <c:if test="${fn:length(userList) ne 0}">
             <div id="container">
-                <display:table class="display-table" name="requestScope.clients" uid="row" pagesize="5" export="false" requestURI="">
+                <display:table class="display-table" name="userList" uid="row" pagesize="5" export="false" requestURI="">
                     <display:column property="id" class="hidden" headerClass="hidden"/>
                     <display:column title="${name}">
                         ${row.firstName} ${row.secondName}
@@ -69,7 +70,7 @@
                 <span id="discount-popup-title">${discount_popup_title}</span>
                 <hr/>
             </div>
-            <form id="discount-form" action="controller?command=setUserDiscount" method="post">
+            <form id="discount-form" action="${pageContext.request.contextPath}/client/setDiscount" method="post">
                 <label for="discount">${discount_popup_label}</label>
                 <input type="number" name="discount" id="discount" min="0" max="100" required/>
                 <input type="hidden" name="user_id" class="hidden-id"/>

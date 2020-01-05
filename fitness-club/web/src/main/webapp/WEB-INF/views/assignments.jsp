@@ -4,6 +4,7 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="fc" uri="fitness-club" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 <fmt:setLocale scope="session" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="assignments.">
@@ -59,32 +60,32 @@
         <div id="intro"></div>
         <div id="disable-div"></div>
 
-        <c:if test="${fn:length(requestScope.assignments) eq 0}">
+        <c:if test="${fn:length(assignmentList) eq 0}">
             <div id="no-assignments-container">
                 <c:if test="${sessionScope.user.role eq 'CLIENT'}">
                     <p>${zero_assignments}</p>
-                    <form id="no-assignments-form" action="controller?command=showOrders" method="post">
+                    <form id="no-assignments-form" action="${pageContext.request.contextPath}/order/list">
                         <input type="submit" class="custom-button" id="orders-button" value="${orders_button}"/>
                     </form>
                 </c:if>
                 <c:if test="${sessionScope.user.role ne 'CLIENT'}">
                     <p>${zero_assignments_by_trainer}</p>
-                    <form id="no-assignments-form" action="controller?command=showTrainerClients" method="post">
+                    <form id="no-assignments-form" action="${pageContext.request.contextPath}/trainer/clients">
                         <input type="submit" class="custom-button" id="clients-button" value="${clients_button}"/>
                     </form>
                 </c:if>
             </div>
         </c:if>
-        <c:if test="${fn:length(requestScope.assignments) ne 0}">
+        <c:if test="${fn:length(assignmentList) ne 0}">
             <div id="container">
-                <form class="check-submit-form" id="assignment-form" action="controller?command=changeAssignmentStatus" method="post">
+                <form class="check-submit-form" id="assignment-form" action="${pageContext.request.contextPath}/assignment/setStatus" method="post">
                     <c:set var="nutrition_type" scope="page" value="${requestScope.nutrition_type}"/>
                     <c:if test="${not empty nutrition_type}">
                         <span id="nutrition-type">
                                 ${nutrition_type_msg} <fc:nutrition-type-localizer>${nutrition_type}</fc:nutrition-type-localizer>
                         </span>
                     </c:if>
-                    <display:table class="display-table" name="requestScope.assignments" uid="assignment" pagesize="5" export="false" requestURI="">
+                    <display:table class="display-table" name="assignmentList" uid="assignment" pagesize="5" export="false" requestURI="">
                         <display:column property="id" class="hidden" headerClass="hidden"/>
                         <display:column title="${workout_date}">
                             <fmt:formatDate value="${assignment.workoutDate}"/>
@@ -123,13 +124,13 @@
                     <span id="assignment-popup-title">${popup_title}</span>
                     <hr/>
                 </div>
-                <form id="change-assignment-popup-form" action="controller?command=changeAssignment&operation=change" method="post">
+                <form id="change-assignment-popup-form" action="${pageContext.request.contextPath}/assignmentOperations/change" method="post">
                     <label for="date">${workout_date}</label>
                     <fc:date-input name="date" minDate="tomorrow"/>
                     <label for="exercise-select-id">${exercise}</label>
                     <div class="select-style">
                         <select name="exercise_select" id="exercise-select-id">
-                            <c:forEach items="${requestScope.exercises}" var="item">
+                            <c:forEach items="${exerciseList}" var="item">
                                 <option value="${item.id}">${item.name}</option>
                             </c:forEach>
                         </select>

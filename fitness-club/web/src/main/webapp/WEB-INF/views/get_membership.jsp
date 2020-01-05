@@ -36,7 +36,6 @@
         <div id="disable-div"></div>
 
         <div id="form-container">
-            <c:set var="memberships" scope="page" value="${requestScope.memberships}"/>
             <c:set var="user" scope="page" value="${sessionScope.user}"/>
             <span id="order-title">${form_title}</span>
             <hr/>
@@ -47,7 +46,7 @@
             <label for="membership-select-id">${label}</label>
             <div class="select-style">
                 <select name="membership_select" id="membership-select-id">
-                    <c:forEach items="${memberships}" var="item">
+                    <c:forEach items="${gymMembershipList}" var="item">
                         <c:set var="current_price" scope="page" value="${item.price*(100-user.discount)/100}"/>
                         <option value="${item.id}">
                                 ${item.monthsAmount} ${choice} (${current_price}BYN)
@@ -61,7 +60,7 @@
             <a class="close-icon" href="javascript:hidePopUp('#purchase-popup')">
                 <i class="fa fa-times fa-lg"></i>
             </a>
-            <form id="purchase-form" action="controller?command=getMembership" method="post">
+            <form id="purchase-form" action="${pageContext.request.contextPath}/payment/getMembership" method="post">
                 <i class="fa fa-cc-visa fa-2x purchase-icon"></i>
                 <i class="fa fa-cc-mastercard fa-2x purchase-icon"></i>
                 <label for="card-number-input"></label>

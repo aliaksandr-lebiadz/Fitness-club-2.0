@@ -28,20 +28,20 @@
             <div id="navigation">
                 <c:set var="user" scope="page" value="${sessionScope.user}"/>
                 <c:if test="${not empty user}">
-                    <a class="navigation_link simple" href="controller?command=showHomePage">${home_link}</a>
+                    <a class="navigation_link simple" href="${pageContext.request.contextPath}/home">${home_link}</a>
                     <c:choose>
                         <c:when test="${user.role eq 'ADMIN'}">
-                            <a class="navigation_link simple" href="controller?command=showClients">${clients_link}</a>
+                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/client/list">${clients_link}</a>
                         </c:when>
                         <c:when test="${user.role eq 'TRAINER'}">
-                            <a class="navigation_link simple" href="controller?command=showTrainerClients">${my_clients_link}</a>
+                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/trainer/clients">${my_clients_link}</a>
                         </c:when>
                         <c:otherwise>
-                            <a class="navigation_link simple" href="controller?command=showOrderPage">${get_membership_link}</a>
-                            <a class="navigation_link simple" href="controller?command=showOrders">${my_orders_link}</a>
+                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/order">${get_membership_link}</a>
+                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/order/list">${my_orders_link}</a>
                         </c:otherwise>
                     </c:choose>
-                    <a class="navigation_link simple" href="controller?command=logOut">
+                    <a class="navigation_link simple" href="${pageContext.request.contextPath}/account/logOut">
                         <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
                         <span>${log_out_link}</span>
                     </a>
@@ -51,9 +51,9 @@
                         ${sessionScope.locale.language} <i class="fa fa-caret-down" aria-hidden="true"></i>
                     </a>
                     <div id="dropdown">
-                        <a class="navigation_link" href="controller?command=setLocale&locale=en&country=US">EN</a>
-                        <a class="navigation_link" href="controller?command=setLocale&locale=ru&country=RU">RU</a>
-                        <a class="navigation_link" href="controller?command=setLocale&locale=be&country=BY">BE</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=en&country=US">EN</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=ru&country=RU">RU</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=be&country=BY">BE</a>
                     </div>
                 </div>
             </div>
