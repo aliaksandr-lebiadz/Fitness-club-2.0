@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:setLocale scope="page" value="${sessionScope.locale}"/>
+<fmt:setLocale scope="session" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="error_page.">
-    <fmt:message key="title" var="title"/>
-    <fmt:message key="error" var="error"/>
+    <fmt:message key="404.title" var="title"/>
+    <fmt:message key="404.error" var="error"/>
     <fmt:message key="button.home" var="home_button"/>
 </fmt:bundle>
 
@@ -23,7 +23,7 @@
         <div id="intro"></div>
         <div id="error">
             <form id="error-form" action="${pageContext.request.contextPath}/home">
-                <span>${error}</span>
+                <div>${error}</div>
                 <input type="submit" id="home-button" value="${home_button}"/>
             </form>
         </div>
