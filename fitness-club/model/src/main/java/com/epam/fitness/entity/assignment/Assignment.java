@@ -4,6 +4,7 @@ import com.epam.fitness.entity.Identifiable;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class Assignment implements Identifiable, Serializable {
 
@@ -85,5 +86,19 @@ public class Assignment implements Identifiable, Serializable {
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Assignment that = (Assignment) o;
+        return orderId == that.orderId &&
+                amountOfSets == that.amountOfSets &&
+                amountOfReps == that.amountOfReps &&
+                Objects.equals(id, that.id) &&
+                workoutDate.equals(that.workoutDate) &&
+                exercise.equals(that.exercise) &&
+                status == that.status;
     }
 }

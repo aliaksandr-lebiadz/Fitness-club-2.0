@@ -3,6 +3,7 @@ package com.epam.fitness.entity.assignment;
 import com.epam.fitness.entity.Identifiable;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Exercise implements Identifiable, Serializable {
 
@@ -33,4 +34,12 @@ public class Exercise implements Identifiable, Serializable {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Exercise exercise = (Exercise) o;
+        return Objects.equals(id, exercise.id) &&
+                Objects.equals(name, exercise.name);
+    }
 }
