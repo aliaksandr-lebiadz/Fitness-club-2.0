@@ -27,8 +27,6 @@ public class OrderController {
     private static final String ORDERS_PAGE = "orders";
     private static final String ORDERS_PAGE_URL = "/order/list";
     private static final String USER_ATTRIBUTE = "user";
-    private static final String ORDER_ID_PARAMETER = "order_id";
-    private static final String NUTRITION_TYPE_PARAMETER = "nutrition_type";
 
     private OrderService service;
     private OrderValidator validator;
@@ -49,7 +47,7 @@ public class OrderController {
     }
 
     @PostMapping("/feedback")
-    public String sendFeedback(@RequestParam(ORDER_ID_PARAMETER) int orderId,
+    public String sendFeedback(@RequestParam("order_id") int orderId,
                                @RequestParam String feedback)
             throws ServiceException, ValidationException{
         if(!validator.isFeedbackValid(feedback)){
@@ -60,8 +58,8 @@ public class OrderController {
     }
 
     @PostMapping("/setNutrition")
-    public String setNutrition(@RequestParam(NUTRITION_TYPE_PARAMETER) String nutritionTypeValue,
-                               @RequestParam(ORDER_ID_PARAMETER) int orderId,
+    public String setNutrition(@RequestParam("nutrition_type") String nutritionTypeValue,
+                               @RequestParam("order_id") int orderId,
                                HttpServletRequest request)
             throws ServiceException {
         NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);

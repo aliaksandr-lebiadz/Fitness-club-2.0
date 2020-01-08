@@ -26,7 +26,6 @@ public class TrainerController {
     private static final String CLIENTS_ATTRIBUTE = "clients";
     private static final String EXERCISES_ATTRIBUTE = "exercises";
     private static final String CLIENT_ORDERS_ATTRIBUTE = "client_orders";
-    private static final String CLIENT_ID_PARAMETER = "client_id";
 
     private UserService userService;
     private OrderService orderService;
@@ -42,7 +41,7 @@ public class TrainerController {
 
     @GetMapping("/clients")
     public String getTrainerClientsPage(
-            @RequestParam(value = CLIENT_ID_PARAMETER) Optional<Integer> optionalClientId,
+            @RequestParam("client_id") Optional<Integer> optionalClientId,
             HttpSession session,
             Model model){
         User trainer = (User)session.getAttribute(USER_ATTRIBUTE);

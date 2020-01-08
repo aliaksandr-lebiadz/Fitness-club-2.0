@@ -10,6 +10,7 @@ import com.epam.fitness.validator.api.AssignmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,12 +21,6 @@ import java.util.Date;
 @RequestMapping("/assignmentOperations")
 public class AssignmentOperationsController {
 
-    private static final String ORDER_ID_PARAMETER = "order_id";
-    private static final String ASSIGNMENT_ID_PARAMETER = "assignment_id";
-    private static final String EXERCISE_SELECT_PARAMETER = "exercise_select";
-    private static final String WORKOUT_DATE_PARAMETER = "date";
-    private static final String AMOUNT_OF_SETS_PARAMETER = "amount_of_sets";
-    private static final String AMOUNT_OF_REPS_PARAMETER = "amount_of_reps";
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     private AssignmentService service;
@@ -37,15 +32,14 @@ public class AssignmentOperationsController {
         this.validator = validator;
     }
 
-    @RequestMapping("/add")
-    public String add(@RequestParam(AMOUNT_OF_SETS_PARAMETER) int amountOfSets,
-                      @RequestParam(AMOUNT_OF_REPS_PARAMETER) int amountOfReps,
-                      @RequestParam(WORKOUT_DATE_PARAMETER)
+    @PostMapping("/add")
+    public String add(@RequestParam("amount_of_sets") int amountOfSets,
+                      @RequestParam("amount_of_reps") int amountOfReps,
+                      @RequestParam("date")
                       @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
-                      @RequestParam(EXERCISE_SELECT_PARAMETER) int exerciseId,
-                      @RequestParam(ORDER_ID_PARAMETER) int orderId,
-                      HttpServletRequest request)
-            throws ServiceException, ValidationException {
+                      @RequestParam("exercise_select") int exerciseId,
+                      @RequestParam("order_id") int orderId,
+                      HttpServletRequest request) throws ValidationException {
         validateAssignmentParameters(amountOfSets, amountOfReps, workoutDate);
         Exercise exercise = new Exercise(exerciseId);
         Assignment assignment = new Assignment(orderId, exercise, amountOfSets, amountOfReps, workoutDate);
@@ -54,13 +48,13 @@ public class AssignmentOperationsController {
         return ControllerUtils.createRedirect(currentPage);
     }
 
-    @RequestMapping("/change")
-    public String change(@RequestParam(AMOUNT_OF_SETS_PARAMETER) int amountOfSets,
-                         @RequestParam(AMOUNT_OF_REPS_PARAMETER) int amountOfReps,
-                         @RequestParam(WORKOUT_DATE_PARAMETER)
-                         @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
-                         @RequestParam(EXERCISE_SELECT_PARAMETER) int exerciseId,
-                         @RequestParam(ASSIGNMENT_ID_PARAMETER) int assignmentId,
+    @PostMapping("/change")
+    public String change(@RequestParam("amount_of_sets") int amountOfSets,
+                         @RequestParam("amount_of_reps") int amountOfReps,
+                         @RequestParam("date")
+                             @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
+                         @RequestParam("exercise_select") int exerciseId,
+                         @RequestParam("assignment_id") int assignmentId,
                          HttpServletRequest request)
             throws ServiceException, ValidationException {
         validateAssignmentParameters(amountOfSets, amountOfReps, workoutDate);

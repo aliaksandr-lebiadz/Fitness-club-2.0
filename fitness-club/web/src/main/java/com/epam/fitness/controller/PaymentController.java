@@ -19,9 +19,6 @@ public class PaymentController {
 
     private static final String ORDERS_PAGE_URL = "/order/list";
     private static final String USER_ATTRIBUTE = "user";
-    private static final String MEMBERSHIP_SELECT_PARAMETER = "membership_select";
-    private static final String CARD_NUMBER_PARAMETER = "card_number";
-    private static final String VALID_THRU_PARAMETER = "valid_thru";
 
     private OrderService service;
     private PaymentValidator validator;
@@ -33,10 +30,10 @@ public class PaymentController {
     }
 
     @PostMapping("/getMembership")
-    public String getMembership(@RequestParam(CARD_NUMBER_PARAMETER) String cardNumber,
-                                @RequestParam(VALID_THRU_PARAMETER) String validThru,
+    public String getMembership(@RequestParam("card_number") String cardNumber,
+                                @RequestParam("valid_thru") String validThru,
                                 @RequestParam String cvv,
-                                @RequestParam(MEMBERSHIP_SELECT_PARAMETER) int membershipId,
+                                @RequestParam("membership_select") int membershipId,
                                 HttpSession session)
             throws ServiceException, ValidationException {
 

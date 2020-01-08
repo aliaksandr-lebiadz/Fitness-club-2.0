@@ -16,12 +16,12 @@ public class LocaleController {
     private static final String LOCALE_ATTRIBUTE = "locale";
 
     @RequestMapping("/change")
-    public String changeLocale(@RequestParam String locale,
+    public String changeLocale(@RequestParam String language,
                                @RequestParam String country,
                                HttpServletRequest request){
-        Locale localeToSet = new Locale(locale, country);
+        Locale locale = new Locale(language, country);
         HttpSession session = request.getSession();
-        session.setAttribute(LOCALE_ATTRIBUTE, localeToSet);
+        session.setAttribute(LOCALE_ATTRIBUTE, locale);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
     }

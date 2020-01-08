@@ -15,11 +15,13 @@ public class SimplePagesController {
     private static final String GET_MEMBERSHIP_PAGE = "get_membership";
     private static final String HOME_PAGE = "home";
     private static final String LOGIN_PAGE = "login";
+    private static final String ERROR_PAGE = "error_page";
+    private static final String ERROR_PAGE_404 = "404_error_page";
 
     private GymMembershipService gymMembershipService;
 
     @Autowired
-    private SimplePagesController(GymMembershipService gymMembershipService){
+    public SimplePagesController(GymMembershipService gymMembershipService){
         this.gymMembershipService = gymMembershipService;
     }
 
@@ -38,6 +40,16 @@ public class SimplePagesController {
         List<GymMembership> gymMemberships = gymMembershipService.getAll();
         model.addAttribute(gymMemberships);
         return GET_MEMBERSHIP_PAGE;
+    }
+
+    @GetMapping("/error")
+    public String getErrorPage(){
+        return ERROR_PAGE;
+    }
+
+    @GetMapping("/error404")
+    public String get404ErrorPage(){
+        return ERROR_PAGE_404;
     }
 
 }

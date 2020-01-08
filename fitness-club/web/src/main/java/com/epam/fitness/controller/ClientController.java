@@ -23,7 +23,6 @@ public class ClientController {
 
     private static final String CLIENTS_PAGE = "clients";
     private static final String CLIENTS_PAGE_URL = "/client/list";
-    private static final String USER_ID_PARAMETER = "user_id";
 
     private UserService userService;
     private UserValidator userValidator;
@@ -43,7 +42,7 @@ public class ClientController {
     }
 
     @PostMapping("/setDiscount")
-    public String setClientDiscount(@RequestParam(USER_ID_PARAMETER) int userId,
+    public String setClientDiscount(@RequestParam("user_id") int userId,
                                     @RequestParam int discount)
             throws ServiceException, ValidationException{
         if(!userValidator.isDiscountValid(discount)){
