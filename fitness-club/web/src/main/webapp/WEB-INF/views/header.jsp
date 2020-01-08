@@ -51,9 +51,9 @@
                         ${sessionScope.locale.language} <i class="fa fa-caret-down" aria-hidden="true"></i>
                     </a>
                     <div id="dropdown">
-                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=en&country=US">EN</a>
-                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=ru&country=RU">RU</a>
-                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?locale=be&country=BY">BE</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?language=en&country=US">EN</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?language=ru&country=RU">RU</a>
+                        <a class="navigation_link" href="${pageContext.request.contextPath}/locale/change?language=be&country=BY">BE</a>
                     </div>
                 </div>
             </div>
