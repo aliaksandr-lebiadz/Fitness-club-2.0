@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserService {
 
     void setUserDiscount(int id, int discount) throws ServiceException;
-    Optional<User> login(String email, String password);
     List<User> findUsersByTrainerId(int trainerId);
     List<User> getAllClients();
+    Optional<User> findUserByEmail(String email);
 }
