@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,12 +50,14 @@ public class OrderControllerTest extends AbstractControllerTest{
 
     @Autowired
     private OrderService service;
-
     @Autowired
     private OrderValidator validator;
+    @Autowired
+    private ControllerUtils utils;
 
     @Before
     public void createMocks() throws ServiceException {
+        when(utils.getCurrentUser()).thenReturn(USER);
         when(service.getOrdersByClientId(CLIENT_ID)).thenReturn(EXPECTED_ORDERS);
         when(validator.isFeedbackValid(VALID_FEEDBACK)).thenReturn(true);
         when(validator.isFeedbackValid(INVALID_FEEDBACK)).thenReturn(false);
@@ -63,59 +66,113 @@ public class OrderControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetOrdersPage() throws Exception{
-        final String userAttribute = "user";
+    @WithMockUser(authorities = "CLIENT")
+    public void testGetOrdersPageWhenUserIsAuthorizedAsClient() throws Exception{
+        //given
         final String orderListAttribute = "orderList";
 
-        mockMvc.perform(get(ORDERS_PAGE_REQUEST)
-                .sessionAttr(userAttribute, USER))
+        //when
+        mockMvc.perform(get(ORDERS_PAGE_REQUEST))
                 .andExpect(status().isOk())
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists(orderListAttribute))
                 .andExpect(model().attribute(orderListAttribute, EXPECTED_ORDERS))
                 .andExpect(view().name(ORDERS_PAGE_VIEW_NAME));
 
+        //then
         verify(service, times(1)).getOrdersByClientId(CLIENT_ID);
+        verify(utils, times(1)).getCurrentUser();
     }
 
     @Test
-    public void testFeedbackWhenValidFeedbackSupplied() throws Exception{
+    @WithMockUser(authorities = { "TRAINER", "ADMIN"} )
+    public void testGetOrdersPageShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsClient() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(get(ORDERS_PAGE_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = "CLIENT")
+    public void testFeedbackWhenValidFeedbackSuppliedAndUserIsAuthorizedAsClient() throws Exception{
+        //given
+
+        //when
         mockMvc.perform(post(FEEDBACK_REQUEST)
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
                 .param(FEEDBACK_PARAMETER, VALID_FEEDBACK))
                 .andExpect(redirectedUrl(ORDERS_PAGE_REQUEST));
 
+        //then
         verify(service, times(1)).updateFeedbackById(ORDER_ID, VALID_FEEDBACK);
         verify(validator, times(1)).isFeedbackValid(VALID_FEEDBACK);
     }
 
     @Test
-    public void testFeedbackWhenInvalidFeedbackSupplied() throws Exception{
+    @WithMockUser(authorities = "CLIENT")
+    public void testFeedbackWhenInvalidFeedbackSuppliedAndUserIsAuthorizedAsClient() throws Exception{
+        //given
+
+        //when
         mockMvc.perform(post(FEEDBACK_REQUEST)
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
                 .param(FEEDBACK_PARAMETER, INVALID_FEEDBACK))
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
 
+        //then
         verify(validator, times(1)).isFeedbackValid(INVALID_FEEDBACK);
         verifyNoInteractions(service);
     }
 
     @Test
-    public void testSetNutrition() throws Exception{
+    @WithMockUser(authorities = { "TRAINER", "ADMIN" } )
+    public void testFeedbackShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsClient() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(FEEDBACK_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = "TRAINER")
+    public void testSetNutritionWhenUserIsAuthorizedAsTrainer() throws Exception{
+        //given
         final String nutritionTypeParameter = "nutrition_type";
+
+        //when
         mockMvc.perform(post(SET_NUTRITION_REQUEST)
                 .param(nutritionTypeParameter, NUTRITION_TYPE.getValue())
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
                 .header(REFERER_HEADER, CURRENT_PAGE))
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
+        //then
         verify(service, times(1)).updateNutritionById(ORDER_ID, NUTRITION_TYPE);
+    }
+
+    @Test
+    @WithMockUser(authorities = { "CLIENT", "ADMIN" } )
+    public void testSetNutritionShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsTrainer() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(SET_NUTRITION_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
     }
 
     @After
     public void verifyMocks(){
-        verifyNoMoreInteractions(service, validator);
-        reset(service, validator);
+        verifyNoMoreInteractions(service, validator, utils);
+        reset(service, validator, utils);
     }
 
 }
