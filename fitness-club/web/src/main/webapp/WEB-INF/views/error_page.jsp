@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:setLocale scope="session" value="${sessionScope.locale}"/>
+<fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="error_page.">
     <fmt:message key="title" var="title"/>

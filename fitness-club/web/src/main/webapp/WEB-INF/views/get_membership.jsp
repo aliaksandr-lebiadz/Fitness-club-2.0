@@ -36,18 +36,17 @@
         <div id="disable-div"></div>
 
         <div id="form-container">
-            <c:set var="user" scope="page" value="${sessionScope.user}"/>
             <span id="order-title">${form_title}</span>
             <hr/>
-            <c:if test="${user.discount gt 0}">
-                <span id="discount-message">${discount_message_first} ${user.discount} ${discount_message_second}</span>
+            <c:if test="${discount gt 0}">
+                <span id="discount-message">${discount_message_first} ${discount} ${discount_message_second}</span>
                 <hr/>
             </c:if>
             <label for="membership-select-id">${label}</label>
             <div class="select-style">
                 <select name="membership_select" id="membership-select-id">
                     <c:forEach items="${gymMembershipList}" var="item">
-                        <c:set var="current_price" scope="page" value="${item.price*(100-user.discount)/100}"/>
+                        <c:set var="current_price" scope="page" value="${item.price*(100-discount)/100}"/>
                         <option value="${item.id}">
                                 ${item.monthsAmount} ${choice} (${current_price}BYN)
                         </option>

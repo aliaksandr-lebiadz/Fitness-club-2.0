@@ -71,7 +71,7 @@
         <c:if test="${fn:length(orderList) eq 0}">
             <div id="no-orders-container">
                 <p>${zero_orders}</p>
-                <form id="no-orders-form" action="${pageContext.request.contextPath}/client/order">
+                <form id="no-orders-form" action="${pageContext.request.contextPath}/order">
                     <input type="submit" class="custom-button" id="buy-membership-button" value="${buy_membership_button}"/>
                 </form>
             </div>
