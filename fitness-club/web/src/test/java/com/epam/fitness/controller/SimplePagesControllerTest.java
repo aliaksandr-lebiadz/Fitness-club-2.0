@@ -31,8 +31,6 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
     private static final String GET_MEMBERSHIP_PAGE_VIEW_NAME = "get_membership";
     private static final String ERROR_PAGE_URL = "/error";
     private static final String ERROR_PAGE_VIEW_NAME = "error_page";
-    private static final String ERROR_PAGE_404_URL = "/error404";
-    private static final String ERROR_PAGE_404_VIEW_NAME = "404_error_page";
 
     private static final List<GymMembership> EXPECTED_GYM_MEMBERSHIPS = Arrays.asList(
             new GymMembership(1, 1, BigDecimal.valueOf(40.21)),
@@ -138,18 +136,6 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
         mockMvc.perform(get(ERROR_PAGE_URL))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ERROR_PAGE_VIEW_NAME));
-
-        //then
-    }
-
-    @Test
-    public void testGet404ErrorPage() throws Exception{
-        //given
-
-        //when
-        mockMvc.perform(get(ERROR_PAGE_404_URL))
-                .andExpect(status().isOk())
-                .andExpect(view().name(ERROR_PAGE_404_VIEW_NAME));
 
         //then
     }
