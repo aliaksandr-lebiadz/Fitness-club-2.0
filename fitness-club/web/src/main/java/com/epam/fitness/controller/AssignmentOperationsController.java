@@ -9,6 +9,7 @@ import com.epam.fitness.utils.CurrentPageGetter;
 import com.epam.fitness.validator.api.AssignmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class AssignmentOperationsController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('TRAINER')")
     public String add(@RequestParam("amount_of_sets") int amountOfSets,
                       @RequestParam("amount_of_reps") int amountOfReps,
                       @RequestParam("date")
@@ -49,6 +51,7 @@ public class AssignmentOperationsController {
     }
 
     @PostMapping("/change")
+    @PreAuthorize("hasAuthority('TRAINER') or hasAuthority('CLIENT')")
     public String change(@RequestParam("amount_of_sets") int amountOfSets,
                          @RequestParam("amount_of_reps") int amountOfReps,
                          @RequestParam("date")

@@ -9,6 +9,7 @@ import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -40,6 +40,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('CLIENT') or hasAuthority('TRAINER')")
     public String getAssignmentsPage(@RequestParam("order_id") int orderId,
                                       Model model) throws ServiceException{
 
@@ -53,6 +54,7 @@ public class AssignmentController {
     }
 
     @PostMapping("/setStatus")
+    @PreAuthorize("hasAuthority('CLIENT') or hasAuthority('TRAINER')")
     public String setStatus(@RequestParam("assignment_id") int assignmentId,
                             @RequestParam("assignment_action") String assignmentAction,
                             HttpServletRequest request)
