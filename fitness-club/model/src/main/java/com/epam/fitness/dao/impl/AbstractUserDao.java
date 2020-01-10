@@ -12,8 +12,6 @@ import java.util.Optional;
 public abstract class AbstractUserDao extends AbstractDao<User> implements UserDao {
 
     private static final String USER_TABLE = "fitness_user";
-    private static final String FIND_USER_BY_EMAIL_AND_PASSWORD_QUERY =
-            "SELECT * FROM fitness_user WHERE email = ? AND password = ?";
     private static final String FIND_USERS_BY_TRAINER_ID_QUERY =
             "SELECT DISTINCT u.id, email, password, role, discount, first_name, second_name " +
                     "FROM fitness_user AS u " +
@@ -21,14 +19,11 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
                     "WHERE o.trainer_id = ?";
     private static final String GET_ALL_CLIENTS = "" +
             "SELECT * FROM fitness_user WHERE role = 'client'";
+    private static final String FIND_USER_BY_EMAIL_QUERY =
+            "SELECT * FROM fitness_user WHERE email = ?";
 
     public AbstractUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper){
         super(jdbcTemplate, rowMapper);
-    }
-
-    @Override
-    public Optional<User> findUserByEmailAndPassword(String email, String password) {
-        return executeForSingleResult(FIND_USER_BY_EMAIL_AND_PASSWORD_QUERY, email, password);
     }
 
     @Override
@@ -39,6 +34,11 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
     @Override
     public List<User> getAllClients() {
         return executeQuery(GET_ALL_CLIENTS);
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email){
+        return executeForSingleResult(FIND_USER_BY_EMAIL_QUERY, email);
     }
 
     @Override

@@ -14,16 +14,6 @@ import java.util.Optional;
 public interface UserDao extends Dao<User> {
 
     /**
-     * <p>Finds a user with the given email and password.</p>
-     *
-     * @param email a user's email
-     * @param password a user's password
-     * @return optional of the user when the user with
-     * given email and password is found and empty optional otherwise
-     */
-    Optional<User> findUserByEmailAndPassword(String email, String password);
-
-    /**
      * <p>Finds users with the given trainer id.</p>
      *
      * @param trainerId trainer's id
@@ -37,4 +27,13 @@ public interface UserDao extends Dao<User> {
      * @return a list of found clients
      */
     List<User> getAllClients();
+
+    /**
+     * <p>Finds a user with the given email.</p>
+     *
+     * @param email a user's email
+     * @return optional of the user when the user with
+     * the given email is found and empty optional otherwise
+     */
+    Optional<User> findUserByEmail(String email);
 }
