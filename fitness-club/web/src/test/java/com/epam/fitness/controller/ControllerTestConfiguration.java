@@ -70,4 +70,10 @@ public class ControllerTestConfiguration {
         return mock(PaymentValidator.class);
     }
 
+    @Bean
+    @Primary
+    public ControllerUtils controllerUtils(){
+        return mock(ControllerUtils.class);
+    }
+
 }
