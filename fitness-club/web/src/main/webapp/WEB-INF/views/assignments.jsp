@@ -4,6 +4,7 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="fc" uri="fitness-club" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 <fmt:setLocale scope="session" value="${sessionScope.locale}"/>
 
@@ -62,18 +63,18 @@
 
         <c:if test="${fn:length(assignmentList) eq 0}">
             <div id="no-assignments-container">
-                <c:if test="${sessionScope.user.role eq 'CLIENT'}">
+                <sec:authorize access="hasAuthority('CLIENT')">
                     <p>${zero_assignments}</p>
                     <form id="no-assignments-form" action="${pageContext.request.contextPath}/order/list">
                         <input type="submit" class="custom-button" id="orders-button" value="${orders_button}"/>
                     </form>
-                </c:if>
-                <c:if test="${sessionScope.user.role ne 'CLIENT'}">
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TRAINER')">
                     <p>${zero_assignments_by_trainer}</p>
                     <form id="no-assignments-form" action="${pageContext.request.contextPath}/trainer/clients">
                         <input type="submit" class="custom-button" id="clients-button" value="${clients_button}"/>
                     </form>
-                </c:if>
+                </sec:authorize>
             </div>
         </c:if>
         <c:if test="${fn:length(assignmentList) ne 0}">
@@ -103,11 +104,11 @@
                     <hr>
                     <input type="hidden" name="assignment_id" class="hidden-id"/>
                     <input type="hidden" name="assignment_action" id="hidden-action"/>
-                    <c:if test="${sessionScope.user.role eq 'CLIENT'}">
+                    <sec:authorize access="hasAuthority('CLIENT')">
                         <input type="button" class="custom-button action-button" value="${accept_button}"
                                onclick="$('#hidden-action').val('accept');
                                if($('.hidden-id').val() !== ''){ $('#assignment-form').submit();}">
-                    </c:if>
+                    </sec:authorize>
                     <input type="button" class="custom-button action-button" value="${change_button}"
                            onclick="showPopUp('#change-assignment-popup')">
                     <input type="button" class="custom-button action-button" value="${cancel_button}"

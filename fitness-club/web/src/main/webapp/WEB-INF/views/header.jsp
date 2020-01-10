@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setLocale scope="page" value="${sessionScope.locale}"/>
 
 <fmt:bundle basename="pages_content" prefix="header.">
@@ -26,26 +27,23 @@
             <div id="logo">FitnessClub</div>
 
             <div id="navigation">
-                <c:set var="user" scope="page" value="${sessionScope.user}"/>
-                <c:if test="${not empty user}">
+                <sec:authorize access="isAuthenticated()">
                     <a class="navigation_link simple" href="${pageContext.request.contextPath}/home">${home_link}</a>
-                    <c:choose>
-                        <c:when test="${user.role eq 'ADMIN'}">
-                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/client/list">${clients_link}</a>
-                        </c:when>
-                        <c:when test="${user.role eq 'TRAINER'}">
-                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/trainer/clients">${my_clients_link}</a>
-                        </c:when>
-                        <c:otherwise>
-                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/order">${get_membership_link}</a>
-                            <a class="navigation_link simple" href="${pageContext.request.contextPath}/order/list">${my_orders_link}</a>
-                        </c:otherwise>
-                    </c:choose>
-                    <a class="navigation_link simple" href="${pageContext.request.contextPath}/account/logOut">
+                    <sec:authorize access="hasAuthority('ADMIN')">
+                        <a class="navigation_link simple" href="${pageContext.request.contextPath}/client/list">${clients_link}</a>
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('CLIENT')">
+                        <a class="navigation_link simple" href="${pageContext.request.contextPath}/order">${get_membership_link}</a>
+                        <a class="navigation_link simple" href="${pageContext.request.contextPath}/order/list">${my_orders_link}</a>
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('TRAINER')">
+                        <a class="navigation_link simple" href="${pageContext.request.contextPath}/trainer/clients">${my_clients_link}</a>
+                    </sec:authorize>
+                    <a class="navigation_link simple" href="${pageContext.request.contextPath}/logOut">
                         <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
                         <span>${log_out_link}</span>
                     </a>
-                </c:if>
+                </sec:authorize>
                 <div id="switcher">
                     <a href="javascript:void(0)" class="navigation_link switcher_link">
                         ${sessionScope.locale.language} <i class="fa fa-caret-down" aria-hidden="true"></i>
