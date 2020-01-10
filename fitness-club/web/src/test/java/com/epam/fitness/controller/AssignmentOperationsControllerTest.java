@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -48,13 +49,11 @@ public class AssignmentOperationsControllerTest extends AbstractControllerTest {
 
     @Autowired
     private AssignmentService service;
-
     @Autowired
     private AssignmentValidator validator;
 
     @Before
     public void createMocks() throws ServiceException {
-
         when(validator.isAmountOfRepsValid(VALID_AMOUNT_OF_REPS)).thenReturn(true);
         when(validator.isAmountOfSetsValid(VALID_AMOUNT_OF_SETS)).thenReturn(true);
         when(validator.isWorkoutDateValid(VALID_WORKOUT_DATE)).thenReturn(true);
@@ -67,18 +66,23 @@ public class AssignmentOperationsControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testAddWhenValidParametersSupplied() throws Exception{
+    @WithMockUser(authorities = "TRAINER")
+    public void testAddWhenValidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
+        //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_SETS));
         params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_REPS));
         params.add(WORKOUT_DATE_PARAMETER, VALID_WORKOUT_DATE_STR);
         params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
         params.add(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID));
+
+        //when
         mockMvc.perform(post(ADD_ASSIGNMENT_REQUEST)
                 .params(params)
                 .header(REFERER_HEADER, CURRENT_PAGE))
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
+        //then
         verify(validator, times(1)).isAmountOfRepsValid(VALID_AMOUNT_OF_REPS);
         verify(validator, times(1)).isAmountOfSetsValid(VALID_AMOUNT_OF_SETS);
         verify(validator, times(1)).isWorkoutDateValid(VALID_WORKOUT_DATE);
@@ -86,39 +90,73 @@ public class AssignmentOperationsControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testAddWhenInvalidParametersSupplied() throws Exception{
+    @WithMockUser(authorities = "TRAINER")
+    public void testAddWhenInvalidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
+        //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(INVALID_AMOUNT_OF_SETS));
         params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(INVALID_AMOUNT_OF_REPS));
         params.add(WORKOUT_DATE_PARAMETER, INVALID_WORKOUT_DATE_STR);
         params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
         params.add(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID));
+
+        //when
         mockMvc.perform(post(ADD_ASSIGNMENT_REQUEST)
                 .params(params))
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
 
+        //then
         verify(validator, times(1)).isAmountOfSetsValid(INVALID_AMOUNT_OF_SETS);
         verifyNoInteractions(service);
     }
 
     @Test
-    public void testChangeWhenValidParametersSupplied() throws Exception{
+    @WithMockUser(authorities = { "CLIENT", "ADMIN" } )
+    public void testAddShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsTrainer() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(ADD_ASSIGNMENT_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = { "CLIENT", "TRAINER" } )
+    public void testChangeWhenValidParametersSuppliedAndUserIsAuthorizedAsTrainerOrClient() throws Exception{
+        //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_SETS));
         params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_REPS));
         params.add(WORKOUT_DATE_PARAMETER, VALID_WORKOUT_DATE_STR);
         params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
         params.add(ASSIGNMENT_ID_PARAMETER, String.valueOf(ASSIGNMENT_ID));
+
+        //when
         mockMvc.perform(post(CHANGE_ASSIGNMENT_REQUEST)
                 .params(params)
                 .header(REFERER_HEADER, CURRENT_PAGE))
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
+        //then
         verify(validator, times(1)).isAmountOfRepsValid(VALID_AMOUNT_OF_REPS);
         verify(validator, times(1)).isAmountOfSetsValid(VALID_AMOUNT_OF_SETS);
         verify(validator, times(1)).isWorkoutDateValid(VALID_WORKOUT_DATE);
         verify(service, times(1)).updateById(ASSIGNMENT_ID,
                 new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
+    }
+
+    @Test
+    @WithMockUser(authorities = "ADMIN")
+    public void testChangeShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsTrainerOrClient() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(CHANGE_ASSIGNMENT_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
     }
 
     @After

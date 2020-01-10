@@ -10,6 +10,7 @@ import com.epam.fitness.service.api.ExerciseService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.sql.Date;
 import java.util.Arrays;
@@ -59,11 +60,15 @@ public class AssignmentControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetAssignmentsPage() throws Exception{
+    @WithMockUser(authorities = { "CLIENT", "TRAINER" } )
+    public void testGetAssignmentsPageWhenUserIsAuthorizedAsTrainerOrClient() throws Exception{
+        //given
         final String assignmentsAttribute = "assignmentList";
         final String nutritionTypeAttribute = "nutrition_type";
         final String exercisesAttribute = "exerciseList";
         final String orderIdParameter = "order_id";
+
+        //when
         mockMvc.perform(get(ASSIGNMENTS_PAGE_REQUEST)
                 .param(orderIdParameter, String.valueOf(ORDER_ID)))
                 .andExpect(status().isOk())
@@ -74,6 +79,7 @@ public class AssignmentControllerTest extends AbstractControllerTest{
                 .andExpect(model().attribute(exercisesAttribute, EXPECTED_EXERCISES))
                 .andExpect(view().name(ASSIGNMENTS_PAGE_VIEW_NAME));
 
+        //then
         verify(assignmentService, times(1)).getAllByOrderId(ORDER_ID);
         verify(assignmentService, times(1)).getNutritionTypeByOrderId(ORDER_ID);
         verify(exerciseService, times(1)).getAll();
@@ -81,25 +87,62 @@ public class AssignmentControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testSetStatusWhenValidActionSupplied() throws Exception{
+    @WithMockUser(authorities = "ADMIN")
+    public void testGetAssignmentsPageShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsClientOrTrainer()
+            throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(get(ASSIGNMENTS_PAGE_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = { "CLIENT", "TRAINER" } )
+    public void testSetStatusWhenValidActionSuppliedAndUserIsAuthorizedAsTrainerOrClient() throws Exception{
+        //given
         final String validAssignmentAction = "accept";
+
+        //when
         mockMvc.perform(post(SET_STATUS_REQUEST)
                 .param(ASSIGNMENT_ID_PARAMETER, String.valueOf(ASSIGNMENT_ID))
                 .param(ASSIGNMENT_ACTION_PARAMETER, validAssignmentAction)
                 .header(REFERER_HEADER, CURRENT_PAGE))
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
+        //then
         verify(assignmentService, times(1)).changeStatusById(ASSIGNMENT_ID, STATUS);
         verifyNoMoreInteractions(assignmentService);
     }
 
     @Test
-    public void testSetStatusWhenInvalidActionSupplied() throws Exception{
+    @WithMockUser(authorities = { "CLIENT", "TRAINER" } )
+    public void testSetStatusWhenInvalidActionSuppliedAndUserIsAuthorizedAsTrainerOrClient() throws Exception{
+        //given
         final String invalidAssignmentAction = "delete";
+
+        //when
         mockMvc.perform(post(SET_STATUS_REQUEST)
                 .param(ASSIGNMENT_ID_PARAMETER, String.valueOf(ASSIGNMENT_ID))
                 .param(ASSIGNMENT_ACTION_PARAMETER, invalidAssignmentAction))
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = "ADMIN")
+    public void testSetStatusShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsClientOrTrainer()
+            throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(SET_STATUS_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
     }
 
 }

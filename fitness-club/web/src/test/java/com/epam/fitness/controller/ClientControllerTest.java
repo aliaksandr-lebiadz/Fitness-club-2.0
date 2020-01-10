@@ -8,6 +8,7 @@ import com.epam.fitness.validator.api.UserValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,6 @@ public class ClientControllerTest extends AbstractControllerTest{
 
     @Autowired
     private UserService service;
-
     @Autowired
     private UserValidator validator;
 
@@ -48,7 +48,11 @@ public class ClientControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetClientsPage() throws Exception{
+    @WithMockUser(authorities = "ADMIN")
+    public void testGetClientsPageWhenUserIsAuthorizedAsAdmin() throws Exception{
+        //given
+
+        //when
         mockMvc.perform(get(CLIENTS_PAGE_REQUEST))
                 .andExpect(status().isOk())
                 .andExpect(model().size(1))
@@ -56,30 +60,65 @@ public class ClientControllerTest extends AbstractControllerTest{
                 .andExpect(model().attribute(CLIENTS_ATTRIBUTE, EXPECTED_CLIENTS))
                 .andExpect(view().name(CLIENTS_PAGE_VIEW_NAME));
 
+        //then
         verify(service, times(1)).getAllClients();
         verifyNoMoreInteractions(service);
     }
 
     @Test
+    @WithMockUser(authorities = { "CLIENT", "TRAINER"} )
+    public void testGetClientsShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsAdmin() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(get(CLIENTS_PAGE_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
+    @WithMockUser(authorities = "ADMIN")
     public void testSetClientDiscountShouldThrowExceptionWhenInvalidDiscountSupplied() throws Exception{
+        //given
+
+        //when
         mockMvc.perform(post(SET_DISCOUNT_REQUEST)
                 .param(USER_ID_PARAMETER, String.valueOf(USER_ID))
                 .param(DISCOUNT_PARAMETER, String.valueOf(INVALID_DISCOUNT)))
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
 
+        //then
         verify(validator, times(1)).isDiscountValid(INVALID_DISCOUNT);
         verifyNoMoreInteractions(validator);
     }
 
     @Test
-    public void testSetClientDiscountWhenValidDiscountSupplied() throws Exception{
+    @WithMockUser(authorities = "ADMIN")
+    public void testSetClientDiscountWhenValidDiscountSuppliedAndUserIsAuthorizedAsAdmin() throws Exception{
+        //given
+
+        //when
         mockMvc.perform(post(SET_DISCOUNT_REQUEST)
                 .param(USER_ID_PARAMETER, String.valueOf(USER_ID))
                 .param(DISCOUNT_PARAMETER, String.valueOf(VALID_DISCOUNT)))
                 .andExpect(redirectedUrl(CLIENTS_PAGE_URL));
 
+        //then
         verify(validator, times(1)).isDiscountValid(VALID_DISCOUNT);
         verify(service, times(1)).setUserDiscount(USER_ID, VALID_DISCOUNT);
         verifyNoMoreInteractions(service, validator);
+    }
+
+    @Test
+    @WithMockUser(authorities = { "CLIENT", "TRAINER" })
+    public void testSetClientDiscountShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsAdmin() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(post(SET_DISCOUNT_REQUEST))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
     }
 }
