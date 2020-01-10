@@ -1,6 +1,4 @@
-package com.epam.fitness.filter.impl;
-
-import com.epam.fitness.filter.AbstractFilter;
+package com.epam.fitness.filter;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -10,10 +8,13 @@ import java.io.IOException;
 import java.util.Locale;
 
 @WebFilter(filterName = "localeFilter", urlPatterns = {"/*"})
-public class LocaleFilter extends AbstractFilter {
+public class LocaleFilter implements Filter {
 
     private static final Locale DEFAULT_LOCALE = new Locale("en", "US");
     private static final String LOCALE_ATTRIBUTE = "locale";
+
+    @Override
+    public void init(FilterConfig filterConfig) {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
@@ -25,4 +26,7 @@ public class LocaleFilter extends AbstractFilter {
         }
         chain.doFilter(request, servletResponse);
     }
+
+    @Override
+    public void destroy() {}
 }
