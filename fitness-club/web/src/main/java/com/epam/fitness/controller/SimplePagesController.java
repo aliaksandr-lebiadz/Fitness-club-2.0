@@ -21,7 +21,6 @@ public class SimplePagesController{
     private static final String HOME_PAGE = "home";
     private static final String LOGIN_PAGE = "login";
     private static final String ERROR_PAGE = "error_page";
-    private static final String ERROR_PAGE_404 = "404_error_page";
     private static final String LOGIN_FAIL_PARAMETER = "login_fail";
     private static final String DISCOUNT_ATTRIBUTE = "discount";
 
@@ -64,11 +63,6 @@ public class SimplePagesController{
     @GetMapping("/error")
     public String getErrorPage(){
         return ERROR_PAGE;
-    }
-
-    @GetMapping("/error404")
-    public String get404ErrorPage(){
-        return ERROR_PAGE_404;
     }
 
 }
