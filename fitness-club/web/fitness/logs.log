@@ -1,6 +1,0 @@
-2019-12-23 17:20:12.441 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - controller filter
-2019-12-23 17:20:12.459 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - controller filter
-2019-12-23 17:20:12.460 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - controller filter
-2019-12-23 17:22:29.911 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - false
-2019-12-23 17:22:29.917 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - true
-2019-12-23 17:22:29.920 [main] INFO  com.epam.fitness.filter.helper.CommandAccessController - true
