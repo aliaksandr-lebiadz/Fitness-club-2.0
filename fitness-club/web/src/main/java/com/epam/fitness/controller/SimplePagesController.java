@@ -2,7 +2,7 @@ package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.user.User;
-import com.epam.fitness.exception.ServiceException;
+import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +23,8 @@ public class SimplePagesController{
     private static final String ERROR_PAGE = "error_page";
     private static final String LOGIN_FAIL_PARAMETER = "login_fail";
     private static final String DISCOUNT_ATTRIBUTE = "discount";
+    private static final String GYM_MEMBERSHIPS_ATTRIBUTE = "gymMembershipList";
+    private static final String LOGIN_PAGE_URL = "/login";
 
     private GymMembershipService gymMembershipService;
     private ControllerUtils utils;
@@ -33,12 +35,23 @@ public class SimplePagesController{
         this.utils = utils;
     }
 
-    @GetMapping({"/", "/login"})
+    @GetMapping("/")
+    public String getIndexPage(){
+        Optional<User> userOptional = utils.getCurrentUser();
+        if(userOptional.isPresent()){
+            return HOME_PAGE;
+        } else{
+            return ControllerUtils.createRedirect(LOGIN_PAGE_URL);
+        }
+    }
+
+    @GetMapping("/login")
+    @PreAuthorize("isAnonymous()")
     public String getLoginPage(
-            @RequestParam("login_fail") Optional<Boolean> optionalFail,
+            @RequestParam("login_fail") Optional<String> optionalFail,
             Model model){
         if(optionalFail.isPresent()){
-            boolean fail = optionalFail.get();
+            String fail = optionalFail.get();
             model.addAttribute(LOGIN_FAIL_PARAMETER, fail);
         }
         return LOGIN_PAGE;
@@ -52,11 +65,13 @@ public class SimplePagesController{
 
     @GetMapping("/order")
     @PreAuthorize("hasAuthority('CLIENT')")
-    public String getOrderPage(Model model) throws ServiceException {
-        User client = utils.getCurrentUser();
+    public String getOrderPage(Model model) throws UserNotFoundException {
+        Optional<User> clientOptional = utils.getCurrentUser();
+        User client = clientOptional.orElseThrow(UserNotFoundException::new);
+
         model.addAttribute(DISCOUNT_ATTRIBUTE, client.getDiscount());
         List<GymMembership> gymMemberships = gymMembershipService.getAll();
-        model.addAttribute(gymMemberships);
+        model.addAttribute(GYM_MEMBERSHIPS_ATTRIBUTE, gymMemberships);
         return GET_MEMBERSHIP_PAGE;
     }
 

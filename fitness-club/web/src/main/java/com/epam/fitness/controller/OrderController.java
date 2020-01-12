@@ -4,6 +4,7 @@ import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
+import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/order")
@@ -26,6 +28,7 @@ public class OrderController {
 
     private static final String ORDERS_PAGE = "orders";
     private static final String ORDERS_PAGE_URL = "/order/list";
+    private static final String ORDERS_ATTRIBUTE = "orderList";
 
     private OrderService service;
     private OrderValidator validator;
@@ -40,11 +43,13 @@ public class OrderController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('CLIENT')")
-    public String getOrdersPage(Model model) throws ServiceException{
-        User user = utils.getCurrentUser();
+    public String getOrdersPage(Model model) throws UserNotFoundException{
+        Optional<User> userOptional = utils.getCurrentUser();
+        User user = userOptional.orElseThrow(UserNotFoundException::new);
+
         int id = user.getId();
         List<Order> orders = service.getOrdersByClientId(id);
-        model.addAttribute(orders);
+        model.addAttribute(ORDERS_ATTRIBUTE, orders);
         return ORDERS_PAGE;
     }
 

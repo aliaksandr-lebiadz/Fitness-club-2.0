@@ -3,7 +3,7 @@ package com.epam.fitness.controller;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
-import com.epam.fitness.exception.ServiceException;
+import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.service.api.UserService;
@@ -45,8 +45,10 @@ public class TrainerController {
     @PreAuthorize("hasAuthority('TRAINER')")
     public String getTrainerClientsPage(
             @RequestParam("client_id") Optional<Integer> optionalClientId, Model model)
-            throws ServiceException {
-        User trainer = utils.getCurrentUser();
+            throws UserNotFoundException {
+        Optional<User> trainerOptional = utils.getCurrentUser();
+        User trainer = trainerOptional.orElseThrow(UserNotFoundException::new);
+
         int trainerId = trainer.getId();
         if(optionalClientId.isPresent()){
             int clientId = optionalClientId.get();

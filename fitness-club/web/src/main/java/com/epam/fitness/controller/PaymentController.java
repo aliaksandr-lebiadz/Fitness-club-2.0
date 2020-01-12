@@ -2,6 +2,7 @@ package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
+import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.validator.api.PaymentValidator;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/payment")
@@ -35,10 +38,11 @@ public class PaymentController {
                                 @RequestParam("valid_thru") String validThru,
                                 @RequestParam String cvv,
                                 @RequestParam("membership_select") int membershipId)
-            throws ServiceException, ValidationException {
+            throws ServiceException, ValidationException, UserNotFoundException {
 
         validatePaymentParameters(cardNumber, validThru, cvv);
-        User user = utils.getCurrentUser();
+        Optional<User> userOptional = utils.getCurrentUser();
+        User user = userOptional.orElseThrow(UserNotFoundException::new);
         service.create(user, membershipId);
         return ControllerUtils.createRedirect(ORDERS_PAGE_URL);
     }
