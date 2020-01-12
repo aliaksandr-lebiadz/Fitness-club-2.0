@@ -10,7 +10,7 @@
     <description>Fitness club custom tag library</description>
 
     <tag>
-        <name>date-input</name>
+        <name>dateinput</name>
         <tag-class>com.epam.fitness.tag.date.DateInputTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
@@ -21,17 +21,6 @@
             <name>minDate</name>
             <required>true</required>
         </attribute>
-    </tag>
-
-    <tag>
-        <name>status-localizer</name>
-        <tag-class>com.epam.fitness.tag.localizer.AssignmentStatusLocalizerTag</tag-class>
-        <body-content>scriptless</body-content>
-    </tag>
-    <tag>
-        <name>nutrition-type-localizer</name>
-        <tag-class>com.epam.fitness.tag.localizer.NutritionTypeLocalizerTag</tag-class>
-        <body-content>scriptless</body-content>
     </tag>
 
 </taglib>
