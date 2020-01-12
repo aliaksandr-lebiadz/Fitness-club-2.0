@@ -22,6 +22,7 @@ public class ClientController {
 
     private static final String CLIENTS_PAGE = "clients";
     private static final String CLIENTS_PAGE_URL = "/client/list";
+    private static final String CLIENTS_ATTRIBUTE = "userList";
 
     private UserService service;
     private UserValidator validator;
@@ -36,7 +37,7 @@ public class ClientController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String getClientsPage(Model model){
         List<User> clients = service.getAllClients();
-        model.addAttribute(clients);
+        model.addAttribute(CLIENTS_ATTRIBUTE, clients);
         return CLIENTS_PAGE;
     }
 
