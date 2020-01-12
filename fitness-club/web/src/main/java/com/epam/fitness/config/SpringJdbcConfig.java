@@ -15,7 +15,7 @@ public class SpringJdbcConfig {
     private String driverName;
     @Value("${url}")
     private String url;
-    @Value("${user_name}")
+    @Value("${user}")
     private String username;
     @Value("${password}")
     private String password;
