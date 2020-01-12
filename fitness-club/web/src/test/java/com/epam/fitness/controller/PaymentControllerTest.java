@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,7 +45,7 @@ public class PaymentControllerTest extends AbstractControllerTest{
 
     @Before
     public void createMocks() throws ServiceException {
-        when(utils.getCurrentUser()).thenReturn(CLIENT);
+        when(utils.getCurrentUser()).thenReturn(Optional.of(CLIENT));
         when(validator.isCardNumberValid(VALID_CARD_NUMBER)).thenReturn(true);
         when(validator.isExpirationDateValid(VALID_EXPIRATION_DATE)).thenReturn(true);
         when(validator.isCvvValid(VALID_CVV)).thenReturn(true);

@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,7 +66,7 @@ public class TrainerControllerTest extends AbstractControllerTest{
         when(orderService.getClientOrdersWithTrainerId(CLIENT_ID, TRAINER_ID)).thenReturn(EXPECTED_ORDERS);
         when(exerciseService.getAll()).thenReturn(EXPECTED_EXERCISES);
         when(userService.findUsersByTrainerId(TRAINER_ID)).thenReturn(EXPECTED_CLIENTS);
-        when(utils.getCurrentUser()).thenReturn(TRAINER);
+        when(utils.getCurrentUser()).thenReturn(Optional.of(TRAINER));
     }
 
     @Test

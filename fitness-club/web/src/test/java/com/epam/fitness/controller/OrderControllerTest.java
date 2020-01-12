@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -57,7 +58,7 @@ public class OrderControllerTest extends AbstractControllerTest{
 
     @Before
     public void createMocks() throws ServiceException {
-        when(utils.getCurrentUser()).thenReturn(USER);
+        when(utils.getCurrentUser()).thenReturn(Optional.of(USER));
         when(service.getOrdersByClientId(CLIENT_ID)).thenReturn(EXPECTED_ORDERS);
         when(validator.isFeedbackValid(VALID_FEEDBACK)).thenReturn(true);
         when(validator.isFeedbackValid(INVALID_FEEDBACK)).thenReturn(false);
@@ -125,7 +126,6 @@ public class OrderControllerTest extends AbstractControllerTest{
 
         //then
         verify(validator, times(1)).isFeedbackValid(INVALID_FEEDBACK);
-        verifyNoInteractions(service);
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.ExerciseService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,6 @@ public class AssignmentControllerTest extends AbstractControllerTest{
 
     @Autowired
     private AssignmentService assignmentService;
-
     @Autowired
     private ExerciseService exerciseService;
 
@@ -83,7 +83,6 @@ public class AssignmentControllerTest extends AbstractControllerTest{
         verify(assignmentService, times(1)).getAllByOrderId(ORDER_ID);
         verify(assignmentService, times(1)).getNutritionTypeByOrderId(ORDER_ID);
         verify(exerciseService, times(1)).getAll();
-        verifyNoMoreInteractions(assignmentService, exerciseService);
     }
 
     @Test
@@ -114,7 +113,6 @@ public class AssignmentControllerTest extends AbstractControllerTest{
 
         //then
         verify(assignmentService, times(1)).changeStatusById(ASSIGNMENT_ID, STATUS);
-        verifyNoMoreInteractions(assignmentService);
     }
 
     @Test
@@ -143,6 +141,12 @@ public class AssignmentControllerTest extends AbstractControllerTest{
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
 
         //then
+    }
+
+    @After
+    public void verifyMocks(){
+        verifyNoMoreInteractions(assignmentService, exerciseService);
+        reset(assignmentService, exerciseService);
     }
 
 }

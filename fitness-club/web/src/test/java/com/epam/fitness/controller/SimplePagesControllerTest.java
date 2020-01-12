@@ -4,7 +4,6 @@ import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.service.api.GymMembershipService;
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -13,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,26 +65,48 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
         //given
 
         //when
-        mockMvc.perform(post(HOME_URL))
+        mockMvc.perform(get(HOME_URL))
                 .andExpect(redirectedUrl(ERROR_PAGE_URL));
 
         //then
     }
 
     @Test
-    public void testGetLoginPageWhenEmptyRequestSupplied() throws Exception{
+    @WithMockUser
+    public void testGetIndexPageWhenUserIsAuthorized() throws Exception{
         //given
+        when(utils.getCurrentUser()).thenReturn(Optional.of(USER));
 
         //when
         mockMvc.perform(get(EMPTY_URL))
                 .andExpect(status().isOk())
-                .andExpect(view().name(LOGIN_PAGE_VIEW_NAME));
+                .andExpect(view().name(HOME_PAGE_VIEW_NAME));
 
         //then
+        verify(utils, times(1)).getCurrentUser();
+        verifyNoMoreInteractions(utils);
+        reset(utils);
     }
 
     @Test
-    public void testGetLoginPageWhenLoginRequestSupplied() throws Exception{
+    @WithAnonymousUser
+    public void testGetIndexPageWhenUserIsAnonymous() throws Exception{
+        //given
+        when(utils.getCurrentUser()).thenReturn(Optional.empty());
+
+        //when
+        mockMvc.perform(get(EMPTY_URL))
+                .andExpect(redirectedUrl(LOGIN_URL));
+
+        //then
+        verify(utils, times(1)).getCurrentUser();
+        verifyNoMoreInteractions(utils);
+        reset(utils);
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void testGetLoginPageWhenUserIsAnonymous() throws Exception{
         //given
 
         //when
@@ -96,11 +118,23 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
     }
 
     @Test
+    @WithMockUser
+    public void testGetLoginPageShouldRedirectOnErrorPageWhenUserIsNotAnonymous() throws Exception{
+        //given
+
+        //when
+        mockMvc.perform(get(LOGIN_URL))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+    }
+
+    @Test
     @WithMockUser(authorities = "CLIENT")
     public void testGetOrderPageWhenUserIsAuthorizedAsClient() throws Exception{
         //given
+        when(utils.getCurrentUser()).thenReturn(Optional.of(USER));
         when(service.getAll()).thenReturn(EXPECTED_GYM_MEMBERSHIPS);
-        when(utils.getCurrentUser()).thenReturn(USER);
 
         //when
         mockMvc.perform(get(ORDER_URL))
@@ -114,6 +148,8 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
         //then
         verify(service, times(1)).getAll();
         verify(utils, times(1)).getCurrentUser();
+        verifyNoMoreInteractions(service, utils);
+        reset(utils);
     }
 
     @Test
@@ -138,11 +174,6 @@ public class SimplePagesControllerTest extends AbstractControllerTest{
                 .andExpect(view().name(ERROR_PAGE_VIEW_NAME));
 
         //then
-    }
-
-    @After
-    public void verifyMocks(){
-        verifyNoMoreInteractions(service, utils);
     }
 
 }
