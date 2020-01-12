@@ -43,7 +43,7 @@
             <select name="membership_select" id="membership-select-id">
                 <#list gymMembershipList as item>
                     <#assign current_price>${item.price*(100-discount)/100}</#assign>
-                    <option value="${item_index}">
+                    <option value="${item.id}">
                         ${item.monthsAmount} ${choice} (${current_price}BYN)
                     </option>
                 </#list>
