@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/assignment")
@@ -28,6 +29,9 @@ public class AssignmentController {
     private static final String NUTRITION_TYPE_ATTRIBUTE = "nutrition_type";
     private static final String ACCEPT_ACTION = "accept";
     private static final String CANCEL_ACTION = "cancel";
+    private static final String ORDERS_PAGE_URL = "/order/list";
+    private static final String ASSIGNMENTS_ATTRIBUTE = "assignmentList";
+    private static final String EXERCISES_ATTRIBUTE = "exerciseList";
 
     private AssignmentService assignmentService;
     private ExerciseService exerciseService;
@@ -41,15 +45,20 @@ public class AssignmentController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('CLIENT') or hasAuthority('TRAINER')")
-    public String getAssignmentsPage(@RequestParam("order_id") int orderId,
-                                      Model model) throws ServiceException{
-
-        List<Assignment> assignments = assignmentService.getAllByOrderId(orderId);
-        model.addAttribute(assignments);
-        NutritionType nutritionType = assignmentService.getNutritionTypeByOrderId(orderId);
-        model.addAttribute(NUTRITION_TYPE_ATTRIBUTE, nutritionType);
-        List<Exercise> exercises = exerciseService.getAll();
-        model.addAttribute(exercises);
+    public String getAssignmentsPage(
+            @RequestParam("order_id") Optional<Integer> optionalOrderId,
+            Model model) throws ServiceException{
+        if(optionalOrderId.isPresent()){
+            int orderId = optionalOrderId.get();
+            List<Assignment> assignments = assignmentService.getAllByOrderId(orderId);
+            model.addAttribute(ASSIGNMENTS_ATTRIBUTE, assignments);
+            NutritionType nutritionType = assignmentService.getNutritionTypeByOrderId(orderId);
+            model.addAttribute(NUTRITION_TYPE_ATTRIBUTE, nutritionType);
+            List<Exercise> exercises = exerciseService.getAll();
+            model.addAttribute(EXERCISES_ATTRIBUTE, exercises);
+        } else{
+            return ControllerUtils.createRedirect(ORDERS_PAGE_URL);
+        }
         return ASSIGNMENTS_PAGE;
     }
 
