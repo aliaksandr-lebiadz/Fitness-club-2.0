@@ -32,16 +32,15 @@ public class ControllerUtils {
         return FORWARD + page;
     }
 
-    public User getCurrentUser() throws ServiceException {
+    public Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if(!(principal instanceof UserDetails)){
+            return Optional.empty();
+        }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
-        Optional<User> userOptional = userService.findUserByEmail(email);
-        if(userOptional.isPresent()){
-            return userOptional.get();
-        } else{
-            throw new ServiceException("There is no user in the SecurityContext");
-        }
+        return userService.findUserByEmail(email);
     }
 
 }
