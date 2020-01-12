@@ -24,7 +24,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_PAGE_URL = "/login";
     private static final String LOGIN_PROCESSING_URL = "/doLogin";
     private static final String HOME_PAGE_URL = "/home";
-    private static final String LOGIN_FAILURE_URL = "/login?login_fail=true";
+    private static final String LOGIN_FAILURE_URL = "/login?login_fail";
     private static final String USERNAME_PARAMETER = "email";
     private static final String PASSWORD_PARAMETER = "password";
     private static final String LOG_OUT_URL = "/logOut";
