@@ -1,7 +1,6 @@
 package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.user.User;
-import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
