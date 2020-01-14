@@ -101,4 +101,9 @@ public class Assignment implements Identifiable, Serializable {
                 exercise.equals(that.exercise) &&
                 status == that.status;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderId, workoutDate, amountOfSets, amountOfReps, exercise, status);
+    }
 }

@@ -42,4 +42,9 @@ public class Exercise implements Identifiable, Serializable {
         return Objects.equals(id, exercise.id) &&
                 Objects.equals(name, exercise.name);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }
