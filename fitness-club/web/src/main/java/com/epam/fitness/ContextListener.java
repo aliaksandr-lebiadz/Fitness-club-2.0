@@ -25,7 +25,9 @@ public class ContextListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {}
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        //nothing to do
+    }
 
     private void setDataToApplicationScope(ServletContext servletContext) throws IOException{
         Properties properties = PropertiesUtils.getProperties(MAVEN_BUILD_PROPERTIES_FILE);
