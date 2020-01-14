@@ -1,6 +1,6 @@
-@media screen and (min-width: 1920px){
+@media screen and (min-width: 1440px){
     body #purchase-popup{
-        margin: 0 -17px;
+        margin: 0 0;
         height: 25%;
         min-width: 200px;
         width: 13%;
