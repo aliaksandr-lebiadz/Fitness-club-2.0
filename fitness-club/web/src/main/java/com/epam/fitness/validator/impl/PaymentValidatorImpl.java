@@ -14,8 +14,8 @@ public class PaymentValidatorImpl implements PaymentValidator {
     private static final String CARD_NUMBER_REGEXP = "\\d{16}";
     private static final String EXPIRATION_DATE_REGEXP = "((0[1-9])|(1[0-2]))/\\d{2}";
     private static final String CVV_REGEXP = "\\d{3}";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yy");
     private DateUtils dateUtils;
 
     public PaymentValidatorImpl(DateUtils dateUtils){
@@ -46,7 +46,7 @@ public class PaymentValidatorImpl implements PaymentValidator {
 
     private Date formatDate(String dateToFormat){
         try{
-            return DATE_FORMAT.parse(dateToFormat);
+            return dateFormat.parse(dateToFormat);
         } catch (ParseException ex){
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
