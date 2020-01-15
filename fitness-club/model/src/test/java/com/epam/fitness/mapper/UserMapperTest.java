@@ -5,10 +5,11 @@ import com.epam.fitness.entity.user.UserRole;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static org.mockito.Mockito.*;
 
 public class UserMapperTest {
 
@@ -35,15 +36,15 @@ public class UserMapperTest {
         UserRole role = UserRole.valueOf(userRoleValue.toUpperCase());
         User expected = new User(id, email, password, role, firstName, secondName, discount);
 
-        ResultSet resultSet = Mockito.mock(ResultSet.class);
-        Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
-        Mockito.when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        Mockito.when(resultSet.getString(EMAIL_COLUMN)).thenReturn(email);
-        Mockito.when(resultSet.getString(PASSWORD_COLUMN)).thenReturn(password);
-        Mockito.when(resultSet.getString(ROLE_COLUMN)).thenReturn(userRoleValue);
-        Mockito.when(resultSet.getString(FIRST_NAME_COLUMN)).thenReturn(firstName);
-        Mockito.when(resultSet.getString(SECOND_NAME_COLUMN)).thenReturn(secondName);
-        Mockito.when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(discount);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
+        when(resultSet.getString(EMAIL_COLUMN)).thenReturn(email);
+        when(resultSet.getString(PASSWORD_COLUMN)).thenReturn(password);
+        when(resultSet.getString(ROLE_COLUMN)).thenReturn(userRoleValue);
+        when(resultSet.getString(FIRST_NAME_COLUMN)).thenReturn(firstName);
+        when(resultSet.getString(SECOND_NAME_COLUMN)).thenReturn(secondName);
+        when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(discount);
 
         //when
         User actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());

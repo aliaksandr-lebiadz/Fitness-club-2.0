@@ -4,7 +4,6 @@ import com.epam.fitness.entity.assignment.Exercise;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,10 +24,10 @@ public class ExerciseMapperTest {
         final String name = "squat";
         Exercise expected = new Exercise(id, name);
 
-        ResultSet resultSet = Mockito.mock(ResultSet.class);
-        Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
-        Mockito.when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        Mockito.when(resultSet.getString(NAME_COLUMN)).thenReturn(name);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
+        when(resultSet.getString(NAME_COLUMN)).thenReturn(name);
 
         //when
         Exercise actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());

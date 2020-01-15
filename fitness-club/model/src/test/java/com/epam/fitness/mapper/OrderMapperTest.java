@@ -6,7 +6,6 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -52,16 +51,16 @@ public class OrderMapperTest {
                 .setNutritionType(nutritionType)
                 .build();
 
-        ResultSet resultSet = Mockito.mock(ResultSet.class);
-        Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
-        Mockito.when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        Mockito.when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(clientId);
-        Mockito.when(resultSet.getInt(TRAINER_ID_COLUMN)).thenReturn(trainerId);
-        Mockito.when(resultSet.getTimestamp(BEGIN_DATE_COLUMN)).thenReturn(beginDate);
-        Mockito.when(resultSet.getTimestamp(END_DATE_COLUMN)).thenReturn(endDate);
-        Mockito.when(resultSet.getString(FEEDBACK_COLUMN)).thenReturn(feedback);
-        Mockito.when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(price);
-        Mockito.when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(nutritionTypeValue);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
+        when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(clientId);
+        when(resultSet.getInt(TRAINER_ID_COLUMN)).thenReturn(trainerId);
+        when(resultSet.getTimestamp(BEGIN_DATE_COLUMN)).thenReturn(beginDate);
+        when(resultSet.getTimestamp(END_DATE_COLUMN)).thenReturn(endDate);
+        when(resultSet.getString(FEEDBACK_COLUMN)).thenReturn(feedback);
+        when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(price);
+        when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(nutritionTypeValue);
 
         //when
         Order actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());

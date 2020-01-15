@@ -6,7 +6,6 @@ import com.epam.fitness.entity.assignment.Exercise;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -42,16 +41,16 @@ public class AssignmentMapperTest {
         Assignment expected =
                 new Assignment(id, orderId, new Exercise(exerciseId, exerciseName), amountOfSets, amountOfReps, workoutDate, status);
 
-        ResultSet resultSet = Mockito.mock(ResultSet.class);
-        Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
-        Mockito.when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        Mockito.when(resultSet.getInt(ORDER_ID_COLUMN)).thenReturn(orderId);
-        Mockito.when(resultSet.getInt(EXERCISE_ID_COLUMN)).thenReturn(exerciseId);
-        Mockito.when(resultSet.getDate(WORKOUT_DATE_COLUMN)).thenReturn(workoutDate);
-        Mockito.when(resultSet.getInt(AMOUNT_OF_SETS_COLUMN)).thenReturn(amountOfSets);
-        Mockito.when(resultSet.getInt(AMOUNT_OF_REPS_COLUMN)).thenReturn(amountOfReps);
-        Mockito.when(resultSet.getString(EXERCISE_NAME_COLUMN)).thenReturn(exerciseName);
-        Mockito.when(resultSet.getString(STATUS_COLUMN)).thenReturn(statusValue);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
+        when(resultSet.getInt(ORDER_ID_COLUMN)).thenReturn(orderId);
+        when(resultSet.getInt(EXERCISE_ID_COLUMN)).thenReturn(exerciseId);
+        when(resultSet.getDate(WORKOUT_DATE_COLUMN)).thenReturn(workoutDate);
+        when(resultSet.getInt(AMOUNT_OF_SETS_COLUMN)).thenReturn(amountOfSets);
+        when(resultSet.getInt(AMOUNT_OF_REPS_COLUMN)).thenReturn(amountOfReps);
+        when(resultSet.getString(EXERCISE_NAME_COLUMN)).thenReturn(exerciseName);
+        when(resultSet.getString(STATUS_COLUMN)).thenReturn(statusValue);
 
         //when
         Assignment actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());
