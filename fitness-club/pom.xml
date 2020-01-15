@@ -12,6 +12,7 @@
         <module>service</module>
         <module>web</module>
         <module>model</module>
+        <module>jpa</module>
     </modules>
     <packaging>pom</packaging>
 
