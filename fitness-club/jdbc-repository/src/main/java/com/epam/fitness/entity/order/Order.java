@@ -1,6 +1,7 @@
 package com.epam.fitness.entity.order;
 
 import com.epam.fitness.entity.Identifiable;
+import com.epam.fitness.entity.user.User;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -79,12 +80,22 @@ public class Order implements Identifiable, Serializable {
             return this;
         }
 
-        public Builder setClientId(int clientId){
+        public Builder setClient(User client){
+            Order.this.clientId = client.getId();
+            return this;
+        }
+
+        public Builder setClient(int clientId){
             Order.this.clientId = clientId;
             return this;
         }
 
-        public Builder setTrainerId(int trainerId){
+        public Builder setTrainer(User trainer){
+            Order.this.trainerId = trainer.getId();
+            return this;
+        }
+
+        public Builder setTrainer(int trainerId){
             Order.this.trainerId = trainerId;
             return this;
         }
