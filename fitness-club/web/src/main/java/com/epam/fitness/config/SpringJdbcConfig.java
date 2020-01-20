@@ -8,20 +8,20 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
+@Lazy
 @PropertySource("classpath:database.properties")
 public class SpringJdbcConfig {
 
-    @Value("${driver_name}")
+    @Value("${database.driver_name}")
     private String driverName;
-    @Value("${url}")
+    @Value("${database.url}")
     private String url;
-    @Value("${user}")
+    @Value("${database.user}")
     private String username;
-    @Value("${password}")
+    @Value("${database.password}")
     private String password;
 
     @Bean
-    @Lazy
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverName);
@@ -32,7 +32,6 @@ public class SpringJdbcConfig {
     }
 
     @Bean
-    @Lazy
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(dataSource());
     }
