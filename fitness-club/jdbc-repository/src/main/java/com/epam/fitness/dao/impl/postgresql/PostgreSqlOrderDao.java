@@ -23,8 +23,7 @@ public class PostgreSqlOrderDao extends AbstractOrderDao {
 
     private static final String SAVE_ORDER_QUERY = "INSERT INTO client_order " +
             "(id, client_id, begin_date, end_date, price, feedback, nutrition_type, trainer_id) " +
-            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?::nutrition_type, " +
-            "(SELECT id FROM fitness_user WHERE role = 'trainer' ORDER BY RANDOM() LIMIT 1)) " +
+            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?::nutrition_type, ?) " +
             "ON CONFLICT(id) DO UPDATE SET " +
             "client_id = EXCLUDED.client_id," +
             "begin_date = EXCLUDED.begin_date," +
@@ -53,7 +52,8 @@ public class PostgreSqlOrderDao extends AbstractOrderDao {
                 convertToTimestamp(order.getEndDate()),
                 order.getPrice(),
                 order.getFeedback(),
-                (nutritionType != null ? nutritionType.getValue() : null)
+                (nutritionType != null ? nutritionType.getValue() : null),
+                order.getTrainerId()
         };
     }
 

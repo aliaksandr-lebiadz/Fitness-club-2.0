@@ -19,8 +19,7 @@ public class MySqlOrderDao extends AbstractOrderDao {
 
     private static final String SAVE_ORDER_QUERY = "INSERT INTO client_order " +
             "(id, client_id, begin_date, end_date, price, feedback, nutrition_type, trainer_id) " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, " +
-            "(SELECT id FROM fitness_user WHERE role = 'trainer' ORDER BY RAND() LIMIT 1)) " +
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?) " +
             "ON DUPLICATE KEY UPDATE " +
             "client_id = VALUES(client_id)," +
             "begin_date = VALUES(begin_date)," +
@@ -49,7 +48,8 @@ public class MySqlOrderDao extends AbstractOrderDao {
                 order.getEndDate(),
                 order.getPrice(),
                 order.getFeedback(),
-                (nutritionType != null ? nutritionType.getValue() : null)
+                (nutritionType != null ? nutritionType.getValue() : null),
+                order.getTrainerId()
         };
     }
 }
