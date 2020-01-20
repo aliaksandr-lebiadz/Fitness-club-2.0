@@ -6,16 +6,19 @@ import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface AssignmentService {
 
     NutritionType getNutritionTypeByOrderId(int orderId) throws ServiceException;
     void changeStatusById(int id, AssignmentStatus status) throws ServiceException;
     void updateById(int id, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate) throws ServiceException;
-    void create(Assignment assignment);
-    List<Assignment> getAllByOrderId(int orderId);
-    Optional<Assignment> findById(int id);
+
+    @Transactional
+    void create(int orderId, int exerciseId, int amountOfSets, int amountOfReps, Date workoutDate) throws ServiceException;
+
+    @Transactional
+    List<Assignment> getAllByOrderId(int orderId) throws ServiceException;
 }
