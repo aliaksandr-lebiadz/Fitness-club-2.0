@@ -1,4 +1,4 @@
-package com.epam.fitness.dao.impl;
+package com.epam.fitness.dao;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.Identifiable;
