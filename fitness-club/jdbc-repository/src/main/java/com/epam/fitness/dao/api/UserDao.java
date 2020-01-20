@@ -14,12 +14,11 @@ import java.util.Optional;
 public interface UserDao extends Dao<User> {
 
     /**
-     * <p>Finds users with the given trainer id.</p>
+     * <p>Finds users with the given trainer.</p>
      *
-     * @param trainerId trainer's id
-     * @return list of users
+     * @return list of clients
      */
-    List<User> findUsersByTrainerId(long trainerId);
+    List<User> findClientsOfTrainer(User trainer);
 
     /**
      * <p>Finds all clients.</p>
@@ -36,4 +35,6 @@ public interface UserDao extends Dao<User> {
      * the given email is found and empty optional otherwise
      */
     Optional<User> findUserByEmail(String email);
+
+    Optional<User> getRandomTrainer();
 }
