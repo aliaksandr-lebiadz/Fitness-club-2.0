@@ -1,5 +1,6 @@
 package com.epam.fitness.dao.impl;
 
+import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
@@ -18,16 +19,19 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
                     "JOIN client_order AS o ON u.id = o.client_id " +
                     "WHERE o.trainer_id = ?";
     private static final String GET_ALL_CLIENTS = "" +
-            "SELECT * FROM fitness_user WHERE role = 'client'";
+            "SELECT * FROM fitness_user WHERE role = 'CLIENT'";
     private static final String FIND_USER_BY_EMAIL_QUERY =
             "SELECT * FROM fitness_user WHERE email = ?";
+    private static final String GET_RANDOM_TRAINER_QUERY =
+            "SELECT * FROM fitness_user WHERE role = 'TRAINER' ORDER BY RAND() LIMIT 1";
 
     public AbstractUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper){
         super(jdbcTemplate, rowMapper);
     }
 
     @Override
-    public List<User> findUsersByTrainerId(long trainerId) {
+    public List<User> findClientsOfTrainer(User trainer) {
+        int trainerId = trainer.getId();
         return executeQuery(FIND_USERS_BY_TRAINER_ID_QUERY, trainerId);
     }
 
@@ -42,6 +46,11 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
     }
 
     @Override
+    public Optional<User> getRandomTrainer(){
+        return executeForSingleResult(GET_RANDOM_TRAINER_QUERY);
+    }
+
+    @Override
     protected String getTableName() {
         return USER_TABLE;
     }
@@ -49,14 +58,13 @@ public abstract class AbstractUserDao extends AbstractDao<User> implements UserD
     @Override
     protected Object[] getFields(User user) {
         UserRole role = user.getRole();
-        String roleValue = role.toString();
         return new Object[] {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getFirstName(),
                 user.getSecondName(),
-                roleValue.toLowerCase(),
+                role.toString(),
                 user.getDiscount()
         };
     }

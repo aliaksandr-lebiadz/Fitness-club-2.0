@@ -39,7 +39,6 @@ public class PostgreSqlAssignmentDao extends AbstractAssignmentDao {
     protected Object[] getFields(Assignment assignment) {
         Exercise exercise = assignment.getExercise();
         AssignmentStatus status = assignment.getStatus();
-        String statusValue = status.toString();
         return new Object[]{
                 assignment.getId(),
                 assignment.getOrderId(),
@@ -47,7 +46,7 @@ public class PostgreSqlAssignmentDao extends AbstractAssignmentDao {
                 assignment.getAmountOfSets(),
                 assignment.getAmountOfReps(),
                 convertToSqlDate(assignment.getWorkoutDate()),
-                statusValue.toLowerCase()
+                status.toString()
         };
     }
 

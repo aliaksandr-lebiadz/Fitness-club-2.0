@@ -1,7 +1,9 @@
 package com.epam.fitness.dao.impl;
 
+import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.AssignmentDao;
 import com.epam.fitness.entity.assignment.Assignment;
+import com.epam.fitness.entity.order.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -24,7 +26,8 @@ public abstract class AbstractAssignmentDao extends AbstractDao<Assignment> impl
     }
 
     @Override
-    public List<Assignment> getAllByOrderId(int orderId) {
+    public List<Assignment> getAllByOrder(Order order) {
+        int orderId = order.getId();
         return executeQuery(GET_ALL_BY_ORDER_ID_QUERY, orderId);
     }
 

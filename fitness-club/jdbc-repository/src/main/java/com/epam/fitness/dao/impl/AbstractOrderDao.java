@@ -1,7 +1,9 @@
 package com.epam.fitness.dao.impl;
 
+import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.entity.user.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -21,12 +23,14 @@ public abstract  class AbstractOrderDao extends AbstractDao<Order> implements Or
     }
 
     @Override
-    public List<Order> findClientOrdersWithTrainerId(int clientId, int trainerId) {
+    public List<Order> findOrdersOfTrainerClient(int clientId, User trainer) {
+        int trainerId = trainer.getId();
         return executeQuery(SELECT_CLIENT_ORDERS_WITH_TRAINER_ID_QUERY, clientId, trainerId);
     }
 
     @Override
-    public List<Order> findOrdersByClientId(int clientId) {
+    public List<Order> findOrdersOfClient(User client) {
+        int clientId = client.getId();
         return executeQuery(SELECT_ORDERS_BY_CLIENT_ID, clientId);
     }
 
