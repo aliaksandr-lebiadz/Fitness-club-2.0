@@ -1,7 +1,7 @@
 package com.epam.fitness.dao.impl.common;
 
 import com.epam.fitness.dao.api.GymMembershipDao;
-import com.epam.fitness.dao.impl.AbstractDao;
+import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.entity.GymMembership;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
