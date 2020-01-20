@@ -41,11 +41,9 @@ public class AssignmentOperationsController {
                       @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
                       @RequestParam("exercise_select") int exerciseId,
                       @RequestParam("order_id") int orderId,
-                      HttpServletRequest request) throws ValidationException {
+                      HttpServletRequest request) throws ValidationException, ServiceException {
         validateAssignmentParameters(amountOfSets, amountOfReps, workoutDate);
-        Exercise exercise = new Exercise(exerciseId);
-        Assignment assignment = new Assignment(orderId, exercise, amountOfSets, amountOfReps, workoutDate);
-        service.create(assignment);
+        service.create(orderId, exerciseId, amountOfSets, amountOfReps, workoutDate);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
     }

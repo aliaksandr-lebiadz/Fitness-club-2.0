@@ -47,8 +47,7 @@ public class OrderController {
         Optional<User> userOptional = utils.getCurrentUser();
         User user = userOptional.orElseThrow(UserNotFoundException::new);
 
-        int id = user.getId();
-        List<Order> orders = service.getOrdersByClientId(id);
+        List<Order> orders = service.getOrdersOfClient(user);
         model.addAttribute(ORDERS_ATTRIBUTE, orders);
         return ORDERS_PAGE;
     }

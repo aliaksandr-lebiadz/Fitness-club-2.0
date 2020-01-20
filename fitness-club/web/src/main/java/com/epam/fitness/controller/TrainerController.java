@@ -49,18 +49,17 @@ public class TrainerController {
         Optional<User> trainerOptional = utils.getCurrentUser();
         User trainer = trainerOptional.orElseThrow(UserNotFoundException::new);
 
-        int trainerId = trainer.getId();
         if(optionalClientId.isPresent()){
             int clientId = optionalClientId.get();
-            setOrdersAndExercises(clientId, trainerId, model);
+            setOrdersAndExercises(clientId, trainer, model);
         }
-        List<User> clients = userService.findUsersByTrainerId(trainerId);
+        List<User> clients = userService.getClientsOfTrainer(trainer);
         model.addAttribute(CLIENTS_ATTRIBUTE, clients);
         return TRAINER_CLIENTS_PAGE;
     }
 
-    private void setOrdersAndExercises(int clientId, int trainerId, Model model){
-        List<Order> clientOrders = orderService.getClientOrdersWithTrainerId(clientId, trainerId);
+    private void setOrdersAndExercises(int clientId, User trainer, Model model){
+        List<Order> clientOrders = orderService.getOrdersOfTrainerClient(clientId, trainer);
         model.addAttribute(CLIENT_ORDERS_ATTRIBUTE, clientOrders);
         List<Exercise> exercises = exerciseService.getAll();
         model.addAttribute(EXERCISES_ATTRIBUTE, exercises);
