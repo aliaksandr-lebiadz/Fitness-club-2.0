@@ -1,6 +1,8 @@
 package com.epam.fitness.config;
 
 import com.epam.fitness.entity.GymMembership;
+import com.epam.fitness.entity.assignment.Assignment;
+import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import org.hibernate.SessionFactory;
@@ -75,5 +77,7 @@ public class HibernateConfig {
         sources.addAnnotatedClass(User.class);
         sources.addAnnotatedClass(Order.class);
         sources.addAnnotatedClass(GymMembership.class);
+        sources.addAnnotatedClass(Assignment.class);
+        sources.addAnnotatedClass(Exercise.class);
     }
 }
