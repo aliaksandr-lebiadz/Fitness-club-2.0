@@ -42,8 +42,8 @@ public class OrderMapperTest {
         NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
         Order expected = Order.createBuilder()
                 .setId(id)
-                .setClientId(clientId)
-                .setTrainerId(trainerId)
+                .setClient(clientId)
+                .setTrainer(trainerId)
                 .setBeginDate(beginDate)
                 .setEndDate(endDate)
                 .setFeedback(feedback)

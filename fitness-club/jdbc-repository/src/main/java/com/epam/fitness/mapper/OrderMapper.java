@@ -2,6 +2,7 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.entity.user.User;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +36,8 @@ public class OrderMapper implements RowMapper<Order> {
         NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
         return Order.createBuilder()
                 .setId(id)
-                .setClientId(clientId)
-                .setTrainerId(trainerId)
+                .setClient(clientId)
+                .setTrainer(trainerId)
                 .setBeginDate(beginDate)
                 .setEndDate(endDate)
                 .setPrice(price)
