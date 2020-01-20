@@ -1,6 +1,7 @@
 package com.epam.fitness.entity.assignment;
 
 import com.epam.fitness.entity.Identifiable;
+import com.epam.fitness.entity.order.Order;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +31,11 @@ public class Assignment implements Identifiable, Serializable {
     public Assignment(int orderId, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate){
         this(exercise, amountOfSets, amountOfReps, workoutDate, AssignmentStatus.NEW);
         this.orderId = orderId;
+    }
+
+    public Assignment(Order order, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate){
+        this(exercise, amountOfSets, amountOfReps, workoutDate, AssignmentStatus.NEW);
+        this.orderId = order.getId();
     }
 
     public Assignment(Integer id, int orderId, Exercise exercise, int amountOfSets,
