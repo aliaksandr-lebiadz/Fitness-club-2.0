@@ -26,7 +26,8 @@ public class MySqlOrderDao extends AbstractOrderDao {
             "end_date = VALUES(end_date)," +
             "price = VALUES(price)," +
             "feedback = VALUES(feedback)," +
-            "nutrition_type = VALUES(nutrition_type)";
+            "nutrition_type = VALUES(nutrition_type)," +
+            "trainer_id = VALUES(trainer_id)";
 
     @Autowired
     public MySqlOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper){

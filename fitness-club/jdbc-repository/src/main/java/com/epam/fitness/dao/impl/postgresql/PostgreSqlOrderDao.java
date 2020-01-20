@@ -30,7 +30,8 @@ public class PostgreSqlOrderDao extends AbstractOrderDao {
             "end_date = EXCLUDED.end_date," +
             "price = EXCLUDED.price," +
             "feedback = EXCLUDED.feedback," +
-            "nutrition_type = EXCLUDED.nutrition_type::nutrition_type";
+            "nutrition_type = EXCLUDED.nutrition_type::nutrition_type," +
+            "trainer_id = EXCLUDED.trainer_id";
 
     @Autowired
     public PostgreSqlOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper) {
