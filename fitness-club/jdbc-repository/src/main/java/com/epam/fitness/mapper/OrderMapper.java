@@ -33,7 +33,7 @@ public class OrderMapper implements RowMapper<Order> {
         String feedback = resultSet.getString(FEEDBACK_COLUMN);
         BigDecimal price = resultSet.getBigDecimal(PRICE_COLUMN);
         String nutritionTypeValue = resultSet.getString(NUTRITION_TYPE_COLUMN);
-        NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
+        NutritionType nutritionType = NutritionType.valueOf(nutritionTypeValue);
         return Order.createBuilder()
                 .setId(id)
                 .setClient(clientId)

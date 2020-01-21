@@ -38,8 +38,8 @@ public class OrderMapperTest {
         final Timestamp endDate = Timestamp.valueOf("2020-04-12 18:48:05");
         final String feedback = "MyFeedback";
         final BigDecimal price = BigDecimal.valueOf(111.5);
-        final String nutritionTypeValue = "low calorie";
-        NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
+        final String nutritionTypeValue = "LOW_CALORIE";
+        NutritionType nutritionType = NutritionType.valueOf(nutritionTypeValue);
         Order expected = Order.createBuilder()
                 .setId(id)
                 .setClient(clientId)
