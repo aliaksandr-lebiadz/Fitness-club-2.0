@@ -6,6 +6,12 @@
         </File>
     </Appenders>
     <Loggers>
+        <logger name="org.hibernate.SQL" level="debug" additivity="false">
+            <appender-ref ref="LogFile"/>
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql" level="trace" additivity="false">
+            <appender-ref ref="LogFile"/>
+        </logger>
         <Root level="debug">
             <AppenderRef ref="LogFile"/>
         </Root>
