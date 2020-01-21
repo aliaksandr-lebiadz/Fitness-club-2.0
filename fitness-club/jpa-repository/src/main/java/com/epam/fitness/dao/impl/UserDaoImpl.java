@@ -22,6 +22,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     private static final String ORDERS_FIELD = "orders";
     private static final String TRAINER_PARAMETER = "trainer";
 
+    private static Random random = new Random();
+
     @Autowired
     public UserDaoImpl(SessionFactory sessionFactory) {
         super(sessionFactory, User.class);
@@ -85,7 +87,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             return Optional.empty();
         }
 
-        Random random = new Random();
         int size = trainers.size();
         User trainer = trainers.get(random.nextInt(size));
         return Optional.of(trainer);
