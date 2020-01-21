@@ -53,7 +53,7 @@ public class PostgreSqlOrderDao extends AbstractOrderDao {
                 convertToTimestamp(order.getEndDate()),
                 order.getPrice(),
                 order.getFeedback(),
-                (nutritionType != null ? nutritionType.getValue() : null),
+                (nutritionType != null ? nutritionType.toString() : null),
                 order.getTrainerId()
         };
     }

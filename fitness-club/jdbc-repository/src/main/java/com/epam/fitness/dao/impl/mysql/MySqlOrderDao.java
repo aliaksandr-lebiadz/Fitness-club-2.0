@@ -49,7 +49,7 @@ public class MySqlOrderDao extends AbstractOrderDao {
                 order.getEndDate(),
                 order.getPrice(),
                 order.getFeedback(),
-                (nutritionType != null ? nutritionType.getValue() : null),
+                (nutritionType != null ? nutritionType.toString() : null),
                 order.getTrainerId()
         };
     }
