@@ -5,7 +5,6 @@ import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +16,13 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Autowired
-    public UserServiceImpl(@Qualifier("postgreSqlUserDao") UserDao userDao){
+    public UserServiceImpl(UserDao userDao){
         this.userDao = userDao;
     }
 
     @Override
-    public List<User> findUsersByTrainerId(int trainerId) {
-        return userDao.findUsersByTrainerId(trainerId);
+    public List<User> getClientsOfTrainer(User trainer) {
+        return userDao.findClientsOfTrainer(trainer);
     }
 
     @Override

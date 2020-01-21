@@ -1,16 +1,16 @@
 package com.epam.fitness.service.impl;
 
+import com.epam.fitness.dao.api.Dao;
+import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
-import com.epam.fitness.dao.api.GymMembershipDao;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.OrderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,15 +22,18 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     private OrderDao orderDao;
-    private GymMembershipDao gymMembershipDao;
+    private Dao<GymMembership> gymMembershipDao;
     private OrderUtils utils;
+    private UserDao userDao;
 
     @Autowired
-    public OrderServiceImpl(@Qualifier("postgreSqlOrderDao") OrderDao orderDao,
-                            GymMembershipDao gymMembershipDao,
+    public OrderServiceImpl(OrderDao orderDao,
+                            Dao<GymMembership> gymMembershipDao,
+                            UserDao userDao,
                             OrderUtils utils){
         this.orderDao = orderDao;
         this.gymMembershipDao = gymMembershipDao;
+        this.userDao = userDao;
         this.utils = utils;
     }
 
@@ -41,18 +44,21 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ServiceException("Gym membership with the id " + membershipId + " isn't found!"));
         BigDecimal totalPrice = calculateTotalPrice(gymMembership, client);
         Date endDate = calculateEndDate(gymMembership);
-        Order order = createOrderWithCurrentBeginDate(client, endDate, totalPrice);
+        Optional<User> randomTrainerOptional = userDao.getRandomTrainer();
+        User trainer = randomTrainerOptional
+                .orElseThrow(() -> new ServiceException("Trainers aren't found!"));
+        Order order = createOrderWithCurrentBeginDate(client, trainer, endDate, totalPrice);
         orderDao.save(order);
     }
 
     @Override
-    public List<Order> getClientOrdersWithTrainerId(int clientId, int trainerId) {
-        return orderDao.findClientOrdersWithTrainerId(clientId, trainerId);
+    public List<Order> getOrdersOfTrainerClient(int clientId, User trainer) {
+        return orderDao.findOrdersOfTrainerClient(clientId, trainer);
     }
 
     @Override
-    public List<Order> getOrdersByClientId(int clientId) {
-        return orderDao.findOrdersByClientId(clientId);
+    public List<Order> getOrdersOfClient(User client) {
+        return orderDao.findOrdersOfClient(client);
     }
 
     @Override
@@ -84,11 +90,11 @@ public class OrderServiceImpl implements OrderService {
         return utils.getDateAfterMonthsAmount(monthsAmount);
     }
 
-    private Order createOrderWithCurrentBeginDate(User client, Date endDate, BigDecimal price){
-        int clientId = client.getId();
+    private Order createOrderWithCurrentBeginDate(User client, User trainer, Date endDate, BigDecimal price){
         Date beginDate = new Date();
         return Order.createBuilder()
-                .setClientId(clientId)
+                .setClient(client)
+                .setTrainer(trainer)
                 .setBeginDate(beginDate)
                 .setEndDate(endDate)
                 .setPrice(price)

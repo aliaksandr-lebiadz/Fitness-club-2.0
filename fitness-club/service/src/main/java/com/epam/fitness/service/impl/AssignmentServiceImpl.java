@@ -1,5 +1,6 @@
 package com.epam.fitness.service.impl;
 
+import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.exception.ServiceException;
@@ -10,7 +11,6 @@ import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.service.api.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,22 +22,23 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     private AssignmentDao assignmentDao;
     private OrderDao orderDao;
+    private Dao<Exercise> exerciseDao;
 
     @Autowired
-    public AssignmentServiceImpl(@Qualifier("postgreSqlOrderDao") OrderDao orderDao,
-                                 @Qualifier("postgreSqlAssignmentDao") AssignmentDao assignmentDao){
+    public AssignmentServiceImpl(OrderDao orderDao,
+                                 AssignmentDao assignmentDao,
+                                 Dao<Exercise> exerciseDao){
         this.orderDao = orderDao;
         this.assignmentDao = assignmentDao;
+        this.exerciseDao = exerciseDao;
     }
 
     @Override
-    public void create(Assignment assignment) {
-        assignmentDao.save(assignment);
-    }
-
-    @Override
-    public List<Assignment> getAllByOrderId(int orderId) {
-        return assignmentDao.getAllByOrderId(orderId);
+    public List<Assignment> getAllByOrderId(int orderId) throws ServiceException{
+        Optional<Order> orderOptional = orderDao.findById(orderId);
+        Order order = orderOptional
+                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+        return assignmentDao.getAllByOrder(order);
     }
 
     @Override
@@ -71,7 +72,15 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public Optional<Assignment> findById(int id) {
-        return assignmentDao.findById(id);
+    public void create(int orderId, int exerciseId, int amountOfSets, int amountOfReps, Date workoutDate)
+            throws ServiceException {
+        Optional<Order> orderOptional = orderDao.findById(orderId);
+        Order order = orderOptional
+                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+        Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
+        Exercise exercise = exerciseOptional
+                .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
+        Assignment assignment = new Assignment(order, exercise, amountOfSets, amountOfReps, workoutDate);
+        assignmentDao.save(assignment);
     }
 }
