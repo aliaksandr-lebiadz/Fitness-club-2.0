@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
@@ -28,11 +27,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
 
     @Override
     public List<Order> findOrdersOfTrainerClient(int clientId, User trainer) {
-        return trainer.getOrders()
-                .stream()
-                .filter(order -> order.getClient().getId() == clientId)
-                .collect(Collectors.toList());
-        /*CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = getCriteriaQuery(criteriaBuilder);
         Root<Order> order = getRoot(criteriaQuery);
         Predicate trainerEquality = criteriaBuilder.equal(order.get(TRAINER_PARAMETER), trainer);
@@ -41,7 +36,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 .select(order)
                 .where(criteriaBuilder.and(trainerEquality, clientIdEquality));
         Query<Order> query = getQuery(criteriaQuery);
-        return query.getResultList();*/
+        return query.getResultList();
     }
 
     @Override
