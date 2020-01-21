@@ -25,7 +25,7 @@ public class User implements Identifiable, Serializable {
     @Column(name = "second_name")
     private String secondName;
     private int discount;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Order> orders;
 
     public User() {}
