@@ -110,9 +110,9 @@
                 <label for="nutrition-type-choice">${nutrition}</label>
                 <div class="select-style">
                     <select name="nutrition_type" id="nutrition-type-choice">
-                        <option value="low calorie">${low_calorie}</option>
-                        <option value="medium calorie">${medium_calorie}</option>
-                        <option value="high calorie">${high_calorie}</option>
+                        <option value="LOW_CALORIE">${low_calorie}</option>
+                        <option value="MEDIUM_CALORIE">${medium_calorie}</option>
+                        <option value="HIGH_CALORIE">${high_calorie}</option>
                     </select>
                 </div>
                 <input type="hidden" name="order_id" class="hidden-id"/>
