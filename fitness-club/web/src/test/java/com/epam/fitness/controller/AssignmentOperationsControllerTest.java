@@ -1,15 +1,25 @@
 package com.epam.fitness.controller;
 
+import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.Exercise;
+import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.validator.api.AssignmentValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -19,7 +29,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class AssignmentOperationsControllerTest extends AbstractControllerTest {
+@RunWith(MockitoJUnitRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = SpringWebMvcConfig.class)
+public class AssignmentOperationsControllerTest {
 
     private static final String ADD_ASSIGNMENT_REQUEST = "/assignmentOperations/add";
     private static final String CHANGE_ASSIGNMENT_REQUEST = "/assignmentOperations/change";
@@ -43,24 +56,45 @@ public class AssignmentOperationsControllerTest extends AbstractControllerTest {
     private static final String ASSIGNMENT_ID_PARAMETER = "assignment_id";
     private static final int ASSIGNMENT_ID = 11;
     private static final String ERROR_PAGE_URL = "/error";
+    private static final Order ORDER;
 
-    private static final Assignment ASSIGNMENT = new Assignment(ORDER_ID, new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS,
+    static{
+        ORDER = Order.createBuilder()
+                .setId(ORDER_ID)
+                .build();
+    }
+
+    private static final Assignment ASSIGNMENT = new Assignment(ORDER, new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS,
             VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
 
-    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
     private AssignmentService service;
-    @Autowired
+    @Mock
     private AssignmentValidator validator;
+    @InjectMocks
+    private AssignmentOperationsController assignmentOperationsController;
+
+    @Before
+    public void setUp(){
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(assignmentOperationsController)
+                .setControllerAdvice(new ControllerAdviceImpl())
+                .build();
+    }
 
     @Before
     public void createMocks() throws ServiceException {
+        MockitoAnnotations.initMocks(this);
+
         when(validator.isAmountOfRepsValid(VALID_AMOUNT_OF_REPS)).thenReturn(true);
         when(validator.isAmountOfSetsValid(VALID_AMOUNT_OF_SETS)).thenReturn(true);
         when(validator.isWorkoutDateValid(VALID_WORKOUT_DATE)).thenReturn(true);
         when(validator.isAmountOfRepsValid(INVALID_AMOUNT_OF_REPS)).thenReturn(false);
         when(validator.isAmountOfSetsValid(INVALID_AMOUNT_OF_SETS)).thenReturn(false);
         when(validator.isWorkoutDateValid(INVALID_WORKOUT_DATE)).thenReturn(false);
-        doNothing().when(service).create(ASSIGNMENT);
+        doNothing().when(service).create(ORDER_ID, EXERCISE_ID, VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
         doNothing().when(service).updateById(ASSIGNMENT_ID,
                 new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
     }
@@ -86,10 +120,11 @@ public class AssignmentOperationsControllerTest extends AbstractControllerTest {
         verify(validator, times(1)).isAmountOfRepsValid(VALID_AMOUNT_OF_REPS);
         verify(validator, times(1)).isAmountOfSetsValid(VALID_AMOUNT_OF_SETS);
         verify(validator, times(1)).isWorkoutDateValid(VALID_WORKOUT_DATE);
-        verify(service, times(1)).create(ASSIGNMENT);
+        verify(service, times(1))
+                .create(ORDER_ID, EXERCISE_ID, VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
     }
 
-    @Test
+    @Test()
     @WithMockUser(authorities = "TRAINER")
     public void testAddWhenInvalidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
         //given
