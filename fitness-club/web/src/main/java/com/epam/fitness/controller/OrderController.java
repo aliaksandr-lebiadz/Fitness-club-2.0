@@ -70,7 +70,7 @@ public class OrderController {
                                @RequestParam("order_id") int orderId,
                                HttpServletRequest request)
             throws ServiceException {
-        NutritionType nutritionType = NutritionType.getNutritionType(nutritionTypeValue);
+        NutritionType nutritionType = NutritionType.valueOf(nutritionTypeValue);
         service.updateNutritionById(orderId, nutritionType);
         return ControllerUtils.createRedirect(CurrentPageGetter.getCurrentPage(request));
     }
