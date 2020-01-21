@@ -1,6 +1,6 @@
 package com.epam.fitness.service.impl;
 
-import com.epam.fitness.dao.api.ExerciseDao;
+import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.service.api.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +11,10 @@ import java.util.List;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
 
-    private ExerciseDao exerciseDao;
+    private Dao<Exercise> exerciseDao;
 
     @Autowired
-    public ExerciseServiceImpl(ExerciseDao exerciseDao){
+    public ExerciseServiceImpl(Dao<Exercise> exerciseDao){
         this.exerciseDao = exerciseDao;
     }
 
