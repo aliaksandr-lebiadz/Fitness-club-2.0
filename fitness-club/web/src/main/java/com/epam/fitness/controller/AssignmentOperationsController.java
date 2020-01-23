@@ -1,6 +1,5 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.exception.ValidationException;
@@ -38,11 +37,11 @@ public class AssignmentOperationsController {
     public String add(@RequestParam("amount_of_sets") int amountOfSets,
                       @RequestParam("amount_of_reps") int amountOfReps,
                       @RequestParam("date")
-                      @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
+                          @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
                       @RequestParam("exercise_select") int exerciseId,
                       @RequestParam("order_id") int orderId,
-                      HttpServletRequest request) throws ValidationException, ServiceException {
-        validateAssignmentParameters(amountOfSets, amountOfReps, workoutDate);
+                      HttpServletRequest request) throws ServiceException, ValidationException {
+        validateWorkoutDate(workoutDate);
         service.create(orderId, exerciseId, amountOfSets, amountOfReps, workoutDate);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
@@ -56,21 +55,17 @@ public class AssignmentOperationsController {
                              @DateTimeFormat(pattern = DATE_PATTERN) Date workoutDate,
                          @RequestParam("exercise_select") int exerciseId,
                          @RequestParam("assignment_id") int assignmentId,
-                         HttpServletRequest request)
-            throws ServiceException, ValidationException {
-        validateAssignmentParameters(amountOfSets, amountOfReps, workoutDate);
+                         HttpServletRequest request) throws ServiceException, ValidationException {
+        validateWorkoutDate(workoutDate);
         Exercise exercise = new Exercise(exerciseId);
         service.updateById(assignmentId, exercise, amountOfSets, amountOfReps, workoutDate);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
     }
 
-    private void validateAssignmentParameters(int amountOfSets, int amountOfReps, Date workoutDate)
-            throws ValidationException{
-        if(!validator.isAmountOfSetsValid(amountOfSets)
-                || !validator.isAmountOfRepsValid(amountOfReps)
-                || !validator.isWorkoutDateValid(workoutDate)){
-            throw new ValidationException("Assignment validation failed!");
+    private void validateWorkoutDate(Date workoutDate) throws ValidationException{
+        if(!validator.isWorkoutDateValid(workoutDate)){
+            throw new ValidationException("Invalid workout date!");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.epam.fitness.controller;
 
 import com.epam.fitness.config.SpringWebMvcConfig;
-import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.exception.ServiceException;
@@ -38,14 +37,12 @@ public class AssignmentOperationsControllerTest {
     private static final String CHANGE_ASSIGNMENT_REQUEST = "/assignmentOperations/change";
     private static final String REFERER_HEADER = "referer";
     private static final String CURRENT_PAGE = "http://localhost:8080/fitness/order/list";
-    private static final int VALID_AMOUNT_OF_REPS = 5;
-    private static final int VALID_AMOUNT_OF_SETS = 90;
+    private static final int AMOUNT_OF_REPS = 5;
+    private static final int AMOUNT_OF_SETS = 90;
     private static final String VALID_WORKOUT_DATE_STR = "2020-11-06";
-    private static final String INVALID_WORKOUT_DATE_STR = "2019-12-30";
     private static final Date VALID_WORKOUT_DATE = Date.valueOf(VALID_WORKOUT_DATE_STR);
+    private static final String INVALID_WORKOUT_DATE_STR = "2019-10-12";
     private static final Date INVALID_WORKOUT_DATE = Date.valueOf(INVALID_WORKOUT_DATE_STR);
-    private static final int INVALID_AMOUNT_OF_REPS = 102;
-    private static final int INVALID_AMOUNT_OF_SETS = -5;
     private static final int EXERCISE_ID = 5;
     private static final int ORDER_ID = 3;
     private static final String ORDER_ID_PARAMETER = "order_id";
@@ -63,9 +60,6 @@ public class AssignmentOperationsControllerTest {
                 .setId(ORDER_ID)
                 .build();
     }
-
-    private static final Assignment ASSIGNMENT = new Assignment(ORDER, new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS,
-            VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
 
     private MockMvc mockMvc;
 
@@ -88,24 +82,20 @@ public class AssignmentOperationsControllerTest {
     public void createMocks() throws ServiceException {
         MockitoAnnotations.initMocks(this);
 
-        when(validator.isAmountOfRepsValid(VALID_AMOUNT_OF_REPS)).thenReturn(true);
-        when(validator.isAmountOfSetsValid(VALID_AMOUNT_OF_SETS)).thenReturn(true);
         when(validator.isWorkoutDateValid(VALID_WORKOUT_DATE)).thenReturn(true);
-        when(validator.isAmountOfRepsValid(INVALID_AMOUNT_OF_REPS)).thenReturn(false);
-        when(validator.isAmountOfSetsValid(INVALID_AMOUNT_OF_SETS)).thenReturn(false);
         when(validator.isWorkoutDateValid(INVALID_WORKOUT_DATE)).thenReturn(false);
-        doNothing().when(service).create(ORDER_ID, EXERCISE_ID, VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
+        doNothing().when(service).create(ORDER_ID, EXERCISE_ID, AMOUNT_OF_SETS, AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
         doNothing().when(service).updateById(ASSIGNMENT_ID,
-                new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
+                new Exercise(EXERCISE_ID), AMOUNT_OF_SETS, AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
     }
 
     @Test
     @WithMockUser(authorities = "TRAINER")
-    public void testAddWhenValidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
+    public void testAddWhenValidWorkoutDateSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_SETS));
-        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_REPS));
+        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(AMOUNT_OF_SETS));
+        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(AMOUNT_OF_REPS));
         params.add(WORKOUT_DATE_PARAMETER, VALID_WORKOUT_DATE_STR);
         params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
         params.add(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID));
@@ -117,32 +107,9 @@ public class AssignmentOperationsControllerTest {
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
         //then
-        verify(validator, times(1)).isAmountOfRepsValid(VALID_AMOUNT_OF_REPS);
-        verify(validator, times(1)).isAmountOfSetsValid(VALID_AMOUNT_OF_SETS);
         verify(validator, times(1)).isWorkoutDateValid(VALID_WORKOUT_DATE);
         verify(service, times(1))
-                .create(ORDER_ID, EXERCISE_ID, VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
-    }
-
-    @Test()
-    @WithMockUser(authorities = "TRAINER")
-    public void testAddWhenInvalidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
-        //given
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(INVALID_AMOUNT_OF_SETS));
-        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(INVALID_AMOUNT_OF_REPS));
-        params.add(WORKOUT_DATE_PARAMETER, INVALID_WORKOUT_DATE_STR);
-        params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
-        params.add(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID));
-
-        //when
-        mockMvc.perform(post(ADD_ASSIGNMENT_REQUEST)
-                .params(params))
-                .andExpect(redirectedUrl(ERROR_PAGE_URL));
-
-        //then
-        verify(validator, times(1)).isAmountOfSetsValid(INVALID_AMOUNT_OF_SETS);
-        verifyNoInteractions(service);
+                .create(ORDER_ID, EXERCISE_ID, AMOUNT_OF_SETS, AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
     }
 
     @Test
@@ -162,8 +129,8 @@ public class AssignmentOperationsControllerTest {
     public void testChangeWhenValidParametersSuppliedAndUserIsAuthorizedAsTrainerOrClient() throws Exception{
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_SETS));
-        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(VALID_AMOUNT_OF_REPS));
+        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(AMOUNT_OF_SETS));
+        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(AMOUNT_OF_REPS));
         params.add(WORKOUT_DATE_PARAMETER, VALID_WORKOUT_DATE_STR);
         params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
         params.add(ASSIGNMENT_ID_PARAMETER, String.valueOf(ASSIGNMENT_ID));
@@ -175,12 +142,31 @@ public class AssignmentOperationsControllerTest {
                 .andExpect(redirectedUrl(CURRENT_PAGE));
 
         //then
-        verify(validator, times(1)).isAmountOfRepsValid(VALID_AMOUNT_OF_REPS);
-        verify(validator, times(1)).isAmountOfSetsValid(VALID_AMOUNT_OF_SETS);
         verify(validator, times(1)).isWorkoutDateValid(VALID_WORKOUT_DATE);
         verify(service, times(1)).updateById(ASSIGNMENT_ID,
-                new Exercise(EXERCISE_ID), VALID_AMOUNT_OF_SETS, VALID_AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
+                new Exercise(EXERCISE_ID), AMOUNT_OF_SETS, AMOUNT_OF_REPS, VALID_WORKOUT_DATE);
     }
+
+    @WithMockUser(authorities = "TRAINER")
+    public void testAddWhenInvalidParametersSuppliedAndUserIsAuthorizedAsTrainer() throws Exception{
+        //given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(AMOUNT_OF_SETS_PARAMETER, String.valueOf(AMOUNT_OF_SETS));
+        params.add(AMOUNT_OF_REPS_PARAMETER, String.valueOf(AMOUNT_OF_REPS));
+        params.add(WORKOUT_DATE_PARAMETER, INVALID_WORKOUT_DATE_STR);
+        params.add(EXERCISE_SELECT_PARAMETER, String.valueOf(EXERCISE_ID));
+        params.add(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID));
+
+        //when
+        mockMvc.perform(post(ADD_ASSIGNMENT_REQUEST)
+                .params(params))
+                .andExpect(redirectedUrl(ERROR_PAGE_URL));
+
+        //then
+        verify(validator, times(1)).isWorkoutDateValid(INVALID_WORKOUT_DATE);
+    }
+
+
 
     @Test
     @WithMockUser(authorities = "ADMIN")
