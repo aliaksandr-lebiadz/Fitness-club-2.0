@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class PaymentControllerTest{
 
     private static final String GET_MEMBERSHIP_REQUEST = "/payment/getMembership";
-    private static final String VALID_CARD_NUMBER = "1234123412341234";
+    private static final String VALID_CARD_NUMBER = "4111111111111111";
     private static final String VALID_EXPIRATION_DATE = "11/20";
     private static final String VALID_CVV = "123";
     private static final String INVALID_CARD_NUMBER = "12341234123412345";
@@ -104,7 +104,7 @@ public class PaymentControllerTest{
 
     @Test
     @WithMockUser(authorities = "CLIENT")
-    public void testGetMembershipWhenInvalidParametersSuppliedAndUserIsAuthorizedAsClient() throws Exception{
+    public void testGetMembershipShouldRedirectOnErrorPageWhenInvalidParametersSuppliedAndUserIsAuthorizedAsClient() throws Exception{
         //given
 
         //when
