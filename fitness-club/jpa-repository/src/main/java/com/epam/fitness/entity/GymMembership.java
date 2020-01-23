@@ -1,6 +1,9 @@
 package com.epam.fitness.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -13,8 +16,13 @@ public class GymMembership implements Identifiable, Serializable {
     @Id
     @GeneratedValue
     private Integer id;
+
     @Column(name = "months_amount")
+    @Positive
     private int monthsAmount;
+
+    @NotNull
+    @PositiveOrZero
     private BigDecimal price;
 
     public GymMembership() {}

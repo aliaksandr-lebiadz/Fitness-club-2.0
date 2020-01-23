@@ -3,9 +3,11 @@ package com.epam.fitness.entity.order;
 import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.user.User;
-import org.hibernate.annotations.Fetch;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,21 +22,34 @@ public class Order implements Identifiable, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", nullable = false)
     private User client;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trainer_id", nullable = false)
     private User trainer;
+
     @Column(name = "begin_date")
+    @NotNull
     private Date beginDate;
+
     @Column(name = "end_date")
+    @NotNull
     private Date endDate;
+
+    @Length(min = 10, max = 1000)
     private String feedback;
+
+    @PositiveOrZero
+    @NotNull
     private BigDecimal price;
-    @Enumerated(EnumType.STRING)
+
     @Column(name = "nutrition_type")
+    @Enumerated(EnumType.STRING)
     private NutritionType nutritionType;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Assignment> assignments;
 

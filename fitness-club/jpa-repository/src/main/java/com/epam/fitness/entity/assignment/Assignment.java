@@ -4,6 +4,9 @@ import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.entity.order.Order;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -17,19 +20,31 @@ public class Assignment implements Identifiable, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
     @Column(name = "workout_date")
+    @NotNull
     private Date workoutDate;
+
     @Column(name = "amount_of_sets")
+    @Min(1)
+    @Max(100)
     private int amountOfSets;
+
     @Column(name = "amount_of_reps")
+    @Min(1)
+    @Max(100)
     private int amountOfReps;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
+
     @Enumerated(EnumType.STRING)
+    @NotNull
     private AssignmentStatus status;
 
     public Assignment() {}

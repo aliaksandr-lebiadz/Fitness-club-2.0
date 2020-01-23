@@ -4,6 +4,9 @@ import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.entity.order.Order;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,15 +19,27 @@ public class User implements Identifiable, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String password;
+
     @Enumerated(EnumType.STRING)
+    @NotNull
     private UserRole role;
+
     @Column(name = "first_name")
     private String firstName;
+
     @Column(name = "second_name")
     private String secondName;
+
+    @Min(0)
+    @Max(100)
     private int discount;
+
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Order> orders;
 
