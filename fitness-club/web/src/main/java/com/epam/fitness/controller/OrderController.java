@@ -8,7 +8,6 @@ import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
-import com.epam.fitness.validator.api.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -31,13 +30,11 @@ public class OrderController {
     private static final String ORDERS_ATTRIBUTE = "orderList";
 
     private OrderService service;
-    private OrderValidator validator;
     private ControllerUtils utils;
 
     @Autowired
-    public OrderController(OrderService service, OrderValidator validator, ControllerUtils utils){
+    public OrderController(OrderService service, ControllerUtils utils){
         this.service = service;
-        this.validator = validator;
         this.utils = utils;
     }
 
@@ -55,11 +52,7 @@ public class OrderController {
     @PostMapping("/feedback")
     @PreAuthorize("hasAuthority('CLIENT')")
     public String sendFeedback(@RequestParam("order_id") int orderId,
-                               @RequestParam String feedback)
-            throws ServiceException, ValidationException{
-        if(!validator.isFeedbackValid(feedback)){
-            throw new ValidationException("Feedback validation failed!");
-        }
+                               @RequestParam String feedback) throws ServiceException{
         service.updateFeedbackById(orderId, feedback);
         return ControllerUtils.createRedirect(ORDERS_PAGE_URL);
     }

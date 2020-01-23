@@ -7,7 +7,6 @@ import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
-import com.epam.fitness.validator.api.OrderValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -47,8 +46,7 @@ public class OrderControllerTest{
     private static final User USER = new User(CLIENT_ID, "email", "pass", UserRole.CLIENT,
             "first", "second", 1);
     private static final String FEEDBACK_PARAMETER = "feedback";
-    private static final String VALID_FEEDBACK = "validFeedback";
-    private static final String INVALID_FEEDBACK = "invalidFeedback";
+    private static final String FEEDBACK = "validFeedback";
     private static final String ORDER_ID_PARAMETER = "order_id";
     private static final int ORDER_ID = 16;
     private static final NutritionType NUTRITION_TYPE = NutritionType.HIGH_CALORIE;
@@ -66,8 +64,6 @@ public class OrderControllerTest{
 
     @Mock
     private OrderService service;
-    @Mock
-    private OrderValidator validator;
     @Mock
     private ControllerUtils utils;
     @InjectMocks
@@ -87,9 +83,7 @@ public class OrderControllerTest{
 
         when(utils.getCurrentUser()).thenReturn(Optional.of(USER));
         when(service.getOrdersOfClient(USER)).thenReturn(EXPECTED_ORDERS);
-        when(validator.isFeedbackValid(VALID_FEEDBACK)).thenReturn(true);
-        when(validator.isFeedbackValid(INVALID_FEEDBACK)).thenReturn(false);
-        doNothing().when(service).updateFeedbackById(ORDER_ID, VALID_FEEDBACK);
+        doNothing().when(service).updateFeedbackById(ORDER_ID, FEEDBACK);
         doNothing().when(service).updateNutritionById(ORDER_ID, NUTRITION_TYPE);
     }
 
@@ -133,27 +127,11 @@ public class OrderControllerTest{
         //when
         mockMvc.perform(post(FEEDBACK_REQUEST)
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
-                .param(FEEDBACK_PARAMETER, VALID_FEEDBACK))
+                .param(FEEDBACK_PARAMETER, FEEDBACK))
                 .andExpect(redirectedUrl(ORDERS_PAGE_REQUEST));
 
         //then
-        verify(service, times(1)).updateFeedbackById(ORDER_ID, VALID_FEEDBACK);
-        verify(validator, times(1)).isFeedbackValid(VALID_FEEDBACK);
-    }
-
-    @Test
-    @WithMockUser(authorities = "CLIENT")
-    public void testFeedbackWhenInvalidFeedbackSuppliedAndUserIsAuthorizedAsClient() throws Exception{
-        //given
-
-        //when
-        mockMvc.perform(post(FEEDBACK_REQUEST)
-                .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
-                .param(FEEDBACK_PARAMETER, INVALID_FEEDBACK))
-                .andExpect(redirectedUrl(ERROR_PAGE_URL));
-
-        //then
-        verify(validator, times(1)).isFeedbackValid(INVALID_FEEDBACK);
+        verify(service, times(1)).updateFeedbackById(ORDER_ID, FEEDBACK);
     }
 
     @Test
@@ -199,8 +177,8 @@ public class OrderControllerTest{
 
     @After
     public void verifyMocks(){
-        verifyNoMoreInteractions(service, validator, utils);
-        reset(service, validator, utils);
+        verifyNoMoreInteractions(service, utils);
+        reset(service, utils);
     }
 
 }
