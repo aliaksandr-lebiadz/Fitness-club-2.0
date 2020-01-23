@@ -2,6 +2,7 @@ package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.utils.DateUtils;
 import com.epam.fitness.validator.api.PaymentValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -18,6 +19,7 @@ public class PaymentValidatorImpl implements PaymentValidator {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yy");
     private DateUtils dateUtils;
 
+    @Autowired
     public PaymentValidatorImpl(DateUtils dateUtils){
         this.dateUtils = dateUtils;
     }
