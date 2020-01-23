@@ -1,8 +1,6 @@
-package com.epam.fitness.validator;
+package com.epam.fitness.validator.impl;
 
 import com.epam.fitness.utils.DateUtils;
-import com.epam.fitness.validator.api.PaymentValidator;
-import com.epam.fitness.validator.impl.PaymentValidatorImpl;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -11,10 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
 
 import static org.mockito.Mockito.*;
 
@@ -39,15 +38,19 @@ public class PaymentValidatorImplTest {
     private static final String INVALID_CVV_WITH_LETTERS = "8c1";
     private static final String INVALID_CVV_WITH_SIGNS = "!72";
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
-    private static final String FIRST_DAY_OF_CURRENT_MONTH = "01/10/19";
+    private static final String FIRST_DAY_OF_CURRENT_MONTH = "2019-10-01";
 
-    private DateUtils dateUtils = mock(DateUtils.class);
-    private PaymentValidator validator = new PaymentValidatorImpl(dateUtils);
+    @Mock
+    private DateUtils dateUtils;
+
+    @InjectMocks
+    private PaymentValidatorImpl validator;
 
     @Before
-    public void createMocks() throws ParseException{
-        Date firstDayOfCurrentMonth = DATE_FORMAT.parse(FIRST_DAY_OF_CURRENT_MONTH);
+    public void createMocks(){
+        MockitoAnnotations.initMocks(this);
+
+        Date firstDayOfCurrentMonth = Date.valueOf(FIRST_DAY_OF_CURRENT_MONTH);
         when(dateUtils.getFirstDayOfCurrentMonth()).thenReturn(firstDayOfCurrentMonth);
     }
 
@@ -165,5 +168,6 @@ public class PaymentValidatorImplTest {
     @After
     public void verifyMocks(){
         verifyNoMoreInteractions(dateUtils);
+        reset(dateUtils);
     }
 }
