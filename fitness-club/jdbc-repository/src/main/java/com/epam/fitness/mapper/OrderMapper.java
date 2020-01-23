@@ -2,7 +2,6 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
-import com.epam.fitness.entity.user.User;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

@@ -5,7 +5,6 @@ import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.exception.UserNotFoundException;
-import com.epam.fitness.exception.ValidationException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import org.springframework.beans.factory.annotation.Autowired;
