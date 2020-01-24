@@ -1,5 +1,6 @@
-package com.epam.fitness.controller;
+package com.epam.fitness.exception.controller;
 
+import com.epam.fitness.controller.ControllerUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.ExceptionHandler;
