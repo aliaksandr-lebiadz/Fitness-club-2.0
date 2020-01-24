@@ -1,6 +1,6 @@
-package com.epam.fitness.dao.impl.common;
+package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.dao.api.ExerciseDao;
+import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.entity.assignment.Exercise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Repository;
  * @see Exercise
  */
 @Repository
-public class ExerciseDaoImpl extends AbstractDao<Exercise> implements ExerciseDao {
+public class PostgreSqlExerciseDao extends AbstractDao<Exercise>{
 
     private static final String EXERCISE_TABLE = "exercise";
 
     @Autowired
-    public ExerciseDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<Exercise> rowMapper){
+    public PostgreSqlExerciseDao(JdbcTemplate jdbcTemplate, RowMapper<Exercise> rowMapper){
         super(jdbcTemplate, rowMapper);
     }
 

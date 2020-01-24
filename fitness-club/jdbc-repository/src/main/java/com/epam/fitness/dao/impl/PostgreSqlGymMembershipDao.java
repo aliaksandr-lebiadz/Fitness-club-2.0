@@ -1,6 +1,5 @@
-package com.epam.fitness.dao.impl.common;
+package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.dao.api.GymMembershipDao;
 import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.entity.GymMembership;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +14,12 @@ import org.springframework.stereotype.Repository;
  * @see GymMembership
  */
 @Repository
-public class GymMembershipDaoImpl extends AbstractDao<GymMembership> implements GymMembershipDao {
+public class PostgreSqlGymMembershipDao extends AbstractDao<GymMembership> {
 
     private static final String GYM_MEMBERSHIP_TABLE = "gym_membership";
 
     @Autowired
-    public GymMembershipDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<GymMembership> rowMapper){
+    public PostgreSqlGymMembershipDao(JdbcTemplate jdbcTemplate, RowMapper<GymMembership> rowMapper){
         super(jdbcTemplate, rowMapper);
     }
 
