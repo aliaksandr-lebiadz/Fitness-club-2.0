@@ -1,5 +1,7 @@
-package com.epam.fitness.config;
+package com.epam.fitness.initializer;
 
+import com.epam.fitness.config.SpringSecurityConfig;
+import com.epam.fitness.config.SpringWebMvcConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class SpringInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {

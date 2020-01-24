@@ -1,4 +1,4 @@
-package com.epam.fitness.config;
+package com.epam.fitness.initializer;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
