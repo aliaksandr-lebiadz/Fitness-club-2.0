@@ -7,6 +7,7 @@ import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.ExerciseService;

@@ -4,6 +4,7 @@ import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.junit.Before;
 import org.junit.Ignore;

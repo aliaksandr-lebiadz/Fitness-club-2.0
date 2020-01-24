@@ -3,6 +3,7 @@ package com.epam.fitness.controller;
 import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.validator.api.PaymentValidator;

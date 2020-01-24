@@ -5,6 +5,7 @@ import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.service.api.OrderService;

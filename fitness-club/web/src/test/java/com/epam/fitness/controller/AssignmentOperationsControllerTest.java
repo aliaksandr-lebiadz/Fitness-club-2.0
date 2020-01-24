@@ -3,6 +3,7 @@ package com.epam.fitness.controller;
 import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.validator.api.AssignmentValidator;
