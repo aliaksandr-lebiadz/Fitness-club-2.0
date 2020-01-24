@@ -11,11 +11,12 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -26,13 +27,19 @@ import java.util.Map;
 @Configuration
 @Lazy
 @EnableTransactionManagement
+@PropertySource("classpath:database.properties")
 public class HibernateConfig {
 
     private static final String ENTITY_PACKAGE = "com.epam.fitness.entity";
 
-    @Autowired
-    private DataSource dataSource;
-
+    @Value("${database.driver_name}")
+    private String driverName;
+    @Value("${database.url}")
+    private String url;
+    @Value("${database.user}")
+    private String username;
+    @Value("${database.password}")
+    private String password;
     @Value("${hibernate.dialect}")
     private String dialect;
     @Value("${hibernate.session_context}")
@@ -44,7 +51,7 @@ public class HibernateConfig {
         Map<String, String> settings = getSettings();
 
         registryBuilder.applySettings(settings);
-        registryBuilder.applySetting(Environment.DATASOURCE, dataSource);
+        registryBuilder.applySetting(Environment.DATASOURCE, getDataSource());
         StandardServiceRegistry registry = registryBuilder.build();
 
         MetadataSources sources = new MetadataSources(registry);
@@ -62,6 +69,7 @@ public class HibernateConfig {
     public HibernateTransactionManager hibernateTransactionManager() {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory());
+        transactionManager.setDataSource(getDataSource());
         return transactionManager;
     }
 
@@ -79,5 +87,14 @@ public class HibernateConfig {
         sources.addAnnotatedClass(GymMembership.class);
         sources.addAnnotatedClass(Assignment.class);
         sources.addAnnotatedClass(Exercise.class);
+    }
+
+    private DataSource getDataSource(){
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(driverName);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        return dataSource;
     }
 }
