@@ -1,12 +1,14 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.assignment.Assignment;
+import com.epam.fitness.entity.AssignmentDto;
+import com.epam.fitness.entity.ExerciseDto;
+import com.epam.fitness.entity.OrderDto;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
-import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.ExerciseService;
+import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.CurrentPageGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,12 +37,15 @@ public class AssignmentController {
 
     private AssignmentService assignmentService;
     private ExerciseService exerciseService;
+    private OrderService orderService;
 
     @Autowired
     public AssignmentController(AssignmentService assignmentService,
-                                ExerciseService exerciseService){
+                                ExerciseService exerciseService,
+                                OrderService orderService){
         this.assignmentService = assignmentService;
         this.exerciseService = exerciseService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/list")
@@ -50,11 +55,11 @@ public class AssignmentController {
             Model model) throws ServiceException{
         if(optionalOrderId.isPresent()){
             int orderId = optionalOrderId.get();
-            List<Assignment> assignments = assignmentService.getAllByOrderId(orderId);
+            List<AssignmentDto> assignments = assignmentService.getAllByOrderId(orderId);
             model.addAttribute(ASSIGNMENTS_ATTRIBUTE, assignments);
-            NutritionType nutritionType = assignmentService.getNutritionTypeByOrderId(orderId);
+            NutritionType nutritionType = getNutritionTypeByOrderId(orderId);
             model.addAttribute(NUTRITION_TYPE_ATTRIBUTE, nutritionType);
-            List<Exercise> exercises = exerciseService.getAll();
+            List<ExerciseDto> exercises = exerciseService.getAll();
             model.addAttribute(EXERCISES_ATTRIBUTE, exercises);
         } else{
             return ControllerUtils.createRedirect(ORDERS_PAGE_URL);
@@ -69,7 +74,7 @@ public class AssignmentController {
                             HttpServletRequest request)
             throws ServiceException {
         AssignmentStatus status = getStatus(assignmentAction);
-        assignmentService.changeStatusById(assignmentId, status);
+        assignmentService.updateStatusById(assignmentId, status);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
     }
@@ -87,6 +92,13 @@ public class AssignmentController {
                 throw new ServiceException("Invalid assignment action: " + assignmentAction);
         }
         return status;
+    }
+
+    private NutritionType getNutritionTypeByOrderId(int orderId) throws ServiceException{
+        Optional<OrderDto> orderOptional = orderService.getById(orderId);
+        OrderDto orderDto = orderOptional
+                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+        return orderDto.getNutritionType();
     }
 
 }

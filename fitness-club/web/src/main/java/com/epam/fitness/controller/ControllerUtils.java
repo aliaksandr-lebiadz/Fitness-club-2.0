@@ -1,6 +1,6 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.user.User;
+import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -31,7 +31,7 @@ public class ControllerUtils {
         return FORWARD + page;
     }
 
-    public Optional<User> getCurrentUser() {
+    public Optional<UserDto> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if(!(principal instanceof UserDetails)){

@@ -1,7 +1,7 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.GymMembership;
-import com.epam.fitness.entity.user.User;
+import com.epam.fitness.entity.GymMembershipDto;
+import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class SimplePagesController{
 
     @GetMapping("/")
     public String getIndexPage(){
-        Optional<User> userOptional = utils.getCurrentUser();
+        Optional<UserDto> userOptional = utils.getCurrentUser();
         if(userOptional.isPresent()){
             return HOME_PAGE;
         } else{
@@ -66,11 +66,12 @@ public class SimplePagesController{
     @GetMapping("/order")
     @PreAuthorize("hasAuthority('CLIENT')")
     public String getOrderPage(Model model) throws UserNotFoundException {
-        Optional<User> clientOptional = utils.getCurrentUser();
-        User client = clientOptional.orElseThrow(UserNotFoundException::new);
+        Optional<UserDto> clientOptional = utils.getCurrentUser();
+        UserDto client = clientOptional.orElseThrow(UserNotFoundException::new);
 
-        model.addAttribute(DISCOUNT_ATTRIBUTE, client.getDiscount());
-        List<GymMembership> gymMemberships = gymMembershipService.getAll();
+        int clientDiscount = client.getDiscount();
+        model.addAttribute(DISCOUNT_ATTRIBUTE, clientDiscount);
+        List<GymMembershipDto> gymMemberships = gymMembershipService.getAll();
         model.addAttribute(GYM_MEMBERSHIPS_ATTRIBUTE, gymMemberships);
         return GET_MEMBERSHIP_PAGE;
     }

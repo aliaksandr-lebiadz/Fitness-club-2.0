@@ -1,8 +1,9 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.assignment.Exercise;
-import com.epam.fitness.entity.order.Order;
-import com.epam.fitness.entity.user.User;
+import com.epam.fitness.entity.ExerciseDto;
+import com.epam.fitness.entity.OrderDto;
+import com.epam.fitness.entity.UserDto;
+import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.exception.UserNotFoundException;
 import com.epam.fitness.service.api.ExerciseService;
 import com.epam.fitness.service.api.OrderService;
@@ -45,23 +46,24 @@ public class TrainerController {
     @PreAuthorize("hasAuthority('TRAINER')")
     public String getTrainerClientsPage(
             @RequestParam("client_id") Optional<Integer> optionalClientId, Model model)
-            throws UserNotFoundException {
-        Optional<User> trainerOptional = utils.getCurrentUser();
-        User trainer = trainerOptional.orElseThrow(UserNotFoundException::new);
+            throws UserNotFoundException, ServiceException {
+        Optional<UserDto> trainerOptional = utils.getCurrentUser();
+        UserDto trainer = trainerOptional.orElseThrow(UserNotFoundException::new);
 
         if(optionalClientId.isPresent()){
             int clientId = optionalClientId.get();
             setOrdersAndExercises(clientId, trainer, model);
         }
-        List<User> clients = userService.getClientsOfTrainer(trainer);
+        List<UserDto> clients = userService.getClientsOfTrainer(trainer);
         model.addAttribute(CLIENTS_ATTRIBUTE, clients);
         return TRAINER_CLIENTS_PAGE;
     }
 
-    private void setOrdersAndExercises(int clientId, User trainer, Model model){
-        List<Order> clientOrders = orderService.getOrdersOfTrainerClient(clientId, trainer);
+    private void setOrdersAndExercises(int clientId, UserDto trainer, Model model)
+            throws ServiceException{
+        List<OrderDto> clientOrders = orderService.getOrdersOfTrainerClient(clientId, trainer);
         model.addAttribute(CLIENT_ORDERS_ATTRIBUTE, clientOrders);
-        List<Exercise> exercises = exerciseService.getAll();
+        List<ExerciseDto> exercises = exerciseService.getAll();
         model.addAttribute(EXERCISES_ATTRIBUTE, exercises);
     }
 
