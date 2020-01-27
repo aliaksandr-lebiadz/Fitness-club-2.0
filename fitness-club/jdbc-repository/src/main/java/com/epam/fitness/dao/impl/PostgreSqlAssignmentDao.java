@@ -28,14 +28,14 @@ public class PostgreSqlAssignmentDao extends AbstractDao<Assignment> implements 
                     "JOIN exercise AS e ON a.exercise_id = e.id WHERE a.id = ?";
     private static final String SAVE_ASSIGNMENT_QUERY = "INSERT INTO assignment" +
             "(id, order_id, exercise_id, amount_of_sets, amount_of_reps, workout_date, status) " +
-            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?::status) " +
+            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?) " +
             "ON CONFLICT(id) DO UPDATE SET " +
             "order_id = EXCLUDED.order_id," +
             "exercise_id = EXCLUDED.exercise_id," +
             "amount_of_sets = EXCLUDED.amount_of_sets," +
             "amount_of_reps = EXCLUDED.amount_of_reps," +
             "workout_date = EXCLUDED.workout_date," +
-            "status = EXCLUDED.status::status";
+            "status = EXCLUDED.status";
 
     @Autowired
     public PostgreSqlAssignmentDao(JdbcTemplate jdbcTemplate, RowMapper<Assignment> rowMapper) {

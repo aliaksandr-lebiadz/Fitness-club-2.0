@@ -31,14 +31,14 @@ public class PostgreSqlOrderDao extends AbstractDao<Order> implements OrderDao {
             "SELECT * FROM client_order AS o JOIN fitness_user AS u ON o.client_id = u.id WHERE u.id = ?";
     private static final String SAVE_ORDER_QUERY = "INSERT INTO client_order " +
             "(id, client_id, begin_date, end_date, price, feedback, nutrition_type, trainer_id) " +
-            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?::nutrition_type, ?) " +
+            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?, ?) " +
             "ON CONFLICT(id) DO UPDATE SET " +
             "client_id = EXCLUDED.client_id," +
             "begin_date = EXCLUDED.begin_date," +
             "end_date = EXCLUDED.end_date," +
             "price = EXCLUDED.price," +
             "feedback = EXCLUDED.feedback," +
-            "nutrition_type = EXCLUDED.nutrition_type::nutrition_type," +
+            "nutrition_type = EXCLUDED.nutrition_type," +
             "trainer_id = EXCLUDED.trainer_id";
 
     @Autowired

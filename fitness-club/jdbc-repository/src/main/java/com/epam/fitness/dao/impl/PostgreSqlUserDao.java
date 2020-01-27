@@ -29,13 +29,13 @@ public class PostgreSqlUserDao extends AbstractDao<User> implements UserDao {
             "SELECT * FROM fitness_user WHERE role = 'TRAINER' ORDER BY RANDOM() LIMIT 1";
     private static final String SAVE_USER_QUERY = "INSERT INTO fitness_user" +
             "(id, email, password, first_name, second_name, role, discount) " +
-            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?::user_role, ?) " +
+            "VALUES(COALESCE(?, (SELECT MAX(id) FROM client_order as uid) + 1, 1), ?, ?, ?, ?, ?, ?) " +
             "ON CONFLICT(id) DO UPDATE SET " +
             "email = EXCLUDED.email," +
             "password = EXCLUDED.password," +
             "first_name = EXCLUDED.first_name," +
             "second_name = EXCLUDED.second_name," +
-            "role = EXCLUDED.role::user_role," +
+            "role = EXCLUDED.role," +
             "discount = EXCLUDED.discount";
 
     @Autowired
