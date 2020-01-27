@@ -1,25 +1,34 @@
 package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dao.api.Dao;
+import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
+import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GymMembershipServiceImpl implements GymMembershipService {
 
-    private Dao<GymMembership> gymMembershipDao;
+    private Dao<GymMembership> dao;
+    private DtoMapper<GymMembership, GymMembershipDto> mapper;
 
     @Autowired
-    public GymMembershipServiceImpl(Dao<GymMembership> gymMembershipDao){
-        this.gymMembershipDao = gymMembershipDao;
+    public GymMembershipServiceImpl(Dao<GymMembership> dao,
+                                    DtoMapper<GymMembership, GymMembershipDto> mapper){
+        this.dao = dao;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<GymMembership> getAll() {
-        return gymMembershipDao.getAll();
+    public List<GymMembershipDto> getAll() {
+        List<GymMembership> exercises = dao.getAll();
+        return exercises.stream()
+                .map(user -> mapper.mapToDto(user))
+                .collect(Collectors.toList());
     }
 }

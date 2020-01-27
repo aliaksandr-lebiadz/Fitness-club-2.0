@@ -2,10 +2,13 @@ package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dao.api.UserDao;
+import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
-import com.epam.fitness.entity.order.NutritionType;
+import com.epam.fitness.entity.OrderDto;
+import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
+import com.epam.fitness.exception.EntityMappingException;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.service.api.OrderService;
@@ -17,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -25,20 +29,27 @@ public class OrderServiceImpl implements OrderService {
     private Dao<GymMembership> gymMembershipDao;
     private OrderUtils utils;
     private UserDao userDao;
+    private DtoMapper<Order, OrderDto> orderDtoMapper;
+    private DtoMapper<User, UserDto> userDtoMapper;
 
     @Autowired
     public OrderServiceImpl(OrderDao orderDao,
                             Dao<GymMembership> gymMembershipDao,
                             UserDao userDao,
-                            OrderUtils utils){
+                            OrderUtils utils,
+                            DtoMapper<Order, OrderDto> orderDtoMapper,
+                            DtoMapper<User, UserDto> userDtoMapper){
         this.orderDao = orderDao;
         this.gymMembershipDao = gymMembershipDao;
         this.userDao = userDao;
         this.utils = utils;
+        this.orderDtoMapper = orderDtoMapper;
+        this.userDtoMapper = userDtoMapper;
     }
 
     @Override
-    public void create(User client, int membershipId) throws ServiceException {
+    public void create(UserDto clientDto, int membershipId) throws ServiceException {
+        User client = mapUserDtoToEntity(clientDto);
         Optional<GymMembership> gymMembershipOptional = gymMembershipDao.findById(membershipId);
         GymMembership gymMembership = gymMembershipOptional
                 .orElseThrow(() -> new ServiceException("Gym membership with the id " + membershipId + " isn't found!"));
@@ -52,31 +63,47 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersOfTrainerClient(int clientId, User trainer) {
-        return orderDao.findOrdersOfTrainerClient(clientId, trainer);
+    public List<OrderDto> getOrdersOfTrainerClient(int clientId, UserDto trainerDto) throws ServiceException{
+        try{
+            User trainer = userDtoMapper.mapToEntity(trainerDto);
+            List<Order> orders = orderDao.findOrdersOfTrainerClient(clientId, trainer);
+            return mapOrdersToDto(orders);
+        } catch (EntityMappingException ex){
+            throw new ServiceException(ex.getMessage(), ex);
+        }
     }
 
     @Override
-    public List<Order> getOrdersOfClient(User client) {
-        return orderDao.findOrdersOfClient(client);
+    public List<OrderDto> getOrdersOfClient(UserDto clientDto) throws ServiceException{
+        try{
+            User client = userDtoMapper.mapToEntity(clientDto);
+            List<Order> orders =  orderDao.findOrdersOfClient(client);
+            return mapOrdersToDto(orders);
+        } catch (EntityMappingException ex){
+            throw new ServiceException(ex.getMessage(), ex);
+        }
     }
 
     @Override
-    public void updateFeedbackById(int id, String feedback) throws ServiceException {
+    public Optional<OrderDto> getById(int id) {
         Optional<Order> orderOptional = orderDao.findById(id);
-        Order order = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + id + " not found!"));
-        order.setFeedback(feedback);
-        orderDao.save(order);
+        if(orderOptional.isPresent()){
+            Order order = orderOptional.get();
+            OrderDto orderDto = orderDtoMapper.mapToDto(order);
+            return Optional.of(orderDto);
+        } else{
+            return Optional.empty();
+        }
     }
 
     @Override
-    public void updateNutritionById(int id, NutritionType nutritionType) throws ServiceException {
-        Optional<Order> orderOptional = orderDao.findById(id);
-        Order order = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + id + " not found!"));
-        order.setNutritionType(nutritionType);
-        orderDao.save(order);
+    public void update(OrderDto orderDto) throws ServiceException{
+        try{
+            Order order = orderDtoMapper.mapToEntity(orderDto);
+            orderDao.save(order);
+        } catch (EntityMappingException ex){
+            throw new ServiceException(ex.getMessage(), ex);
+        }
     }
 
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){
@@ -99,5 +126,19 @@ public class OrderServiceImpl implements OrderService {
                 .setEndDate(endDate)
                 .setPrice(price)
                 .build();
+    }
+
+    private List<OrderDto> mapOrdersToDto(List<Order> orders){
+        return orders.stream()
+                .map(order -> orderDtoMapper.mapToDto(order))
+                .collect(Collectors.toList());
+    }
+
+    private User mapUserDtoToEntity(UserDto userDto) throws ServiceException{
+        try{
+            return userDtoMapper.mapToEntity(userDto);
+        } catch (EntityMappingException ex){
+            throw new ServiceException(ex.getMessage(), ex);
+        }
     }
 }
