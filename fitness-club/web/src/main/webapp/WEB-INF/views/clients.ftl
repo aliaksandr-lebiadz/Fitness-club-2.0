@@ -33,7 +33,7 @@
 
 
     <div id="container">
-        <@display.table class="display-table" name=userList uid="row" pagesize=5 export=false>
+        <@display.table class="display-table" name=userList uid="row" pagesize=5 export=false sort="list" defaultsort=1>
             <@display.column property="id" class="hidden" headerClass="hidden"/>
             <@display.column title="${name}">
                 ${row.firstName} ${row.secondName}

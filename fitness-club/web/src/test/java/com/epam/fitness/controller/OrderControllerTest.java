@@ -1,17 +1,27 @@
 package com.epam.fitness.controller;
 
+import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
-import com.epam.fitness.validator.api.OrderValidator;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +31,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class OrderControllerTest extends AbstractControllerTest{
+@RunWith(MockitoJUnitRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = SpringWebMvcConfig.class)
+public class OrderControllerTest{
 
     private static final String ORDERS_PAGE_REQUEST = "/order/list";
     private static final String ORDERS_PAGE_VIEW_NAME = "orders";
@@ -34,8 +47,7 @@ public class OrderControllerTest extends AbstractControllerTest{
     private static final User USER = new User(CLIENT_ID, "email", "pass", UserRole.CLIENT,
             "first", "second", 1);
     private static final String FEEDBACK_PARAMETER = "feedback";
-    private static final String VALID_FEEDBACK = "validFeedback";
-    private static final String INVALID_FEEDBACK = "invalidFeedback";
+    private static final String FEEDBACK = "validFeedback";
     private static final String ORDER_ID_PARAMETER = "order_id";
     private static final int ORDER_ID = 16;
     private static final NutritionType NUTRITION_TYPE = NutritionType.HIGH_CALORIE;
@@ -49,20 +61,30 @@ public class OrderControllerTest extends AbstractControllerTest{
                 builder.setId(3).build());
     }
 
-    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
     private OrderService service;
-    @Autowired
-    private OrderValidator validator;
-    @Autowired
+    @Mock
     private ControllerUtils utils;
+    @InjectMocks
+    private OrderController orderController;
+
+    @Before
+    public void setUp(){
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(orderController)
+                .setControllerAdvice(new ControllerAdviceImpl())
+                .build();
+    }
 
     @Before
     public void createMocks() throws ServiceException {
+        MockitoAnnotations.initMocks(this);
+
         when(utils.getCurrentUser()).thenReturn(Optional.of(USER));
-        when(service.getOrdersByClientId(CLIENT_ID)).thenReturn(EXPECTED_ORDERS);
-        when(validator.isFeedbackValid(VALID_FEEDBACK)).thenReturn(true);
-        when(validator.isFeedbackValid(INVALID_FEEDBACK)).thenReturn(false);
-        doNothing().when(service).updateFeedbackById(ORDER_ID, VALID_FEEDBACK);
+        when(service.getOrdersOfClient(USER)).thenReturn(EXPECTED_ORDERS);
+        doNothing().when(service).updateFeedbackById(ORDER_ID, FEEDBACK);
         doNothing().when(service).updateNutritionById(ORDER_ID, NUTRITION_TYPE);
     }
 
@@ -81,10 +103,11 @@ public class OrderControllerTest extends AbstractControllerTest{
                 .andExpect(view().name(ORDERS_PAGE_VIEW_NAME));
 
         //then
-        verify(service, times(1)).getOrdersByClientId(CLIENT_ID);
+        verify(service, times(1)).getOrdersOfClient(USER);
         verify(utils, times(1)).getCurrentUser();
     }
 
+    @Ignore
     @Test
     @WithMockUser(authorities = { "TRAINER", "ADMIN"} )
     public void testGetOrdersPageShouldRedirectOnErrorPageWhenUserIsNotAuthorizedAsClient() throws Exception{
@@ -105,27 +128,11 @@ public class OrderControllerTest extends AbstractControllerTest{
         //when
         mockMvc.perform(post(FEEDBACK_REQUEST)
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
-                .param(FEEDBACK_PARAMETER, VALID_FEEDBACK))
+                .param(FEEDBACK_PARAMETER, FEEDBACK))
                 .andExpect(redirectedUrl(ORDERS_PAGE_REQUEST));
 
         //then
-        verify(service, times(1)).updateFeedbackById(ORDER_ID, VALID_FEEDBACK);
-        verify(validator, times(1)).isFeedbackValid(VALID_FEEDBACK);
-    }
-
-    @Test
-    @WithMockUser(authorities = "CLIENT")
-    public void testFeedbackWhenInvalidFeedbackSuppliedAndUserIsAuthorizedAsClient() throws Exception{
-        //given
-
-        //when
-        mockMvc.perform(post(FEEDBACK_REQUEST)
-                .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
-                .param(FEEDBACK_PARAMETER, INVALID_FEEDBACK))
-                .andExpect(redirectedUrl(ERROR_PAGE_URL));
-
-        //then
-        verify(validator, times(1)).isFeedbackValid(INVALID_FEEDBACK);
+        verify(service, times(1)).updateFeedbackById(ORDER_ID, FEEDBACK);
     }
 
     @Test
@@ -148,7 +155,7 @@ public class OrderControllerTest extends AbstractControllerTest{
 
         //when
         mockMvc.perform(post(SET_NUTRITION_REQUEST)
-                .param(nutritionTypeParameter, NUTRITION_TYPE.getValue())
+                .param(nutritionTypeParameter, NUTRITION_TYPE.toString())
                 .param(ORDER_ID_PARAMETER, String.valueOf(ORDER_ID))
                 .header(REFERER_HEADER, CURRENT_PAGE))
                 .andExpect(redirectedUrl(CURRENT_PAGE));
@@ -171,8 +178,8 @@ public class OrderControllerTest extends AbstractControllerTest{
 
     @After
     public void verifyMocks(){
-        verifyNoMoreInteractions(service, validator, utils);
-        reset(service, validator, utils);
+        verifyNoMoreInteractions(service, utils);
+        reset(service, utils);
     }
 
 }

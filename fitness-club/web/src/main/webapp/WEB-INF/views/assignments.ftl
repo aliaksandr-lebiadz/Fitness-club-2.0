@@ -116,7 +116,6 @@
                     <@display.column property="amountOfReps" title="${amount_of_reps}"/>
                     <@display.column title="${status}">
                         <@status_localizer value="${assignment.status}"/>
-                        <#--<@fc.statuslocalizer value="${assignment.status}"/>-->
                     </@display.column>
                     <@display.setProperty name="paging.banner.items_name" value="${pages_name}"/>
                 </@display.table>

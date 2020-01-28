@@ -37,7 +37,7 @@
     <#if orderList?size != 0>
         <div id="container">
             <form class="check-submit-form" id="orders-form" action="<@spring.url '/assignment/list'/>">
-                <@display.table class="display-table" name=orderList uid="row" pagesize=5 export=false>
+                <@display.table class="display-table" name=orderList uid="row" pagesize=5 export=false sort="list" defaultsort=1>
                     <@display.column property="id" class="hidden" headerClass="hidden"/>
                     <@display.column title="${begin_date}" value="${(row.beginDate?date)!'UNDEFINED'}"/>
                     <@display.column title="${end_date}" value="${(row.endDate?date)!'UNDEFINED'}"/>

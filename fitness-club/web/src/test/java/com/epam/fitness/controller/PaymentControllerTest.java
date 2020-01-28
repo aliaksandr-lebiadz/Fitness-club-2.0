@@ -1,15 +1,25 @@
 package com.epam.fitness.controller;
 
+import com.epam.fitness.config.SpringWebMvcConfig;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.validator.api.PaymentValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
@@ -17,10 +27,13 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class PaymentControllerTest extends AbstractControllerTest{
+@RunWith(MockitoJUnitRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = SpringWebMvcConfig.class)
+public class PaymentControllerTest{
 
     private static final String GET_MEMBERSHIP_REQUEST = "/payment/getMembership";
-    private static final String VALID_CARD_NUMBER = "1234123412341234";
+    private static final String VALID_CARD_NUMBER = "4111111111111111";
     private static final String VALID_EXPIRATION_DATE = "11/20";
     private static final String VALID_CVV = "123";
     private static final String INVALID_CARD_NUMBER = "12341234123412345";
@@ -36,15 +49,29 @@ public class PaymentControllerTest extends AbstractControllerTest{
     private static final String CVV_PARAMETER = "cvv";
     private static final String MEMBERSHIP_SELECT_PARAMETER = "membership_select";
 
-    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
     private OrderService service;
-    @Autowired
+    @Mock
     private PaymentValidator validator;
-    @Autowired
+    @Mock
     private ControllerUtils utils;
+    @InjectMocks
+    private PaymentController paymentController;
+
+    @Before
+    public void setUp(){
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(paymentController)
+                .setControllerAdvice(new ControllerAdviceImpl())
+                .build();
+    }
 
     @Before
     public void createMocks() throws ServiceException {
+        MockitoAnnotations.initMocks(this);
+
         when(utils.getCurrentUser()).thenReturn(Optional.of(CLIENT));
         when(validator.isCardNumberValid(VALID_CARD_NUMBER)).thenReturn(true);
         when(validator.isExpirationDateValid(VALID_EXPIRATION_DATE)).thenReturn(true);
@@ -78,7 +105,7 @@ public class PaymentControllerTest extends AbstractControllerTest{
 
     @Test
     @WithMockUser(authorities = "CLIENT")
-    public void testGetMembershipWhenInvalidParametersSuppliedAndUserIsAuthorizedAsClient() throws Exception{
+    public void testGetMembershipShouldRedirectOnErrorPageWhenInvalidParametersSuppliedAndUserIsAuthorizedAsClient() throws Exception{
         //given
 
         //when

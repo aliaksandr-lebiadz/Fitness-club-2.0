@@ -4,6 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -30,6 +31,11 @@ public class SpringWebMvcConfig implements WebMvcConfigurer {
     private static final String MESSAGE_SOURCE_BASENAME = "classpath:pages_content";
     private static final String MESSAGE_SOURCE_ENCODING = "UTF-8";
     private static final String CHANGE_LOCALE_PARAMETER = "lang";
+
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor(){
+        return new MethodValidationPostProcessor();
+    }
 
     @Bean
     public ViewResolver viewResolver() {

@@ -1,11 +1,11 @@
 package com.epam.fitness.service.api;
 
-import com.epam.fitness.entity.assignment.Exercise;
+import com.epam.fitness.entity.ExerciseDto;
 
 import java.util.List;
 
 public interface ExerciseService {
 
-    List<Exercise> getAll();
+    List<ExerciseDto> getAll();
 
 }

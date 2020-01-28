@@ -1,7 +1,6 @@
-CREATE user_role AS ENUM ('client', 'trainer', 'admin');
 create table if not exists fitness_user(
 	id SERIAL not null,
-    role user_role not null,
+    role varchar(7) not null,
     email varchar(255) not null,
     password varchar(255) not null,
     first_name varchar(255),
@@ -23,7 +22,6 @@ create table if not exists exercise(
     primary key(id)
 );
 
-CREATE TYPE nutrition_type AS ENUM ('low calorie', 'medium calorie', 'high calorie');
 create table if not exists client_order(
 	id SERIAL not null,
     client_id int not null,
@@ -32,13 +30,12 @@ create table if not exists client_order(
     price decimal(10, 2) not null,
     trainer_id int not null,
     feedback text,
-    nutrition_type nutrition_type,
+    nutrition_type varchar(14),
     primary key(id),
     foreign key(trainer_id) references fitness_user(id),
     foreign key(client_id) references fitness_user(id)
 );
 
-CREATE TYPE status AS ENUM ('new', 'changed', 'accepted', 'canceled');
 create table if not exists assignment(
 	id SERIAL not null,
     order_id int not null,
@@ -46,7 +43,7 @@ create table if not exists assignment(
     amount_of_sets smallint not null,
     amount_of_reps smallint not null,
     workout_date date not null,
-    status status not null default 'new',
+    status varchar(8) not null default 'NEW',
     primary key(id),
     foreign key(order_id) references client_order(id),
     foreign key(exercise_id) references exercise(id)

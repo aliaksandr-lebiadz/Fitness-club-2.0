@@ -1,0 +1,32 @@
+package com.epam.fitness.dao.api;
+
+import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.entity.user.User;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+/**
+ * <p>An interface specified for an order entity
+ * to provide an access to it.</p>
+ *
+ * @see Order
+ */
+@Transactional
+public interface OrderDao extends Dao<Order> {
+
+    /**
+     * <p>Finds orders with the supplied client's id and trainer's id.</p>
+     *
+     * @return list of found orders
+     */
+    List<Order> findOrdersOfTrainerClient(int clientId, User trainer);
+
+    /**
+     * <p>Finds orders of the supplied client.</p>
+     *
+     * @return list of found orders
+     */
+    List<Order> findOrdersOfClient(User client);
+
+}

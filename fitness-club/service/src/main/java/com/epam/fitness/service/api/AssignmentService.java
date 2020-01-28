@@ -1,21 +1,20 @@
 package com.epam.fitness.service.api;
 
-import com.epam.fitness.entity.order.NutritionType;
-import com.epam.fitness.exception.ServiceException;
-import com.epam.fitness.entity.assignment.Assignment;
+import com.epam.fitness.entity.AssignmentDto;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
-import com.epam.fitness.entity.assignment.Exercise;
+import com.epam.fitness.exception.ServiceException;
 
-import java.util.Date;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 public interface AssignmentService {
 
-    NutritionType getNutritionTypeByOrderId(int orderId) throws ServiceException;
-    void changeStatusById(int id, AssignmentStatus status) throws ServiceException;
-    void updateById(int id, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate) throws ServiceException;
-    void create(Assignment assignment);
-    List<Assignment> getAllByOrderId(int orderId);
-    Optional<Assignment> findById(int id);
+    void updateStatusById(int id, AssignmentStatus status) throws ServiceException;
+    void update(AssignmentDto assignment) throws ServiceException;
+
+    @Transactional
+    void create(int orderId, int exerciseId, AssignmentDto assignment) throws ServiceException;
+
+    @Transactional
+    List<AssignmentDto> getAllByOrderId(int orderId) throws ServiceException;
 }
