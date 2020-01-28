@@ -25,6 +25,7 @@
         <build.number>SNAPSHOT</build.number>
         <build.timestamp>${build.timestamp}</build.timestamp>
         <spring.version>5.2.1.RELEASE</spring.version>
+        <jackson.version>2.9.4</jackson.version>
     </properties>
 
     <dependencies>
@@ -118,6 +119,16 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
