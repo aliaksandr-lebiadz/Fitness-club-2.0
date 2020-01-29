@@ -2,7 +2,6 @@ package com.epam.fitness.controller.rest;
 
 import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
-import com.epam.fitness.entity.PaymentDto;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
