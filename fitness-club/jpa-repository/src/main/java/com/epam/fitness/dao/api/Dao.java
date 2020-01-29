@@ -32,11 +32,9 @@ public interface Dao<T extends Identifiable> {
     void save(T entity);
 
     /**
-     * <p>Deletes an entity by id.</p>
-     *
-     * @param id id of the entity to delete
+     * <p>Deletes the supplied entity.</p>
      */
-    void deleteById(int id);
+    void delete(T entity);
 
     /**
      * <p>Finds an entity by id.</p>
