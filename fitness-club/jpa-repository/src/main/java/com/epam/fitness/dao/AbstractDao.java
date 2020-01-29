@@ -61,8 +61,9 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     }
 
     @Override
-    public void deleteById(int id){
-        throw new UnsupportedOperationException();
+    public void delete(T entity){
+        Session session = getCurrentSession();
+        session.delete(entity);
     }
 
     protected CriteriaBuilder getCriteriaBuilder(){
