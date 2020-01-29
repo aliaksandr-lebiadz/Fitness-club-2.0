@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,11 +33,11 @@ public class Order implements Identifiable, Serializable {
 
     @Column(name = "begin_date")
     @NotNull
-    private Date beginDate;
+    private LocalDateTime beginDate;
 
     @Column(name = "end_date")
     @NotNull
-    private Date endDate;
+    private LocalDateTime endDate;
 
     @Length(min = 10, max = 1000)
     private String feedback;
@@ -64,11 +64,11 @@ public class Order implements Identifiable, Serializable {
         return id;
     }
 
-    public Date getBeginDate() {
+    public LocalDateTime getBeginDate() {
         return beginDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
@@ -116,12 +116,12 @@ public class Order implements Identifiable, Serializable {
             return this;
         }
 
-        public Builder setBeginDate(Date beginDate){
+        public Builder setBeginDate(LocalDateTime beginDate){
             Order.this.beginDate = beginDate;
             return this;
         }
 
-        public Builder setEndDate(Date endDate){
+        public Builder setEndDate(LocalDateTime endDate){
             Order.this.endDate = endDate;
             return this;
         }
