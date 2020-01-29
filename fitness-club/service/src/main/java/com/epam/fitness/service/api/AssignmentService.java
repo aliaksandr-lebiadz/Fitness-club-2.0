@@ -10,10 +10,10 @@ import java.util.List;
 public interface AssignmentService {
 
     void updateStatusById(int id, AssignmentStatus status) throws ServiceException;
-    void update(AssignmentDto assignment) throws ServiceException;
+    void updateById(int id, AssignmentDto assignment) throws ServiceException;
 
     @Transactional
-    void create(int orderId, int exerciseId, AssignmentDto assignment) throws ServiceException;
+    void create(int orderId, AssignmentDto assignmentDto) throws ServiceException;
 
     @Transactional
     List<AssignmentDto> getAllByOrderId(int orderId) throws ServiceException;

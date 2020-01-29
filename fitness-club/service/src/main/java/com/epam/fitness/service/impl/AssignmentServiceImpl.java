@@ -3,9 +3,9 @@ package com.epam.fitness.service.impl;
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.AssignmentDto;
+import com.epam.fitness.entity.ExerciseDto;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.order.Order;
-import com.epam.fitness.exception.EntityMappingException;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.dao.api.AssignmentDao;
@@ -15,8 +15,10 @@ import com.epam.fitness.service.api.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,14 +53,38 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void update(AssignmentDto assignmentDto) throws ServiceException{
-        try{
-            Assignment assignment = assignmentDtoMapper.mapToEntity(assignmentDto);
-            assignment.setStatus(AssignmentStatus.CHANGED);
-            assignmentDao.save(assignment);
-        } catch (EntityMappingException ex){
-            throw new ServiceException(ex.getMessage(), ex);
+    public void updateById(int id, AssignmentDto assignmentDto) throws ServiceException{
+        //TODO refactor
+        Optional<Assignment> assignmentOptional = assignmentDao.findById(id);
+        Assignment assignment = assignmentOptional
+                .orElseThrow(() -> new ServiceException("Assignment with id " + id + " not found!"));
+        LocalDate workoutDate = assignmentDto.getWorkoutDate();
+        if (Objects.nonNull(workoutDate)) {
+            assignment.setWorkoutDate(workoutDate);
         }
+        Integer amountOfSets = assignmentDto.getAmountOfSets();
+        if(Objects.nonNull(amountOfSets)){
+            assignment.setAmountOfSets(amountOfSets);
+        }
+        Integer amountOfReps = assignmentDto.getAmountOfReps();
+        if(Objects.nonNull(amountOfReps)){
+            assignment.setAmountOfReps(amountOfReps);
+        }
+        ExerciseDto exerciseDto = assignmentDto.getExercise();
+        if(Objects.nonNull(exerciseDto)){
+            int exerciseId = exerciseDto.getId();
+            Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
+            Exercise exercise = exerciseOptional
+                    .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
+            assignment.setExercise(exercise);
+        }
+        AssignmentStatus assignmentStatus = assignmentDto.getStatus();
+        if(assignmentStatus == AssignmentStatus.NEW){
+            assignment.setStatus(AssignmentStatus.CHANGED);
+        } else{
+            assignment.setStatus(assignmentStatus);
+        }
+        assignmentDao.save(assignment);
     }
 
     @Override
@@ -71,22 +97,17 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void create(int orderId, int exerciseId, AssignmentDto assignmentDto)
-            throws ServiceException {
+    public void create(int orderId, AssignmentDto assignmentDto) throws ServiceException{
         Optional<Order> orderOptional = orderDao.findById(orderId);
         Order order = orderOptional
                 .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+        Assignment assignment = assignmentDtoMapper.mapToEntity(assignmentDto);
+        assignment.setOrder(order);
+        int exerciseId = assignmentDto.getExercise().getId();
         Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
         Exercise exercise = exerciseOptional
                 .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
-        Assignment assignment = createAssignment(order, exercise, assignmentDto);
+        assignment.setExercise(exercise);
         assignmentDao.save(assignment);
-    }
-
-    private Assignment createAssignment(Order order, Exercise exercise, AssignmentDto assignmentDto){
-        int amountOfSets = assignmentDto.getAmountOfSets();
-        int amountOfReps = assignmentDto.getAmountOfReps();
-        Date workoutDate = assignmentDto.getWorkoutDate();
-        return new Assignment(order, exercise, amountOfSets, amountOfReps, workoutDate);
     }
 }
