@@ -38,5 +38,9 @@ public interface UserDao extends Dao<User> {
      */
     Optional<User> findUserByEmail(String email);
 
+    List<User> findUsersByParameters(String firstName, String secondName, String email);
+
     Optional<User> getRandomTrainer();
+
+    List<User> sortUsers(boolean asc);
 }
