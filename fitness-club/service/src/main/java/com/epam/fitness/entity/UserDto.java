@@ -2,6 +2,8 @@ package com.epam.fitness.entity;
 
 import com.epam.fitness.entity.user.UserRole;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 public class UserDto implements Identifiable, Serializable {
@@ -14,6 +16,9 @@ public class UserDto implements Identifiable, Serializable {
     private String firstName;
     private String secondName;
     private UserRole role;
+
+    @Min(0)
+    @Max(100)
     private int discount;
 
     public UserDto() {}
@@ -58,7 +63,7 @@ public class UserDto implements Identifiable, Serializable {
         return role;
     }
 
-    public int getDiscount() {
+    public Integer getDiscount() {
         return discount;
     }
 
@@ -89,5 +94,4 @@ public class UserDto implements Identifiable, Serializable {
     public void setDiscount(int discount) {
         this.discount = discount;
     }
-
 }
