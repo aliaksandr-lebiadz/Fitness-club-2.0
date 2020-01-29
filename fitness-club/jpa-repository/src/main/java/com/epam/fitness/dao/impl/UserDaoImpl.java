@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
@@ -21,6 +19,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     private static final String ROLE_PARAMETER = "role";
     private static final String ORDERS_FIELD = "orders";
     private static final String TRAINER_PARAMETER = "trainer";
+    private static final String FIRST_NAME_PARAMETER = "firstName";
+    private static final String SECOND_NAME_PARAMETER = "secondName";
 
     private static Random random = new Random();
 
@@ -70,6 +70,34 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
+    public List<User> findUsersByParameters(String firstName, String secondName, String email) {
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<User> user = getRoot(criteriaQuery);
+        List<Predicate> predicates = new ArrayList<>();
+        if(Objects.nonNull(firstName)){
+            Predicate firstNamePredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(FIRST_NAME_PARAMETER)), "%" + firstName.toLowerCase() + "%");
+            predicates.add(firstNamePredicate);
+        }
+        if(Objects.nonNull(secondName)){
+            Predicate secondNamePredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(SECOND_NAME_PARAMETER)), "%" + secondName.toLowerCase() + "%");
+            predicates.add(secondNamePredicate);
+        }
+        if(Objects.nonNull(email)){
+            Predicate emailPredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(EMAIL_PARAMETER)), "%" + email.toLowerCase() + "%");
+            predicates.add(emailPredicate);
+        }
+        criteriaQuery
+                .select(user)
+                .where(convert(predicates));
+        Query<User> query = getQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
+    @Override
     public Optional<User> getRandomTrainer() {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
@@ -82,6 +110,19 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         return getRandomTrainerFromList(trainers);
     }
 
+    @Override
+    public List<User> sortUsers(boolean asc) {
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<User> userRoot = getRoot(criteriaQuery);
+        Order order = getOrder(criteriaBuilder, userRoot.get("firstName"), asc);
+        criteriaQuery
+                .select(userRoot)
+                .orderBy(order);
+        Query<User> query = getQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
     private Optional<User> getRandomTrainerFromList(List<User> trainers){
         if(trainers.isEmpty()){
             return Optional.empty();
@@ -90,5 +131,19 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         int size = trainers.size();
         User trainer = trainers.get(random.nextInt(size));
         return Optional.of(trainer);
+    }
+
+    private Order getOrder(CriteriaBuilder criteriaBuilder, Expression<User> expression, boolean asc){
+        if(asc){
+            return criteriaBuilder.asc(expression);
+        } else{
+            return criteriaBuilder.desc(expression);
+        }
+    }
+
+    private Predicate[] convert(List<Predicate> predicates){
+        int size = predicates.size();
+        Predicate[] predicateList = new Predicate[size];
+        return predicates.toArray(predicateList);
     }
 }
