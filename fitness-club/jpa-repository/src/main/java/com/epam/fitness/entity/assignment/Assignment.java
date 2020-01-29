@@ -8,7 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +27,7 @@ public class Assignment implements Identifiable, Serializable {
 
     @Column(name = "workout_date")
     @NotNull
-    private Date workoutDate;
+    private LocalDate workoutDate;
 
     @Column(name = "amount_of_sets")
     @Min(1)
@@ -50,7 +50,7 @@ public class Assignment implements Identifiable, Serializable {
     public Assignment() {}
 
     public Assignment(Exercise exercise, int amountOfSets, int amountOfReps,
-                       Date workoutDate, AssignmentStatus status){
+                      LocalDate workoutDate, AssignmentStatus status){
         this.exercise = exercise;
         this.amountOfSets = amountOfSets;
         this.amountOfReps = amountOfReps;
@@ -58,13 +58,13 @@ public class Assignment implements Identifiable, Serializable {
         this.status = status;
     }
 
-    public Assignment(Order order, Exercise exercise, int amountOfSets, int amountOfReps, Date workoutDate){
+    public Assignment(Order order, Exercise exercise, int amountOfSets, int amountOfReps, LocalDate workoutDate){
         this(exercise, amountOfSets, amountOfReps, workoutDate, AssignmentStatus.NEW);
         this.order = order;
     }
 
     public Assignment(Integer id, Order order, Exercise exercise, int amountOfSets,
-                      int amountOfReps, Date workoutDate, AssignmentStatus status){
+                      int amountOfReps, LocalDate workoutDate, AssignmentStatus status){
         this(order, exercise, amountOfSets, amountOfReps, workoutDate);
         this.id = id;
         this.status = status;
@@ -79,7 +79,7 @@ public class Assignment implements Identifiable, Serializable {
         return order;
     }
 
-    public Date getWorkoutDate() {
+    public LocalDate getWorkoutDate() {
         return workoutDate;
     }
 
@@ -103,7 +103,7 @@ public class Assignment implements Identifiable, Serializable {
         this.status = status;
     }
 
-    public void setWorkoutDate(Date workoutDate) {
+    public void setWorkoutDate(LocalDate workoutDate) {
         this.workoutDate = workoutDate;
     }
 
@@ -117,6 +117,10 @@ public class Assignment implements Identifiable, Serializable {
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
+    }
+
+    public void setOrder(Order order){
+        this.order = order;
     }
 
     @Override
