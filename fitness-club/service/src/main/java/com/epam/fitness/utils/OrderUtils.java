@@ -3,6 +3,8 @@ package com.epam.fitness.utils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -24,10 +26,12 @@ public class OrderUtils {
      * @param monthsAmount a number of months
      * @return the {@link Date} after the supplied months amount
      */
-    public Date getDateAfterMonthsAmount(int monthsAmount){
+    public LocalDateTime getDateAfterMonthsAmount(int monthsAmount){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, monthsAmount);
-        return calendar.getTime();
+        Date date = calendar.getTime();
+        long time = date.getTime();
+        return new Timestamp(time).toLocalDateTime();
     }
 
     /**
