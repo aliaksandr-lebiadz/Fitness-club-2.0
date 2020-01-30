@@ -4,7 +4,7 @@ import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import com.epam.fitness.exception.EntityMappingException;
+import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -45,27 +44,26 @@ public class UserDetailsServiceImplTest {
     private UserDetailsServiceImpl userDetailsService;
 
     @Before
-    public void createMocks() throws EntityMappingException {
-        when(userService.findUserByEmail(NONEXISTENT_EMAIL)).thenReturn(Optional.empty());
-        when(userService.findUserByEmail(EXISTENT_EMAIL)).thenReturn(Optional.of(USER_DTO));
+    public void createMocks() throws ServiceException {
+        when(userService.getUserByEmail(NONEXISTENT_EMAIL)).thenThrow(ServiceException.class);
+        when(userService.getUserByEmail(EXISTENT_EMAIL)).thenReturn(USER_DTO);
         when(userDtoMapper.mapToEntity(USER_DTO)).thenReturn(USER);
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void testLoadUserByUsernameShouldThrowsExceptionWhenNonexistentEmailSupplied(){
+    public void testLoadUserByUsernameShouldThrowsExceptionWhenNonexistentEmailSupplied() throws ServiceException{
         //given
 
         //when
         userDetailsService.loadUserByUsername(NONEXISTENT_EMAIL);
 
         //then
-        verify(userService, times(1)).findUserByEmail(NONEXISTENT_EMAIL);
+        verify(userService, times(1)).getUserByEmail(NONEXISTENT_EMAIL);
         verifyNoMoreInteractions(userService);
     }
 
     @Test
-    public void testLoadUserByUsernameShouldReturnUserDetailsWhenExistentEmailSupplied()
-            throws EntityMappingException{
+    public void testLoadUserByUsernameShouldReturnUserDetailsWhenExistentEmailSupplied() throws ServiceException{
         //given
 
         //when
@@ -76,7 +74,7 @@ public class UserDetailsServiceImplTest {
         Assert.assertEquals(EXPECTED_PASSWORD, actual.getPassword());
         Assert.assertEquals(EXPECTED_AUTHORITIES, actual.getAuthorities());
 
-        verify(userService, times(1)).findUserByEmail(EXISTENT_EMAIL);
+        verify(userService, times(1)).getUserByEmail(EXISTENT_EMAIL);
         verify(userDtoMapper, times(1)).mapToEntity(USER_DTO);
         verifyNoMoreInteractions(userService, userDtoMapper);
     }
