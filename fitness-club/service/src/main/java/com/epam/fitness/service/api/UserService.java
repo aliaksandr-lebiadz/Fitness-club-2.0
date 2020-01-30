@@ -1,5 +1,6 @@
 package com.epam.fitness.service.api;
 
+import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.ServiceException;
 
@@ -19,6 +20,5 @@ public interface UserService {
     void create(UserDto userDto);
     UserDto getById(int id) throws ServiceException;
     void deleteById(int id) throws ServiceException;
-    List<UserDto> getAll();
-    List<UserDto> sortUsers(boolean asc);
+    List<UserDto> sortUsersByName(SortOrder order);
 }

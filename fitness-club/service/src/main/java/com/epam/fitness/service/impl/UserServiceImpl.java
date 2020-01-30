@@ -1,6 +1,7 @@
 package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dto.mapper.DtoMapper;
+import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.UserDto;
@@ -10,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,25 +32,19 @@ public class UserServiceImpl implements UserService {
         User trainer = trainerOptional
                 .orElseThrow(() -> new ServiceException("Trainer with id " + trainerId + " not found!"));
         List<User> clients =  dao.findClientsOfTrainer(trainer);
-        return clients.stream()
-                .map(client -> mapper.mapToDto(client))
-                .collect(Collectors.toList());
+        return mapper.mapToDto(clients);
     }
 
     @Override
     public List<UserDto> getAllClients() {
         List<User> clients = dao.getAllClients();
-        return clients.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+        return mapper.mapToDto(clients);
     }
 
     @Override
     public List<UserDto> searchUsersByParameters(String firstName, String secondName, String email) {
         List<User> users = dao.findUsersByParameters(firstName, secondName, email);
-        return users.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+        return mapper.mapToDto(users);
     }
 
     @Override
@@ -65,9 +60,11 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = dao.findById(id);
         User user = userOptional
                 .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
-        int discount = userDto.getDiscount();
-        user.setDiscount(discount);
-        dao.save(user);
+        Integer discount = userDto.getDiscount();
+        if(Objects.nonNull(discount)){
+            user.setDiscount(discount);
+            dao.save(user);
+        }
     }
 
     @Override
@@ -93,19 +90,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll(){
-        List<User> users = dao.getAll();
-        return users.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<UserDto> sortUsers(boolean asc) {
-        List<User> users = dao.sortUsers(asc);
-        return users.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+    public List<UserDto> sortUsersByName(SortOrder order) {
+        List<User> users = dao.sortUsersByName(order);
+        return mapper.mapToDto(users);
     }
 
 }
