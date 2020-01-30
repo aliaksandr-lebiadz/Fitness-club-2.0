@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
@@ -26,8 +25,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public List<ExerciseDto> getAll() {
         List<Exercise> exercises = dao.getAll();
-        return exercises.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+        return mapper.mapToDto(exercises);
     }
 }

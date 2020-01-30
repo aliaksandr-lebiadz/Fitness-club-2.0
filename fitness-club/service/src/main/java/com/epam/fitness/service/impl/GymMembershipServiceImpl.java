@@ -26,9 +26,7 @@ public class GymMembershipServiceImpl implements GymMembershipService {
 
     @Override
     public List<GymMembershipDto> getAll() {
-        List<GymMembership> exercises = dao.getAll();
-        return exercises.stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+        List<GymMembership> gymMemberships = dao.getAll();
+        return mapper.mapToDto(gymMemberships);
     }
 }
