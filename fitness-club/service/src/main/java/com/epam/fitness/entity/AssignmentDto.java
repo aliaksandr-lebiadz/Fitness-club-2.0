@@ -15,9 +15,9 @@ public class AssignmentDto implements Identifiable, Serializable {
     @FutureOrPresent
     private LocalDate workoutDate;
     @Min(1)
-    private int amountOfSets;
+    private Integer amountOfSets;
     @Min(1)
-    private int amountOfReps;
+    private Integer amountOfReps;
     private ExerciseDto exercise;
     private AssignmentStatus status;
 
@@ -63,7 +63,7 @@ public class AssignmentDto implements Identifiable, Serializable {
         return amountOfSets;
     }
 
-    public void setAmountOfSets(int amountOfSets) {
+    public void setAmountOfSets(Integer amountOfSets) {
         this.amountOfSets = amountOfSets;
     }
 
@@ -71,7 +71,7 @@ public class AssignmentDto implements Identifiable, Serializable {
         return amountOfReps;
     }
 
-    public void setAmountOfReps(int amountOfReps) {
+    public void setAmountOfReps(Integer amountOfReps) {
         this.amountOfReps = amountOfReps;
     }
 

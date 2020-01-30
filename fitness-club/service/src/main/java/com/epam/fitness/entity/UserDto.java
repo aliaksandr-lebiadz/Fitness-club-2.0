@@ -19,7 +19,7 @@ public class UserDto implements Identifiable, Serializable {
 
     @Min(0)
     @Max(100)
-    private int discount;
+    private Integer discount;
 
     public UserDto() {}
 
@@ -91,7 +91,7 @@ public class UserDto implements Identifiable, Serializable {
         this.role = role;
     }
 
-    public void setDiscount(int discount) {
+    public void setDiscount(Integer discount) {
         this.discount = discount;
     }
 }
