@@ -1,4 +1,4 @@
-package com.epam.fitness.controller.rest;
+package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.ExerciseDto;
 import com.epam.fitness.service.api.ExerciseService;

@@ -1,7 +1,8 @@
-package com.epam.fitness.controller.rest;
+package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
+import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -25,18 +27,13 @@ public class UserController {
         this.orderService = orderService;
     }
 
-    @GetMapping
-    public List<UserDto> getUsers(){
-        return userService.getAll();
-    }
-
     @GetMapping("/{id}/clients")
     public List<UserDto> getClientsByTrainerId(@PathVariable int id) throws ServiceException{
         return userService.getClientsByTrainerId(id);
     }
 
     @GetMapping("/clients")
-    public List<UserDto> getClients() throws ServiceException{
+    public List<UserDto> getClients(){
         return userService.getAllClients();
     }
 
@@ -45,15 +42,16 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @GetMapping("/search")
-    public List<UserDto> searchUsersByParameters(@RequestParam(value = "first_name", required = false) String firstName,
-                                        @RequestParam(value = "second_name", required = false) String secondName,
-                                        @RequestParam(required = false) String email) throws ServiceException{
+    @GetMapping
+    public List<UserDto> getUsers(@RequestParam(value = "first_name", required = false) String firstName,
+                                  @RequestParam(value = "second_name", required = false) String secondName,
+                                  @RequestParam(required = false) String email)
+            throws ServiceException{
         return userService.searchUsersByParameters(firstName, secondName, email);
     }
 
     @PostMapping
-    public void createUser(@Valid @RequestBody UserDto user) throws ServiceException {
+    public void createUser(@Valid @RequestBody UserDto user) {
         userService.create(user);
     }
 
@@ -68,8 +66,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}/orders")
-    public List<OrderDto> getOrdersByClientId(@PathVariable int id) throws ServiceException{
-        return orderService.getOrdersByClientId(id);
+    public List<OrderDto> getOrdersByClientId(@PathVariable int id,
+                                              @RequestParam(value = "trainer_id", required = false) Integer trainerId)
+            throws ServiceException{
+        if(Objects.nonNull(trainerId)){
+            return orderService.getOrdersOfTrainerClient(id, trainerId);
+        } else{
+            return orderService.getOrdersByClientId(id);
+        }
     }
 
     @PostMapping("/{id}/orders")
@@ -80,8 +84,8 @@ public class UserController {
     }
 
     @GetMapping("/sort")
-    public List<UserDto> sortUsers(@RequestParam boolean asc){
-        return userService.sortUsers(asc);
+    public List<UserDto> sortUsersByName(@RequestParam(required = false, defaultValue = "ASCENDING") SortOrder order){
+        return userService.sortUsersByName(order);
     }
 
 }
