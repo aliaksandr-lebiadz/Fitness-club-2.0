@@ -2,6 +2,7 @@ package com.epam.fitness.dao.impl;
 
 import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.UserDao;
+import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import org.hibernate.SessionFactory;
@@ -111,11 +112,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public List<User> sortUsers(boolean asc) {
+    public List<User> sortUsersByName(SortOrder sortOrder) {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
         Root<User> userRoot = getRoot(criteriaQuery);
-        Order order = getOrder(criteriaBuilder, userRoot.get("firstName"), asc);
+        Order order = getOrder(criteriaBuilder, userRoot.get(FIRST_NAME_PARAMETER), sortOrder);
         criteriaQuery
                 .select(userRoot)
                 .orderBy(order);
@@ -133,8 +134,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         return Optional.of(trainer);
     }
 
-    private Order getOrder(CriteriaBuilder criteriaBuilder, Expression<User> expression, boolean asc){
-        if(asc){
+    private Order getOrder(CriteriaBuilder criteriaBuilder, Expression<User> expression, SortOrder order){
+        if(order == SortOrder.ASCENDING){
             return criteriaBuilder.asc(expression);
         } else{
             return criteriaBuilder.desc(expression);

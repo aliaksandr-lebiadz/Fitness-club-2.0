@@ -1,5 +1,6 @@
 package com.epam.fitness.dao.api;
 
+import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 
 import javax.transaction.Transactional;
@@ -42,5 +43,5 @@ public interface UserDao extends Dao<User> {
 
     Optional<User> getRandomTrainer();
 
-    List<User> sortUsers(boolean asc);
+    List<User> sortUsersByName(SortOrder order);
 }
