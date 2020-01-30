@@ -19,11 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -33,21 +31,18 @@ public class OrderServiceImpl implements OrderService {
     private OrderUtils utils;
     private UserDao userDao;
     private DtoMapper<Order, OrderDto> orderMapper;
-    private DtoMapper<User, UserDto> userMapper;
 
     @Autowired
     public OrderServiceImpl(OrderDao orderDao,
                             Dao<GymMembership> gymMembershipDao,
                             UserDao userDao,
                             OrderUtils utils,
-                            DtoMapper<Order, OrderDto> orderMapper,
-                            DtoMapper<User, UserDto> userMapper){
+                            DtoMapper<Order, OrderDto> orderMapper){
         this.orderDao = orderDao;
         this.gymMembershipDao = gymMembershipDao;
         this.userDao = userDao;
         this.utils = utils;
         this.orderMapper = orderMapper;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -69,10 +64,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getOrdersOfTrainerClient(int clientId, UserDto trainerDto){
-            User trainer = userMapper.mapToEntity(trainerDto);
-            List<Order> orders = orderDao.findOrdersOfTrainerClient(clientId, trainer);
-            return mapOrdersToDto(orders);
+    public List<OrderDto> getOrdersOfTrainerClient(int clientId, int trainerId) throws ServiceException{
+        Optional<User> trainerOptional = userDao.findById(trainerId);
+        User trainer = trainerOptional
+                .orElseThrow(() -> new ServiceException("Trainer with id " + trainerId + " not found!"));
+        List<Order> orders = orderDao.findOrdersOfTrainerClient(clientId, trainer);
+        return orderMapper.mapToDto(orders);
     }
 
     @Override
@@ -81,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
         User client = clientOptional
                 .orElseThrow(() ->  new ServiceException("Client with id " + clientId + " not found!"));
         List<Order> orders =  orderDao.findOrdersOfClient(client);
-        return mapOrdersToDto(orders);
+        return orderMapper.mapToDto(orders);
     }
 
     @Override
@@ -128,11 +125,5 @@ public class OrderServiceImpl implements OrderService {
                 .setEndDate(endDate)
                 .setPrice(price)
                 .build();
-    }
-
-    private List<OrderDto> mapOrdersToDto(List<Order> orders){
-        return orders.stream()
-                .map(order -> orderMapper.mapToDto(order))
-                .collect(Collectors.toList());
     }
 }
