@@ -16,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
@@ -28,17 +26,17 @@ public class AssignmentServiceImpl implements AssignmentService {
     private AssignmentDao assignmentDao;
     private OrderDao orderDao;
     private Dao<Exercise> exerciseDao;
-    private DtoMapper<Assignment, AssignmentDto> assignmentDtoMapper;
+    private DtoMapper<Assignment, AssignmentDto> assignmentMapper;
 
     @Autowired
     public AssignmentServiceImpl(OrderDao orderDao,
                                  AssignmentDao assignmentDao,
                                  Dao<Exercise> exerciseDao,
-                                 DtoMapper<Assignment, AssignmentDto> assignmentDtoMapper){
+                                 DtoMapper<Assignment, AssignmentDto> assignmentMapper){
         this.orderDao = orderDao;
         this.assignmentDao = assignmentDao;
         this.exerciseDao = exerciseDao;
-        this.assignmentDtoMapper = assignmentDtoMapper;
+        this.assignmentMapper = assignmentMapper;
     }
 
     @Override
@@ -47,52 +45,23 @@ public class AssignmentServiceImpl implements AssignmentService {
         Order order = orderOptional
                 .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
         List<Assignment> assignments = assignmentDao.getAllByOrder(order);
-        return assignments.stream()
-                .map(assignment -> assignmentDtoMapper.mapToDto(assignment))
-                .collect(Collectors.toList());
+        return assignmentMapper.mapToDto(assignments);
     }
 
     @Override
     public void updateById(int id, AssignmentDto assignmentDto) throws ServiceException{
-        //TODO refactor
+
         Optional<Assignment> assignmentOptional = assignmentDao.findById(id);
         Assignment assignment = assignmentOptional
                 .orElseThrow(() -> new ServiceException("Assignment with id " + id + " not found!"));
         LocalDate workoutDate = assignmentDto.getWorkoutDate();
-        if (Objects.nonNull(workoutDate)) {
-            assignment.setWorkoutDate(workoutDate);
-        }
         Integer amountOfSets = assignmentDto.getAmountOfSets();
-        if(Objects.nonNull(amountOfSets)){
-            assignment.setAmountOfSets(amountOfSets);
-        }
         Integer amountOfReps = assignmentDto.getAmountOfReps();
-        if(Objects.nonNull(amountOfReps)){
-            assignment.setAmountOfReps(amountOfReps);
-        }
         ExerciseDto exerciseDto = assignmentDto.getExercise();
-        if(Objects.nonNull(exerciseDto)){
-            int exerciseId = exerciseDto.getId();
-            Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
-            Exercise exercise = exerciseOptional
-                    .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
-            assignment.setExercise(exercise);
-        }
-        AssignmentStatus assignmentStatus = assignmentDto.getStatus();
-        if(assignmentStatus == AssignmentStatus.NEW){
-            assignment.setStatus(AssignmentStatus.CHANGED);
-        } else{
-            assignment.setStatus(assignmentStatus);
-        }
-        assignmentDao.save(assignment);
-    }
+        updateFieldsWhenNonNull(assignment, workoutDate, amountOfSets, amountOfReps, exerciseDto);
+        AssignmentStatus status = assignmentDto.getStatus();
+        updateStatus(assignment, status);
 
-    @Override
-    public void updateStatusById(int id, AssignmentStatus status) throws ServiceException{
-        Optional<Assignment> assignmentOptional = assignmentDao.findById(id);
-        Assignment assignment = assignmentOptional
-                .orElseThrow(() -> new ServiceException("Assignment with id " + id + " not found!"));
-        assignment.setStatus(status);
         assignmentDao.save(assignment);
     }
 
@@ -101,7 +70,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         Optional<Order> orderOptional = orderDao.findById(orderId);
         Order order = orderOptional
                 .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
-        Assignment assignment = assignmentDtoMapper.mapToEntity(assignmentDto);
+        Assignment assignment = assignmentMapper.mapToEntity(assignmentDto);
         assignment.setOrder(order);
         int exerciseId = assignmentDto.getExercise().getId();
         Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
@@ -109,5 +78,42 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
         assignment.setExercise(exercise);
         assignmentDao.save(assignment);
+    }
+
+    private void updateFieldsWhenNonNull(Assignment assignment,
+                                         LocalDate workoutDate, Integer amountOfSets,
+                                         Integer amountOfReps, ExerciseDto exerciseDto) throws ServiceException{
+        if (Objects.nonNull(workoutDate)) {
+            assignment.setWorkoutDate(workoutDate);
+        }
+        if(Objects.nonNull(amountOfSets)){
+            assignment.setAmountOfSets(amountOfSets);
+        }
+        if(Objects.nonNull(amountOfReps)){
+            assignment.setAmountOfReps(amountOfReps);
+        }
+        if(Objects.nonNull(exerciseDto)){
+            Exercise exercise = mapToEntity(exerciseDto);
+            assignment.setExercise(exercise);
+        }
+    }
+
+    private Exercise mapToEntity(ExerciseDto exerciseDto) throws ServiceException{
+        int exerciseId = exerciseDto.getId();
+        Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
+        return exerciseOptional
+                .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
+    }
+
+    private void updateStatus(Assignment assignment, AssignmentStatus status){
+        if(isNew(status)){
+            assignment.setStatus(AssignmentStatus.CHANGED);
+        } else{
+            assignment.setStatus(status);
+        }
+    }
+
+    private boolean isNew(AssignmentStatus status){
+        return status == AssignmentStatus.NEW;
     }
 }
