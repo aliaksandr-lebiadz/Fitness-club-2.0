@@ -20,7 +20,9 @@ class User extends React.Component{
 }
 
 User.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    selected: PropTypes.bool.isRequired
 }
 
 export default User;
