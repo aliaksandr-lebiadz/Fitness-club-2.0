@@ -1,0 +1,24 @@
+body{
+    font-weight: 400;
+    font-family: "Open sans", sans-serif;
+    line-height: 1.5;
+    font-size: 14px;
+    margin: 0;
+}
+
+a{
+    text-decoration: none;
+    outline: none;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+select::-moz-focus-inner{
+    border: none;
+}
