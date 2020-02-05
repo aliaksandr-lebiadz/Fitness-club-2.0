@@ -1,9 +1,13 @@
 package com.epam.fitness.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
@@ -16,6 +20,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import java.util.List;
 import java.util.Locale;
 
 @EnableWebMvc
@@ -31,6 +36,18 @@ public class SpringWebMvcConfig implements WebMvcConfigurer {
     private static final String MESSAGE_SOURCE_BASENAME = "classpath:pages_content";
     private static final String MESSAGE_SOURCE_ENCODING = "UTF-8";
     private static final String CHANGE_LOCALE_PARAMETER = "lang";
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                MappingJackson2HttpMessageConverter jsonMessageConverter = (MappingJackson2HttpMessageConverter) converter;
+                ObjectMapper objectMapper = jsonMessageConverter.getObjectMapper();
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                break;
+            }
+        }
+    }
 
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor(){

@@ -20,22 +20,19 @@ import static org.hamcrest.Matchers.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ExerciseServiceImplTest {
 
-    private static final Exercise SQUAT_EXERCISE = new Exercise(1, "squat");
-    private static final Exercise SIT_UPS_EXERCISE = new Exercise(2, "sit-ups");
-    private static final Exercise PULL_UPS_EXERCISE = new Exercise(3, "pull-ups");
-    private static final ExerciseDto SQUAT_EXERCISE_DTO = new ExerciseDto(1, "squat");
-    private static final ExerciseDto SIT_UPS_EXERCISE_DTO = new ExerciseDto(2, "sit-ups");
-    private static final ExerciseDto PULL_UPS_EXERCISE_DTO = new ExerciseDto(3, "pull-ups");
-
-    private static final List<Exercise> EXERCISES =
-            Arrays.asList(SQUAT_EXERCISE, SIT_UPS_EXERCISE, PULL_UPS_EXERCISE);
-    private static final List<ExerciseDto> EXPECTED_EXERCISES_DTO =
-            Arrays.asList(SQUAT_EXERCISE_DTO, SIT_UPS_EXERCISE_DTO, PULL_UPS_EXERCISE_DTO);
+    private static final List<Exercise> EXERCISES = Arrays.asList(
+            new Exercise(1, "squat"),
+            new Exercise(2, "sit-ups"),
+            new Exercise(3, "pull-ups"));
+    private static final List<ExerciseDto> EXPECTED_EXERCISES_DTO = Arrays.asList(
+            new ExerciseDto(1, "squat"),
+            new ExerciseDto(2, "sit-ups"),
+            new ExerciseDto(3, "pull-ups"));
 
     @Mock
     private Dao<Exercise> exerciseDao;
     @Mock
-    private DtoMapper<Exercise, ExerciseDto> exerciseDtoMapper;
+    private DtoMapper<Exercise, ExerciseDto> exerciseMapper;
     @InjectMocks
     private ExerciseServiceImpl exerciseService;
 
@@ -43,9 +40,7 @@ public class ExerciseServiceImplTest {
     public void testGetAll(){
         //given
         when(exerciseDao.getAll()).thenReturn(EXERCISES);
-        when(exerciseDtoMapper.mapToDto(SQUAT_EXERCISE)).thenReturn(SQUAT_EXERCISE_DTO);
-        when(exerciseDtoMapper.mapToDto(SIT_UPS_EXERCISE)).thenReturn(SIT_UPS_EXERCISE_DTO);
-        when(exerciseDtoMapper.mapToDto(PULL_UPS_EXERCISE)).thenReturn(PULL_UPS_EXERCISE_DTO);
+        when(exerciseMapper.mapToDto(EXERCISES)).thenReturn(EXPECTED_EXERCISES_DTO);
 
         //when
         List<ExerciseDto> actual = exerciseService.getAll();
@@ -54,10 +49,8 @@ public class ExerciseServiceImplTest {
         assertThat(actual, is(equalTo(EXPECTED_EXERCISES_DTO)));
 
         verify(exerciseDao, times(1)).getAll();
-        verify(exerciseDtoMapper, times(1)).mapToDto(SQUAT_EXERCISE);
-        verify(exerciseDtoMapper, times(1)).mapToDto(SIT_UPS_EXERCISE);
-        verify(exerciseDtoMapper, times(1)).mapToDto(PULL_UPS_EXERCISE);
-        verifyNoMoreInteractions(exerciseDao, exerciseDtoMapper);
+        verify(exerciseMapper, times(1)).mapToDto(EXERCISES);
+        verifyNoMoreInteractions(exerciseDao, exerciseMapper);
     }
 
 }

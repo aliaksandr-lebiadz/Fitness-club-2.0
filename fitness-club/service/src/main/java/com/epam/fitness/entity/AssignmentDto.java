@@ -2,34 +2,41 @@ package com.epam.fitness.entity;
 
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AssignmentDto implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -2057066388628609370L;
 
     private Integer id;
-    private Date workoutDate;
-    private int amountOfSets;
-    private int amountOfReps;
+    @FutureOrPresent
+    private LocalDate workoutDate;
+    @Min(1)
+    private Integer amountOfSets;
+    @Min(1)
+    private Integer amountOfReps;
     private ExerciseDto exercise;
     private AssignmentStatus status;
 
-    public AssignmentDto() {}
+    public AssignmentDto() {
+        this.status = AssignmentStatus.NEW;
+    }
 
     public AssignmentDto(int id, AssignmentStatus status){
         this.id = id;
         this.status = status;
     }
 
-    public AssignmentDto(int amountOfSets, int amountOfReps, Date workoutDate){
+    public AssignmentDto(int amountOfSets, int amountOfReps, LocalDate workoutDate){
         this.amountOfSets = amountOfSets;
         this.amountOfReps = amountOfReps;
         this.workoutDate = workoutDate;
     }
 
-    public AssignmentDto(int id, ExerciseDto exercise, int amountOfSets, int amountOfReps, Date workoutDate){
+    public AssignmentDto(int id, ExerciseDto exercise, int amountOfSets, int amountOfReps, LocalDate workoutDate){
         this(amountOfSets, amountOfReps, workoutDate);
         this.id = id;
         this.exercise = exercise;
@@ -44,27 +51,27 @@ public class AssignmentDto implements Identifiable, Serializable {
         this.id = id;
     }
 
-    public Date getWorkoutDate() {
+    public LocalDate getWorkoutDate() {
         return workoutDate;
     }
 
-    public void setWorkoutDate(Date workoutDate) {
+    public void setWorkoutDate(LocalDate workoutDate) {
         this.workoutDate = workoutDate;
     }
 
-    public int getAmountOfSets() {
+    public Integer getAmountOfSets() {
         return amountOfSets;
     }
 
-    public void setAmountOfSets(int amountOfSets) {
+    public void setAmountOfSets(Integer amountOfSets) {
         this.amountOfSets = amountOfSets;
     }
 
-    public int getAmountOfReps() {
+    public Integer getAmountOfReps() {
         return amountOfReps;
     }
 
-    public void setAmountOfReps(int amountOfReps) {
+    public void setAmountOfReps(Integer amountOfReps) {
         this.amountOfReps = amountOfReps;
     }
 

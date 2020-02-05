@@ -8,6 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,7 +44,9 @@ public class User implements Identifiable, Serializable {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Order> orders;
 
-    public User() {}
+    public User() {
+        this.orders = new ArrayList<>();
+    }
 
     public User(Integer id, String email, String password, UserRole role,
                 String firstName, String secondName, int discount) {
@@ -91,5 +94,29 @@ public class User implements Identifiable, Serializable {
 
     public void setDiscount(int discount){
         this.discount = discount;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 }

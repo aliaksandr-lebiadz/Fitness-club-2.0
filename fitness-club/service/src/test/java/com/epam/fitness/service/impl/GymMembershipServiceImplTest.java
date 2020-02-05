@@ -21,24 +21,17 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class GymMembershipServiceImplTest {
 
-    private static final GymMembership ONE_MONTH_MEMBERSHIP =
-            new GymMembership(5, 1, BigDecimal.valueOf(39.99));
-    private static final GymMembership ONE_YEAR_MEMBERSHIP =
-            new GymMembership(7, 12, BigDecimal.valueOf(352.36));
-    private static final GymMembershipDto ONE_MONTH_MEMBERSHIP_DTO =
-            new GymMembershipDto(5, 1, BigDecimal.valueOf(39.99));
-    private static final GymMembershipDto ONE_YEAR_MEMBERSHIP_DTO =
-            new GymMembershipDto(7, 12, BigDecimal.valueOf(352.36));
-
-    private static final List<GymMembership> GYM_MEMBERSHIPS =
-            Arrays.asList(ONE_MONTH_MEMBERSHIP, ONE_YEAR_MEMBERSHIP);
-    private static final List<GymMembershipDto> EXPECTED_GYM_MEMBERSHIPS_DTO =
-            Arrays.asList(ONE_MONTH_MEMBERSHIP_DTO, ONE_YEAR_MEMBERSHIP_DTO);
+    private static final List<GymMembership> GYM_MEMBERSHIPS = Arrays.asList(
+            new GymMembership(5, 1, BigDecimal.valueOf(39.99)),
+            new GymMembership(7, 12, BigDecimal.valueOf(352.36)));
+    private static final List<GymMembershipDto> EXPECTED_GYM_MEMBERSHIPS_DTO = Arrays.asList(
+            new GymMembershipDto(5, 1, BigDecimal.valueOf(39.99)),
+            new GymMembershipDto(7, 12, BigDecimal.valueOf(352.36)));
 
     @Mock
     private Dao<GymMembership> gymMembershipDao;
     @Mock
-    private DtoMapper<GymMembership, GymMembershipDto> gymMembershipDtoMapper;
+    private DtoMapper<GymMembership, GymMembershipDto> gymMembershipMapper;
     @InjectMocks
     private GymMembershipServiceImpl gymMembershipService;
 
@@ -46,8 +39,7 @@ public class GymMembershipServiceImplTest {
     public void testGetAll(){
         //given
         when(gymMembershipDao.getAll()).thenReturn(GYM_MEMBERSHIPS);
-        when(gymMembershipDtoMapper.mapToDto(ONE_MONTH_MEMBERSHIP)).thenReturn(ONE_MONTH_MEMBERSHIP_DTO);
-        when(gymMembershipDtoMapper.mapToDto(ONE_YEAR_MEMBERSHIP)).thenReturn(ONE_YEAR_MEMBERSHIP_DTO);
+        when(gymMembershipMapper.mapToDto(GYM_MEMBERSHIPS)).thenReturn(EXPECTED_GYM_MEMBERSHIPS_DTO);
 
         //when
         List<GymMembershipDto> actual = gymMembershipService.getAll();
@@ -56,9 +48,8 @@ public class GymMembershipServiceImplTest {
         assertThat(actual, is(equalTo(EXPECTED_GYM_MEMBERSHIPS_DTO)));
 
         verify(gymMembershipDao, times(1)).getAll();
-        verify(gymMembershipDtoMapper, times(1)).mapToDto(ONE_MONTH_MEMBERSHIP);
-        verify(gymMembershipDtoMapper, times(1)).mapToDto(ONE_YEAR_MEMBERSHIP);
-        verifyNoMoreInteractions(gymMembershipDao, gymMembershipDtoMapper);
+        verify(gymMembershipMapper, times(1)).mapToDto(GYM_MEMBERSHIPS);
+        verifyNoMoreInteractions(gymMembershipDao, gymMembershipMapper);
     }
 
 }

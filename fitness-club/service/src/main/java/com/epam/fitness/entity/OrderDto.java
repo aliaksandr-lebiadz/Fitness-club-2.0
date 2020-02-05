@@ -1,9 +1,11 @@
 package com.epam.fitness.entity;
 
 import com.epam.fitness.entity.order.NutritionType;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class OrderDto implements Identifiable, Serializable {
@@ -11,8 +13,10 @@ public class OrderDto implements Identifiable, Serializable {
     private static final long serialVersionUID = 2800486372398627490L;
 
     private Integer id;
-    private Date beginDate;
-    private Date endDate;
+    private LocalDateTime beginDate;
+    private LocalDateTime endDate;
+
+    @Length(min = 10, max = 1000)
     private String feedback;
     private BigDecimal price;
     private NutritionType nutritionType;
@@ -34,11 +38,11 @@ public class OrderDto implements Identifiable, Serializable {
         return id;
     }
 
-    public Date getBeginDate() {
+    public LocalDateTime getBeginDate() {
         return beginDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
@@ -66,11 +70,11 @@ public class OrderDto implements Identifiable, Serializable {
         this.id = id;
     }
 
-    public void setBeginDate(Date beginDate) {
+    public void setBeginDate(LocalDateTime beginDate) {
         this.beginDate = beginDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
