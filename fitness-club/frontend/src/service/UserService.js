@@ -1,11 +1,16 @@
 import axios from 'axios';
 
-const GET_USERS_URL = '/users';
+const USERS_URL = '/users';
 
 export const userService = {
-    getAll
+    getAll,
+    deleteById
 };
 
 function getAll(){
-    return axios.get(GET_USERS_URL);
+    return axios.get(USERS_URL);
+}
+
+function deleteById(id){
+    return axios.delete(USERS_URL + '/' + id);
 }
