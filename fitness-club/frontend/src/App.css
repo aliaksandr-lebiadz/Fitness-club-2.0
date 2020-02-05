@@ -22,3 +22,19 @@ input[type="submit"]::-moz-focus-inner,
 select::-moz-focus-inner{
     border: none;
 }
+
+.custom-button{
+    font-weight: 600;
+    color: inherit;
+    border: 0;
+    border-radius: 3px;
+    width: 130px;
+    height: 25px;
+    background-color: var(--hover-color);
+    transition: background 0.2s linear;
+}
+
+.custom-button:hover{
+    background-color: #2f9492;
+    cursor: pointer;
+}
