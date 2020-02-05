@@ -12,14 +12,34 @@ class UsersTable extends React.Component{
             users: [],
             selectedRow: null
         }
+        this.deleteUser = this.deleteUser.bind(this);
+        this.reloadUserList = this.reloadUserList.bind(this);
     }
 
     componentDidMount(){
+        this.reloadUserList();
+    }
+
+    reloadUserList(){
         userService.getAll().then(
             response => {
                 this.setState({users: response.data})
             }
         );
+    }
+
+    deleteUser(){
+        const { selectedRow } = this.state;
+        if(selectedRow !== null){
+            userService.deleteById(selectedRow).then(
+                response => {
+                    this.setState({users: this.state.users.filter(user => user.id !== selectedRow)});
+                    this.setState({selectedRow: null});
+                }
+            ).catch(error => {
+                history.push('/error');
+            })
+        }
     }
 
     select(index){
@@ -28,17 +48,19 @@ class UsersTable extends React.Component{
 
     render() {
         return (
-            <div id="container">
-                <table>
-                    <UsersTableHeader />
-                    <tbody>
-                        {this.state.users.map(user => {
-                            return <User user={user} key={user.id} onSelect={(index) => this.select(index)} 
-                            selected={this.state.selectedRow === user.id ? true : false}/>
-                        })}
-                    </tbody>
-                </table>
-                <button onClick={() => history.push('/')}>Home</button>
+            <div id="users-intro">
+                <div id="container">
+                    <table>
+                        <UsersTableHeader />
+                        <tbody>
+                            {this.state.users.map(user => {
+                                return <User user={user} key={user.id} onSelect={(index) => this.select(index)} 
+                                selected={this.state.selectedRow === user.id ? true : false}/>
+                            })}
+                        </tbody>
+                    </table>
+                    <button className="custom-button" id="delete-button"onClick={() => this.deleteUser()}>Delete</button>
+                </div>
             </div>
           )
     }
