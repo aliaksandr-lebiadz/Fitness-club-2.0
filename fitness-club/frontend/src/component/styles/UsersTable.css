@@ -1,0 +1,62 @@
+body{
+    --border-color: #e1e9eb;
+}
+
+a{
+    color: black;
+}
+
+#container{
+    position: absolute;
+    width: 60%;
+    min-width: 780px;
+    min-height: 400px;
+    height: 63%;
+    top: 23%;
+    right: 20%;
+    border-radius: 5px;
+    background-color: rgba(80, 80, 80, 0.5);
+    text-align: center;
+
+}
+
+table{
+    margin-top: 2%;
+    margin-left: 2%;
+    width: 96%;
+    color: black;
+    border-collapse: collapse;
+    border: 2px solid rgba(80, 80, 80, 0.5);
+}
+
+table td, th{
+    padding: 10px;
+    border: 1px solid var(--border-color);
+}
+
+table tbody tr{
+    cursor: pointer;
+    transition: background-color 0.2s linear;
+}
+
+table thead th{
+    padding: 5px;
+    background-color: #58D3F7;
+    color: white;
+}
+
+table tr:nth-child(2n+1){
+    background-color: white;
+}
+
+table tr:nth-child(even){
+    background-color: #f2f7f7;
+}
+
+table tr.selected{
+    background-color: #54e3ba;
+}
+
+table tr.selected td{
+    border: none;
+}
