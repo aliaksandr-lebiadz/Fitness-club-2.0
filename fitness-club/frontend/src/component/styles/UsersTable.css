@@ -6,6 +6,13 @@ a{
     color: black;
 }
 
+#users-intro{
+    background: url('../../images/additional_background.jpg') center no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+
 #container{
     position: absolute;
     width: 60%;
@@ -59,4 +66,8 @@ table tr.selected{
 
 table tr.selected td{
     border: none;
+}
+
+#delete-button{
+    margin-top: 15px;
 }
