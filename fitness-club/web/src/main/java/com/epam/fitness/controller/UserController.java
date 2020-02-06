@@ -45,9 +45,10 @@ public class UserController {
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(value = "first_name", required = false) String firstName,
                                   @RequestParam(value = "second_name", required = false) String secondName,
-                                  @RequestParam(required = false) String email)
+                                  @RequestParam(required = false) String email,
+                                  @RequestParam(required = false) SortOrder order)
             throws ServiceException{
-        return userService.searchUsersByParameters(firstName, secondName, email);
+        return userService.searchUsersByParameters(firstName, secondName, email, order);
     }
 
     @PostMapping
@@ -81,11 +82,6 @@ public class UserController {
                             @RequestBody GymMembershipDto gymMembershipDto)
             throws ServiceException{
         orderService.create(id, gymMembershipDto);
-    }
-
-    @GetMapping("/sort")
-    public List<UserDto> sortUsersByName(@RequestParam(required = false, defaultValue = "ASCENDING") SortOrder order){
-        return userService.sortUsersByName(order);
     }
 
 }
