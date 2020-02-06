@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> searchUsersByParameters(String firstName, String secondName, String email) {
-        List<User> users = dao.findUsersByParameters(firstName, secondName, email);
+    public List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order) {
+        List<User> users = dao.findUsersByParameters(firstName, secondName, email, order);
         return mapper.mapToDto(users);
     }
 
@@ -87,12 +87,6 @@ public class UserServiceImpl implements UserService {
         User user = userOptional
                 .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
         dao.delete(user);
-    }
-
-    @Override
-    public List<UserDto> sortUsersByName(SortOrder order) {
-        List<User> users = dao.sortUsersByName(order);
-        return mapper.mapToDto(users);
     }
 
 }

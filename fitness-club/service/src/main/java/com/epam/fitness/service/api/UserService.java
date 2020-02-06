@@ -14,11 +14,11 @@ public interface UserService {
     @Transactional
     List<UserDto> getClientsByTrainerId(int trainerId) throws ServiceException;
     List<UserDto> getAllClients();
-    List<UserDto> searchUsersByParameters(String firstName, String secondName, String email) throws ServiceException;
+    List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order)
+            throws ServiceException;
     UserDto getUserByEmail(String email) throws ServiceException;
 
     void create(UserDto userDto);
     UserDto getById(int id) throws ServiceException;
     void deleteById(int id) throws ServiceException;
-    List<UserDto> sortUsersByName(SortOrder order);
 }

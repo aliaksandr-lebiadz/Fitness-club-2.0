@@ -71,29 +71,18 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public List<User> findUsersByParameters(String firstName, String secondName, String email) {
+    public List<User> findUsersByParameters(String firstName, String secondName, String email, SortOrder sortOrder) {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
         Root<User> user = getRoot(criteriaQuery);
-        List<Predicate> predicates = new ArrayList<>();
-        if(Objects.nonNull(firstName)){
-            Predicate firstNamePredicate = criteriaBuilder.like(
-                    criteriaBuilder.lower(user.get(FIRST_NAME_PARAMETER)), "%" + firstName.toLowerCase() + "%");
-            predicates.add(firstNamePredicate);
-        }
-        if(Objects.nonNull(secondName)){
-            Predicate secondNamePredicate = criteriaBuilder.like(
-                    criteriaBuilder.lower(user.get(SECOND_NAME_PARAMETER)), "%" + secondName.toLowerCase() + "%");
-            predicates.add(secondNamePredicate);
-        }
-        if(Objects.nonNull(email)){
-            Predicate emailPredicate = criteriaBuilder.like(
-                    criteriaBuilder.lower(user.get(EMAIL_PARAMETER)), "%" + email.toLowerCase() + "%");
-            predicates.add(emailPredicate);
-        }
+        List<Predicate> predicates = getSearchPredicates(criteriaBuilder, user, firstName, secondName, email);
         criteriaQuery
                 .select(user)
                 .where(convert(predicates));
+        if(Objects.nonNull(sortOrder)) {
+            Order order = getOrder(criteriaBuilder, user.get(FIRST_NAME_PARAMETER), sortOrder);
+            criteriaQuery.orderBy(order);
+        }
         Query<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
@@ -111,19 +100,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         return getRandomTrainerFromList(trainers);
     }
 
-    @Override
-    public List<User> sortUsersByName(SortOrder sortOrder) {
-        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
-        Root<User> userRoot = getRoot(criteriaQuery);
-        Order order = getOrder(criteriaBuilder, userRoot.get(FIRST_NAME_PARAMETER), sortOrder);
-        criteriaQuery
-                .select(userRoot)
-                .orderBy(order);
-        Query<User> query = getQuery(criteriaQuery);
-        return query.getResultList();
-    }
-
     private Optional<User> getRandomTrainerFromList(List<User> trainers){
         if(trainers.isEmpty()){
             return Optional.empty();
@@ -132,6 +108,27 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         int size = trainers.size();
         User trainer = trainers.get(random.nextInt(size));
         return Optional.of(trainer);
+    }
+
+    private List<Predicate> getSearchPredicates(CriteriaBuilder criteriaBuilder, Root<User> user,
+                                                String firstName, String secondName, String email){
+        List<Predicate> predicates = new ArrayList<>();
+        if(Objects.nonNull(firstName)){
+            Predicate firstNamePredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(FIRST_NAME_PARAMETER)), "%" + firstName.toLowerCase() + "%");
+            predicates.add(firstNamePredicate);
+        }
+        if(Objects.nonNull(secondName)){
+            Predicate secondNamePredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(SECOND_NAME_PARAMETER)), "%" + secondName.toLowerCase() + "%");
+            predicates.add(secondNamePredicate);
+        }
+        if(Objects.nonNull(email)){
+            Predicate emailPredicate = criteriaBuilder.like(
+                    criteriaBuilder.lower(user.get(EMAIL_PARAMETER)), "%" + email.toLowerCase() + "%");
+            predicates.add(emailPredicate);
+        }
+        return predicates;
     }
 
     private Order getOrder(CriteriaBuilder criteriaBuilder, Expression<User> expression, SortOrder order){
