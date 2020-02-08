@@ -4,7 +4,10 @@ const USERS_URL = '/users';
 
 export const userService = {
     getAll,
-    deleteById
+    deleteById,
+    updateById,
+    create,
+    getById
 };
 
 function getAll(){
@@ -13,4 +16,16 @@ function getAll(){
 
 function deleteById(id){
     return axios.delete(USERS_URL + '/' + id);
+}
+
+function updateById(id, user){
+    return axios.patch(USERS_URL + '/' + id, user);
+}
+
+function create(user){
+    return axios.post(USERS_URL, user);
+}
+
+function getById(id){
+    return axios.get(USERS_URL + '/' + id);
 }
