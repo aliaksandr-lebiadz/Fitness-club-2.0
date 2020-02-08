@@ -1,69 +1,102 @@
-import React from 'react';
-import User from './User'
-import UsersTableHeader from './UsersTableHeader';
-import '../styles/UsersTable.css';
-import { history } from '../../helpers';
-import { userService } from '../../service';
+import React, { useState, useEffect } from "react";
+import { TableContainer, Table, Paper } from "@material-ui/core";
+import UsersTableBody from "./UsersTableBody";
+import UsersTableHead from "./UsersTableHead";
+import { userService } from "../../service";
+import { makeStyles } from "@material-ui/core/styles";
 
-class UsersTable extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            users: [],
-            selectedRow: null
-        }
-        this.deleteUser = this.deleteUser.bind(this);
-        this.reloadUserList = this.reloadUserList.bind(this);
-    }
+const useStyles = makeStyles({
+  tableContainer: {
+    width: "75%",
+    marginTop: "10%",
+    marginLeft: "15%"
+  }
+});
 
-    componentDidMount(){
-        this.reloadUserList();
-    }
+const cells = [
+  { id: "email", label: "Email", selectable: false, editable: false },
+  { id: "password", label: "Password", selectable: false, editable: false },
+  { id: "firstName", label: "First name", selectable: false, editable: false },
+  {
+    id: "secondName",
+    label: "Second name",
+    selectable: false,
+    editable: false
+  },
+  { id: "role", label: "Role", selectable: true, editable: false },
+  { id: "discount", label: "Discount", selectable: false, editable: true }
+];
 
-    reloadUserList(){
-        userService.getAll().then(
-            response => {
-                this.setState({users: response.data})
-            }
-        );
-    }
+const UsersTable = () => {
+  const classes = useStyles();
+  const [users, setUsers] = useState([]);
+  const [adding, setAdding] = useState(false);
+  const [rowEditing, setRowEditing] = useState(null);
 
-    deleteUser(){
-        const { selectedRow } = this.state;
-        if(selectedRow !== null){
-            userService.deleteById(selectedRow).then(
-                response => {
-                    this.setState({users: this.state.users.filter(user => user.id !== selectedRow)});
-                    this.setState({selectedRow: null});
-                }
-            ).catch(error => {
-                history.push('/error');
-            })
-        }
-    }
+  useEffect(() => {
+    reloadUserList();
+  });
 
-    select(index){
-        this.setState({selectedRow: index});
-    }
+  function reloadUserList() {
+     userService.getAll().then(response => {
+      setUsers(response.data);
+    });
+  }
 
-    render() {
-        return (
-            <div id="users-intro">
-                <div id="container">
-                    <table>
-                        <UsersTableHeader />
-                        <tbody>
-                            {this.state.users.map(user => {
-                                return <User user={user} key={user.id} onSelect={(index) => this.select(index)} 
-                                selected={this.state.selectedRow === user.id ? true : false}/>
-                            })}
-                        </tbody>
-                    </table>
-                    <button className="custom-button" id="delete-button"onClick={() => this.deleteUser()}>Delete</button>
-                </div>
-            </div>
-          )
-    }
-}
+  function deleteUserById(id) {
+    userService.deleteById(id).then(response => {
+      setUsers(users.filter(user => user.id !== id));
+    });
+  }
+
+  function updateUserById(id, newUser) {
+    userService.updateById(id, newUser).then(response => {
+      setUsers(
+        users.map(user => {
+          return user.id === id ? newUser : user;
+        })
+      );
+    });
+    setRowEditing(null);
+  }
+
+  function addUser(user) {
+    userService.create(user).then(response => {
+      let newUsers = [...users, user];
+      setUsers(newUsers);
+    });
+    stopAdding();
+  }
+
+  function startAdding() {
+    setAdding(true);
+  }
+  function stopAdding() {
+    setAdding(false);
+  }
+  return (
+    <TableContainer className={classes.tableContainer} component={Paper}>
+      <Table aria-label="a dense table">
+        <UsersTableHead
+          classes={classes}
+          startAdding={startAdding}
+          cells={cells}
+        />
+        <UsersTableBody
+          classes={classes}
+          users={users}
+          deleteUserById={deleteUserById}
+          adding={adding}
+          stopAdding={stopAdding}
+          addUser={addUser}
+          cells={cells}
+          rowEditing={rowEditing}
+          setRowEditing={setRowEditing}
+          updateUserById={updateUserById}
+        />
+      </Table>
+    </TableContainer>
+  );
+};
 
 export default UsersTable;
