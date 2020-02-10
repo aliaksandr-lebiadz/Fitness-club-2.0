@@ -9,6 +9,7 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +71,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void create(UserDto userDto) {
         User user = mapper.mapToEntity(userDto);
+		String password = user.getPassword();
+		String passwordHash = hashPassword(password);
+		user.setPassword(passwordHash);
         dao.save(user);
     }
 
@@ -88,5 +92,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
         dao.delete(user);
     }
+	
+	private String hashPassword(String password) {
+		return DigestUtils.md5Hex(password);
+	}
 
 }
