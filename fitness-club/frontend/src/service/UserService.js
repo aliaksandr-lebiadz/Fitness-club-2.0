@@ -32,5 +32,5 @@ function getById(id) {
 }
 
 function login(email, password) {
-  return axios.post("/doLogin", { email, password });
+  return axios.post("/authenticator", { email, password });
 }
