@@ -15,6 +15,9 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import PropTypes from "prop-types";
 import { userService } from "../../service";
 import { history } from "../../helpers";
+import { connect } from "react-redux";
+import { setCurrentUser } from "../../actions";
+import { bindActionCreators } from "redux";
 
 const useStyles = makeStyles({
   container: {
@@ -49,12 +52,16 @@ const Login = ({ setCurrentUser }) => {
   const [visiblePassword, setVisiblePassword] = useState(false);
 
   function handleLogin() {
-    console.log("kek");
     const { email, password } = credentials;
-    userService.login(email, password).then(response => {
-      setCurrentUser({});
-      history.push("/");
-    });
+    userService
+      .login(email, password)
+      .then(response => {
+        setCurrentUser(response.data);
+        history.push("/")
+      })
+      .catch(() => {
+        history.push("/error");
+      });
   }
 
   function handleChange(e) {
@@ -128,4 +135,8 @@ Login.propTypes = {
   setCurrentUser: PropTypes.func.isRequired
 };
 
-export default Login;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ setCurrentUser }, dispatch);
+};
+
+export default connect(null, mapDispatchToProps)(Login);
