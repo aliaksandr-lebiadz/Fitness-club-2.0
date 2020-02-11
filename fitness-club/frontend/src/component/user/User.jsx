@@ -5,10 +5,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
+import { connect } from "react-redux";
+import { deleteUserById, updateUserById, setRowEditing } from "../../actions";
+import { bindActionCreators } from "redux";
 
 const User = props => {
   const {
-    classes,
     deleteUserById,
     rowEditing,
     setRowEditing,
@@ -44,19 +46,17 @@ const User = props => {
       {rowEditing === user.id ? (
         <TableCell>
           <CheckIcon
-            onClick={() => {
+            onClick={function() {
               updateUserById(user.id, user);
+              setRowEditing(null);
             }}
           />
-          <CloseIcon className={classes.cancelIcon} onClick={() => setRowEditing(false)} />
+          <CloseIcon onClick={() => setRowEditing(false)} />
         </TableCell>
       ) : (
         <TableCell>
           <EditIcon onClick={() => setRowEditing(user.id)} />
-          <DeleteIcon
-            className={classes.deleteIcon}
-            onClick={() => deleteUserById(user.id)}
-          />
+          <DeleteIcon onClick={() => deleteUserById(user.id)} />
         </TableCell>
       )}
     </TableRow>
@@ -64,11 +64,23 @@ const User = props => {
 };
 
 User.propTypes = {
-  classes: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   deleteUserById: PropTypes.func.isRequired,
+  updateUserById: PropTypes.func.isRequired,
   rowEditing: PropTypes.number.isRequired,
-  setRowEditing: PropTypes.func.isRequired
+  setRowEditing: PropTypes.func.isRequired,
+  cells: PropTypes.array.isRequired
 };
 
-export default User;
+const mapStateToProps = state => ({
+  rowEditing: state.rowEditing
+});
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    { deleteUserById, updateUserById, setRowEditing },
+    dispatch
+  );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);

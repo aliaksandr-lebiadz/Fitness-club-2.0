@@ -1,16 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { TableHead, TableCell, Button } from "@material-ui/core";
+import { connect } from "react-redux";
+import { startAddingUser } from "../../actions";
+import { bindActionCreators } from "redux";
 
 const UsersTableHead = props => {
-  const { startAdding, cells } = props;
+  const { cells } = props;
+
   return (
     <TableHead>
       {cells.map(headCell => (
         <TableCell key={headCell.id}>{headCell.label}</TableCell>
       ))}
       <TableCell>
-        <Button variant="contained" color="primary" onClick={startAdding}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={props.startAddingUser}
+        >
           Add
         </Button>
       </TableCell>
@@ -19,8 +27,11 @@ const UsersTableHead = props => {
 };
 
 UsersTableHead.propTypes = {
-  startAdding: PropTypes.func.isRequired,
   cells: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default UsersTableHead;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ startAddingUser }, dispatch);
+};
+
+export default connect(null, mapDispatchToProps)(UsersTableHead);

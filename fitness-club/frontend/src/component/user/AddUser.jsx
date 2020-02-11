@@ -3,11 +3,14 @@ import PropTypes from "prop-types";
 import { TextField, TableRow, TableCell, MenuItem } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
+import { stopAddingUser, addUser } from "../../actions";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 const roles = ["CLIENT", "TRAINER", "ADMIN"];
 
 const AddUser = props => {
-  const { classes, cells, stopAdding, addUser } = props;
+  const { cells, stopAddingUser, addUser } = props;
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -48,21 +51,25 @@ const AddUser = props => {
       ))}
       <TableCell>
         <CheckIcon
-          onClick={() => {
+          onClick={function() {
             addUser(user);
+            stopAddingUser();
           }}
         />
-        <CloseIcon className={classes.cancelIcon} onClick={stopAdding} />
+        <CloseIcon onClick={stopAddingUser} />
       </TableCell>
     </TableRow>
   );
 };
 
 AddUser.propTypes = {
-  classes: PropTypes.object.isRequired,
   cells: PropTypes.arrayOf(PropTypes.object).isRequired,
-  stopAdding: PropTypes.func.isRequired,
+  stopAddingUser: PropTypes.func.isRequired,
   addUser: PropTypes.func.isRequired
 };
 
-export default AddUser;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ stopAddingUser, addUser }, dispatch);
+};
+
+export default connect(null, mapDispatchToProps)(AddUser);
