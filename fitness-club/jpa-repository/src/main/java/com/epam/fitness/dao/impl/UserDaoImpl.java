@@ -71,6 +71,21 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
+    public Optional<User> findUserByEmailAndPassword(String email, String password) {
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<User> user = getRoot(criteriaQuery);
+        criteriaQuery
+                .select(user)
+                .where(criteriaBuilder.and(
+                        criteriaBuilder.equal(user.get(EMAIL_PARAMETER), email),
+                        criteriaBuilder.equal(user.get("password"), password)
+                ));
+        Query<User> query = getQuery(criteriaQuery);
+        return query.uniqueResultOptional();
+    }
+
+    @Override
     public List<User> findUsersByParameters(String firstName, String secondName, String email, SortOrder sortOrder) {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);

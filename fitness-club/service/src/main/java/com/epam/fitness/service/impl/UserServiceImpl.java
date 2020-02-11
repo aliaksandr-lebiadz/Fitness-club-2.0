@@ -1,6 +1,7 @@
 package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dto.mapper.DtoMapper;
+import com.epam.fitness.entity.CredentialsDto;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.dao.api.UserDao;
@@ -53,6 +54,16 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = dao.findUserByEmail(email);
         User user = userOptional
                 .orElseThrow(() -> new ServiceException("User with email " + email + " not found!"));
+        return mapper.mapToDto(user);
+    }
+
+    @Override
+    public UserDto getUserWithCredentials(CredentialsDto credentialsDto) throws ServiceException {
+        String email = credentialsDto.getEmail();
+        String password = credentialsDto.getPassword();
+        Optional<User> userOptional = dao.findUserByEmailAndPassword(email, DigestUtils.md5Hex(password));
+        User user = userOptional
+                .orElseThrow(() -> new ServiceException("Login failed!"));
         return mapper.mapToDto(user);
     }
 
