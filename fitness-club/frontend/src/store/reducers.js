@@ -45,8 +45,16 @@ export const rowEditing = (state = null, action) => {
   return state;
 };
 
+export const currentUser = (state = null, action) => {
+  if (action.type === Actions.SET_CURRENT_USER) {
+    return action.payload;
+  }
+  return state;
+};
+
 export default combineReducers({
   users,
   addingUser,
-  rowEditing
+  rowEditing,
+  currentUser
 });
