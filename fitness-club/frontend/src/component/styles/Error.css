@@ -1,29 +1,29 @@
-#error-intro{
-    background: url('../../images/main_background.jpg') center no-repeat;
-    background-size: cover;
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    font-weight: 600;
-    top: 0;
+#error-intro {
+  background: url("../../images/main_background.jpg") center no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  font-weight: 600;
+  top: 0;
 }
 
-#error{
-    width: 15%;
-    height: 15%;
-    position: absolute;
-    top: 45%;
-    right: 43%;
-    border-radius: 5px;
-    background-color: rgba(44, 44, 44, 0.85);
-    text-align: center;
+#error {
+  width: 15%;
+  height: 15%;
+  position: absolute;
+  top: 45%;
+  right: 43%;
+  border-radius: 5px;
+  background-color: rgba(44, 44, 44, 0.85);
+  text-align: center;
 }
 
-#error-text{
-    display: inline-block;
-    padding-top: 15px;
+#error-text {
+  display: inline-block;
+  padding-top: 15px;
 }
 
-#home-button{
-    margin-top: 65px;
+#home-button {
+  margin-top: 65px;
 }

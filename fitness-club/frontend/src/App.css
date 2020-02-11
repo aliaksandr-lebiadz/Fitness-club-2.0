@@ -1,5 +1,5 @@
-body{
-    background: url('./images/background.png') center no-repeat;
-    background-size: cover;
-    font-family: "Open sans", sans-serif;
+body {
+  background: url("./images/background.png") center no-repeat;
+  background-size: cover;
+  font-family: "Open sans", sans-serif;
 }
