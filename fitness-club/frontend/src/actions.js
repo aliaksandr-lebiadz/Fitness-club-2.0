@@ -51,3 +51,8 @@ export const setRowEditing = row => ({
   type: Actions.SET_ROW_EDITING,
   payload: row
 });
+
+export const setCurrentUser = user => ({
+    type: Actions.SET_CURRENT_USER,
+    payload: user
+})
