@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
  * @see GymMembership
  */
 @Repository
-public class PostgreSqlGymMembershipDao extends AbstractDao<GymMembership> {
+public class GymMembershipDaoImpl extends AbstractDao<GymMembership> {
 
     private static final String GYM_MEMBERSHIP_TABLE = "gym_membership";
 
     @Autowired
-    public PostgreSqlGymMembershipDao(JdbcTemplate jdbcTemplate, RowMapper<GymMembership> rowMapper){
+    public GymMembershipDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<GymMembership> rowMapper){
         super(jdbcTemplate, rowMapper);
     }
 

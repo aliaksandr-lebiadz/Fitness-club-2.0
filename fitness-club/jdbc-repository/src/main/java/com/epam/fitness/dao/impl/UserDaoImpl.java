@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class PostgreSqlUserDao extends AbstractDao<User> implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private static final String USER_TABLE = "fitness_user";
     private static final String FIND_USERS_BY_TRAINER_ID_QUERY =
@@ -39,7 +39,7 @@ public class PostgreSqlUserDao extends AbstractDao<User> implements UserDao {
             "discount = EXCLUDED.discount";
 
     @Autowired
-    public PostgreSqlUserDao(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<User> rowMapper) {
         super(jdbcTemplate, rowMapper);
     }
 

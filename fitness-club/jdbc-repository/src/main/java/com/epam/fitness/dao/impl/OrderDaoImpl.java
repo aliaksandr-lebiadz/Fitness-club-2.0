@@ -21,7 +21,7 @@ import java.util.List;
  * @see Order
  */
 @Repository
-public class PostgreSqlOrderDao extends AbstractDao<Order> implements OrderDao {
+public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
 
     private static final String ORDER_TABLE = "client_order";
     private static final String SELECT_CLIENT_ORDERS_WITH_TRAINER_ID_QUERY =
@@ -42,7 +42,7 @@ public class PostgreSqlOrderDao extends AbstractDao<Order> implements OrderDao {
             "trainer_id = EXCLUDED.trainer_id";
 
     @Autowired
-    public PostgreSqlOrderDao(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper) {
+    public OrderDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<Order> rowMapper) {
         super(jdbcTemplate, rowMapper);
     }
 

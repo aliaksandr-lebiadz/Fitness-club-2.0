@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class PostgreSqlAssignmentDao extends AbstractDao<Assignment> implements AssignmentDao {
+public class AssignmentDaoImpl extends AbstractDao<Assignment> implements AssignmentDao {
 
     private static final String ASSIGNMENT_TABLE = "assignment";
     private static final String GET_ALL_BY_ORDER_ID_QUERY =
@@ -38,7 +38,7 @@ public class PostgreSqlAssignmentDao extends AbstractDao<Assignment> implements 
             "status = EXCLUDED.status";
 
     @Autowired
-    public PostgreSqlAssignmentDao(JdbcTemplate jdbcTemplate, RowMapper<Assignment> rowMapper) {
+    public AssignmentDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<Assignment> rowMapper) {
         super(jdbcTemplate, rowMapper);
     }
 

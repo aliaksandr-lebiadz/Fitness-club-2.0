@@ -15,12 +15,12 @@ import org.springframework.stereotype.Repository;
  * @see Exercise
  */
 @Repository
-public class PostgreSqlExerciseDao extends AbstractDao<Exercise>{
+public class ExerciseDaoImpl extends AbstractDao<Exercise>{
 
     private static final String EXERCISE_TABLE = "exercise";
 
     @Autowired
-    public PostgreSqlExerciseDao(JdbcTemplate jdbcTemplate, RowMapper<Exercise> rowMapper){
+    public ExerciseDaoImpl(JdbcTemplate jdbcTemplate, RowMapper<Exercise> rowMapper){
         super(jdbcTemplate, rowMapper);
     }
 
