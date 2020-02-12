@@ -6,7 +6,6 @@ import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
-import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
@@ -17,6 +16,7 @@ import com.epam.fitness.utils.OrderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private OrderDao orderDao;

@@ -5,14 +5,11 @@ import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.ServiceException;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserService {
 
-    @Transactional
     void updateById(int id, UserDto userDto) throws ServiceException;
-    @Transactional
     List<UserDto> getClientsByTrainerId(int trainerId) throws ServiceException;
     List<UserDto> getAllClients();
     List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order)

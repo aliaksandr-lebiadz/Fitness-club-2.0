@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserDao dao;
@@ -92,7 +94,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(int id) throws ServiceException {
         Optional<User> userOptional = dao.findById(id);
         User user = userOptional
-                .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));;
+                .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
         return mapper.mapToDto(user);
     }
 

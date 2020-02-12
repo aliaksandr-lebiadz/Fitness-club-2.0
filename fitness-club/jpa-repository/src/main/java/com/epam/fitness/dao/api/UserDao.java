@@ -3,7 +3,6 @@ package com.epam.fitness.dao.api;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import java.util.Optional;
  *
  * @see User
  */
-@Transactional
 public interface UserDao extends Dao<User> {
 
     /**

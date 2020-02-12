@@ -3,7 +3,6 @@ package com.epam.fitness.dao.api;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -12,7 +11,6 @@ import java.util.List;
  *
  * @see Order
  */
-@Transactional
 public interface OrderDao extends Dao<Order> {
 
     /**
