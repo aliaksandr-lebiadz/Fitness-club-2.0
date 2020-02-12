@@ -1,9 +1,7 @@
 package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.GymMembership;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -31,16 +29,12 @@ public class GymMembershipMapperTest {
     private GymMembershipMapper mapper = new GymMembershipMapper();
     private ResultSet resultSet = mock(ResultSet.class);
 
-    @Before
-    public void createMocks() throws SQLException{
+    @Test
+    public void testBuildShouldReturnBuiltGymMembershipWhenResultSetWithValidColumnsSupplied() throws SQLException {
+        //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(MONTHS_AMOUNT_COLUMN)).thenReturn(MONTHS_AMOUNT);
         when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(PRICE);
-    }
-
-    @Test
-    public void testBuildShouldReturnBuiltGymMembershipEntity() throws SQLException {
-        //given
         GymMembership expected = new GymMembership(ID, MONTHS_AMOUNT, PRICE);
 
         //when
@@ -51,10 +45,25 @@ public class GymMembershipMapperTest {
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getMonthsAmount(), actual.getMonthsAmount());
         assertThat(actual.getPrice(), comparesEqualTo(expected.getPrice()));
+
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getInt(MONTHS_AMOUNT_COLUMN);
+        verify(resultSet, times(1)).getBigDecimal(PRICE_COLUMN);
+        verifyNoMoreInteractions(resultSet);
     }
 
-    @After
-    public void verifyMocks() throws SQLException{
+    @Test(expected = SQLException.class)
+    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+        //given
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
+        when(resultSet.getInt(MONTHS_AMOUNT_COLUMN)).thenReturn(MONTHS_AMOUNT);
+        when(resultSet.getBigDecimal(PRICE_COLUMN)).thenThrow(SQLException.class);
+
+        //when
+        mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getInt(MONTHS_AMOUNT_COLUMN);
         verify(resultSet, times(1)).getBigDecimal(PRICE_COLUMN);

@@ -1,9 +1,7 @@
 package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.assignment.Exercise;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -26,15 +24,11 @@ public class ExerciseMapperTest {
     private ExerciseMapper mapper = new ExerciseMapper();
     private ResultSet resultSet = mock(ResultSet.class);
 
-    @Before
-    public void createMocks() throws SQLException{
+    @Test
+    public void testBuildShouldReturnBuiltExerciseWhenResultSetWithValidColumnsSupplied() throws SQLException {
+        //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getString(NAME_COLUMN)).thenReturn(NAME);
-    }
-
-    @Test
-    public void testBuildShouldReturnBuiltExerciseEntity() throws SQLException {
-        //given
         Exercise expected = new Exercise(ID, NAME);
 
         //when
@@ -44,12 +38,21 @@ public class ExerciseMapperTest {
         Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getName(), actual.getName());
-    }
-
-    @After
-    public void verifyMocks() throws SQLException{
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getString(NAME_COLUMN);
+        verifyNoMoreInteractions(resultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+        //given
+        when(resultSet.getInt(ID_COLUMN)).thenThrow(SQLException.class);
+
+        //when
+        mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
         verifyNoMoreInteractions(resultSet);
     }
 

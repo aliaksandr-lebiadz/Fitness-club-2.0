@@ -3,9 +3,7 @@ package com.epam.fitness.mapper;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -26,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.times;
 
-
 public class AssignmentMapperTest {
 
     private static final int ID = 5;
@@ -42,8 +39,9 @@ public class AssignmentMapperTest {
     private AssignmentMapper mapper = new AssignmentMapper();
     private ResultSet resultSet = mock(ResultSet.class);
 
-    @Before
-    public void createMocks() throws SQLException{
+    @Test
+    public void testBuildShouldReturnBuiltAssignmentWhenResultSetWithValidColumnsSupplied() throws SQLException {
+        //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(ORDER_ID_COLUMN)).thenReturn(ORDER_ID);
         when(resultSet.getInt(EXERCISE_ID_COLUMN)).thenReturn(EXERCISE_ID);
@@ -52,11 +50,7 @@ public class AssignmentMapperTest {
         when(resultSet.getInt(AMOUNT_OF_REPS_COLUMN)).thenReturn(AMOUNT_OF_REPS);
         when(resultSet.getString(EXERCISE_NAME_COLUMN)).thenReturn(EXERCISE_NAME);
         when(resultSet.getString(STATUS_COLUMN)).thenReturn(ASSIGNMENT_STATUS_VALUE);
-    }
 
-    @Test
-    public void testBuildShouldReturnBuiltAssignmentEntity() throws SQLException {
-        //given
         AssignmentStatus status =
                 AssignmentStatus.valueOf(ASSIGNMENT_STATUS_VALUE);
         Exercise exercise = new Exercise(EXERCISE_ID, EXERCISE_NAME);
@@ -76,10 +70,7 @@ public class AssignmentMapperTest {
         Assert.assertEquals(expected.getAmountOfReps(), actual.getAmountOfReps());
         Assert.assertEquals(expected.getWorkoutDate(), actual.getWorkoutDate());
         Assert.assertEquals(expected.getStatus(), actual.getStatus());
-    }
 
-    @After
-    public void verifyMocks() throws SQLException{
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getInt(ORDER_ID_COLUMN);
         verify(resultSet, times(1)).getInt(EXERCISE_ID_COLUMN);
@@ -88,6 +79,20 @@ public class AssignmentMapperTest {
         verify(resultSet, times(1)).getInt(AMOUNT_OF_REPS_COLUMN);
         verify(resultSet, times(1)).getString(EXERCISE_NAME_COLUMN);
         verify(resultSet, times(1)).getString(STATUS_COLUMN);
+        verifyNoMoreInteractions(resultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException{
+        //given
+        when(resultSet.getInt(ORDER_ID_COLUMN)).thenThrow(SQLException.class);
+
+        //when
+        mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getInt(ORDER_ID_COLUMN);
         verifyNoMoreInteractions(resultSet);
     }
 

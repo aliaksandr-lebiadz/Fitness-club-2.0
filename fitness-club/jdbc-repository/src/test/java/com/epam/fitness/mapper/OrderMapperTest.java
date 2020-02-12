@@ -2,9 +2,7 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -43,8 +41,9 @@ public class OrderMapperTest {
     private OrderMapper mapper = new OrderMapper();
     private ResultSet resultSet = mock(ResultSet.class);
 
-    @Before
-    public void createMocks() throws SQLException{
+    @Test
+    public void testBuildShouldReturnBuiltOrderWhenResultSetWhenValidColumnsSupplied() throws SQLException {
+        //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(CLIENT_ID);
         when(resultSet.getInt(TRAINER_ID_COLUMN)).thenReturn(TRAINER_ID);
@@ -53,11 +52,7 @@ public class OrderMapperTest {
         when(resultSet.getString(FEEDBACK_COLUMN)).thenReturn(FEEDBACK);
         when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(PRICE);
         when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(NUTRITION_TYPE_VALUE);
-    }
 
-    @Test
-    public void testBuildShouldReturnBuiltOrderEntity() throws SQLException {
-        //given
         NutritionType nutritionType = NutritionType.valueOf(NUTRITION_TYPE_VALUE);
         Order expected = Order.createBuilder()
                 .setId(ID)
@@ -83,10 +78,7 @@ public class OrderMapperTest {
         Assert.assertEquals(expected.getFeedback(), actual.getFeedback());
         assertThat(actual.getPrice(), comparesEqualTo(expected.getPrice()));
         Assert.assertEquals(expected.getNutritionType(), actual.getNutritionType());
-    }
 
-    @After
-    public void verifyMocks() throws SQLException{
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getInt(CLIENT_ID_COLUMN);
         verify(resultSet, times(1)).getInt(TRAINER_ID_COLUMN);
@@ -95,6 +87,23 @@ public class OrderMapperTest {
         verify(resultSet, times(1)).getString(FEEDBACK_COLUMN);
         verify(resultSet, times(1)).getBigDecimal(PRICE_COLUMN);
         verify(resultSet, times(1)).getString(NUTRITION_TYPE_COLUMN);
+        verifyNoMoreInteractions(resultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testBuildShouldThrowExceptionWhenResultSetWhenInvalidColumnsSupplied() throws SQLException {
+        //given
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
+        when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(CLIENT_ID);
+        when(resultSet.getInt(TRAINER_ID_COLUMN)).thenThrow(SQLException.class);
+
+        //when
+        mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getInt(CLIENT_ID_COLUMN);
+        verify(resultSet, times(1)).getInt(TRAINER_ID_COLUMN);
         verifyNoMoreInteractions(resultSet);
     }
 

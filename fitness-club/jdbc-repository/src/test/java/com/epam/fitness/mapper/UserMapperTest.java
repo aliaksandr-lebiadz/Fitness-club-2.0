@@ -2,9 +2,7 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -37,8 +35,9 @@ public class UserMapperTest {
     private UserMapper mapper = new UserMapper();
     private ResultSet resultSet = mock(ResultSet.class);
 
-    @Before
-    public void createMocks() throws SQLException{
+    @Test
+    public void testBuildShouldReturnBuiltUserWhenResultSetWithValidColumnsSupplied() throws SQLException {
+        //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getString(EMAIL_COLUMN)).thenReturn(EMAIL);
         when(resultSet.getString(PASSWORD_COLUMN)).thenReturn(PASSWORD);
@@ -46,11 +45,6 @@ public class UserMapperTest {
         when(resultSet.getString(FIRST_NAME_COLUMN)).thenReturn(FIRST_NAME);
         when(resultSet.getString(SECOND_NAME_COLUMN)).thenReturn(SECOND_NAME);
         when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(DISCOUNT);
-    }
-
-    @Test
-    public void testBuildShouldReturnBuiltUserEntity() throws SQLException {
-        //given
         UserRole role = UserRole.valueOf(USER_ROLE_VALUE);
         User expected = new User(ID, EMAIL, PASSWORD, role, FIRST_NAME, SECOND_NAME, DISCOUNT);
 
@@ -66,10 +60,7 @@ public class UserMapperTest {
         Assert.assertEquals(expected.getFirstName(), actual.getFirstName());
         Assert.assertEquals(expected.getSecondName(), actual.getSecondName());
         Assert.assertEquals(expected.getDiscount(), actual.getDiscount());
-    }
 
-    @After
-    public void verifyMocks() throws SQLException{
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getString(EMAIL_COLUMN);
         verify(resultSet, times(1)).getString(PASSWORD_COLUMN);
@@ -77,6 +68,21 @@ public class UserMapperTest {
         verify(resultSet, times(1)).getString(FIRST_NAME_COLUMN);
         verify(resultSet, times(1)).getString(SECOND_NAME_COLUMN);
         verify(resultSet, times(1)).getInt(DISCOUNT_COLUMN);
+        verifyNoMoreInteractions(resultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+        //given
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
+        when(resultSet.getString(EMAIL_COLUMN)).thenThrow(SQLException.class);
+
+        //when
+        mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getString(EMAIL_COLUMN);
         verifyNoMoreInteractions(resultSet);
     }
 
