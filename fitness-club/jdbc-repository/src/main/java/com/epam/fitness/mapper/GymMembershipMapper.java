@@ -11,9 +11,9 @@ import java.sql.SQLException;
 @Component
 public class GymMembershipMapper implements RowMapper<GymMembership> {
 
-    private static final String ID_COLUMN = "id";
-    private static final String MONTHS_AMOUNT_COLUMN = "months_amount";
-    private static final String PRICE_COLUMN = "price";
+    /*package-private*/ static final String ID_COLUMN = "id";
+    /*package-private*/ static final String MONTHS_AMOUNT_COLUMN = "months_amount";
+    /*package-private*/ static final String PRICE_COLUMN = "price";
 
     @Override
     public GymMembership mapRow(ResultSet resultSet, int i) throws SQLException {

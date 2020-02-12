@@ -13,14 +13,14 @@ import java.util.Date;
 @Component
 public class AssignmentMapper implements RowMapper<Assignment> {
 
-    private static final String ID_COLUMN = "id";
-    private static final String ORDER_ID_COLUMN = "order_id";
-    private static final String EXERCISE_ID_COLUMN = "exercise_id";
-    private static final String WORKOUT_DATE_COLUMN = "workout_date";
-    private static final String AMOUNT_OF_SETS_COLUMN = "amount_of_sets";
-    private static final String AMOUNT_OF_REPS_COLUMN = "amount_of_reps";
-    private static final String EXERCISE_NAME_COLUMN = "name";
-    private static final String STATUS_COLUMN = "status";
+    /*package-private*/ static final String ID_COLUMN = "id";
+    /*package-private*/ static final String ORDER_ID_COLUMN = "order_id";
+    /*package-private*/ static final String EXERCISE_ID_COLUMN = "exercise_id";
+    /*package-private*/ static final String WORKOUT_DATE_COLUMN = "workout_date";
+    /*package-private*/ static final String AMOUNT_OF_SETS_COLUMN = "amount_of_sets";
+    /*package-private*/ static final String AMOUNT_OF_REPS_COLUMN = "amount_of_reps";
+    /*package-private*/ static final String EXERCISE_NAME_COLUMN = "name";
+    /*package-private*/ static final String STATUS_COLUMN = "status";
 
     @Override
     public Assignment mapRow(ResultSet resultSet, int i) throws SQLException {

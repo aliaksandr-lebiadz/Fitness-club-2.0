@@ -2,68 +2,76 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
-import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import static com.epam.fitness.mapper.OrderMapper.ID_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.CLIENT_ID_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.TRAINER_ID_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.BEGIN_DATE_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.END_DATE_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.FEEDBACK_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.PRICE_COLUMN;
+import static com.epam.fitness.mapper.OrderMapper.NUTRITION_TYPE_COLUMN;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.times;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.comparesEqualTo;
 
 public class OrderMapperTest {
 
-    private static final String ID_COLUMN = "id";
-    private static final String CLIENT_ID_COLUMN = "client_id";
-    private static final String TRAINER_ID_COLUMN = "trainer_id";
-    private static final String BEGIN_DATE_COLUMN = "begin_date";
-    private static final String END_DATE_COLUMN = "end_date";
-    private static final String FEEDBACK_COLUMN = "feedback";
-    private static final String PRICE_COLUMN = "price";
-    private static final String NUTRITION_TYPE_COLUMN = "nutrition_type";
+    private static final int ID = 5;
+    private static final int CLIENT_ID = 10;
+    private static final int TRAINER_ID = 3;
+    private static final Timestamp BEGIN_DATE = Timestamp.valueOf("2019-10-12 18:48:05");
+    private static final Timestamp END_DATE = Timestamp.valueOf("2020-04-12 18:48:05");
+    private static final String FEEDBACK = "MyFeedback";
+    private static final BigDecimal PRICE = BigDecimal.valueOf(111.5);
+    private static final String NUTRITION_TYPE_VALUE = "LOW_CALORIE";
+    private static final int ROW_INDEX = 10;
 
     private OrderMapper mapper = new OrderMapper();
+    private ResultSet resultSet = mock(ResultSet.class);
+
+    @Before
+    public void createMocks() throws SQLException{
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
+        when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(CLIENT_ID);
+        when(resultSet.getInt(TRAINER_ID_COLUMN)).thenReturn(TRAINER_ID);
+        when(resultSet.getTimestamp(BEGIN_DATE_COLUMN)).thenReturn(BEGIN_DATE);
+        when(resultSet.getTimestamp(END_DATE_COLUMN)).thenReturn(END_DATE);
+        when(resultSet.getString(FEEDBACK_COLUMN)).thenReturn(FEEDBACK);
+        when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(PRICE);
+        when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(NUTRITION_TYPE_VALUE);
+    }
 
     @Test
     public void testBuildShouldReturnBuiltOrderEntity() throws SQLException {
         //given
-        final int id = 5;
-        final int clientId = 10;
-        final int trainerId = 3;
-        final Timestamp beginDate = Timestamp.valueOf("2019-10-12 18:48:05");
-        final Timestamp endDate = Timestamp.valueOf("2020-04-12 18:48:05");
-        final String feedback = "MyFeedback";
-        final BigDecimal price = BigDecimal.valueOf(111.5);
-        final String nutritionTypeValue = "LOW_CALORIE";
-        NutritionType nutritionType = NutritionType.valueOf(nutritionTypeValue);
+        NutritionType nutritionType = NutritionType.valueOf(NUTRITION_TYPE_VALUE);
         Order expected = Order.createBuilder()
-                .setId(id)
-                .setClient(clientId)
-                .setTrainer(trainerId)
-                .setBeginDate(beginDate)
-                .setEndDate(endDate)
-                .setFeedback(feedback)
-                .setPrice(price)
+                .setId(ID)
+                .setClient(CLIENT_ID)
+                .setTrainer(TRAINER_ID)
+                .setBeginDate(BEGIN_DATE)
+                .setEndDate(END_DATE)
+                .setFeedback(FEEDBACK)
+                .setPrice(PRICE)
                 .setNutritionType(nutritionType)
                 .build();
 
-        ResultSet resultSet = mock(ResultSet.class);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(clientId);
-        when(resultSet.getInt(TRAINER_ID_COLUMN)).thenReturn(trainerId);
-        when(resultSet.getTimestamp(BEGIN_DATE_COLUMN)).thenReturn(beginDate);
-        when(resultSet.getTimestamp(END_DATE_COLUMN)).thenReturn(endDate);
-        when(resultSet.getString(FEEDBACK_COLUMN)).thenReturn(feedback);
-        when(resultSet.getBigDecimal(PRICE_COLUMN)).thenReturn(price);
-        when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(nutritionTypeValue);
-
         //when
-        Order actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());
+        Order actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
         Assert.assertNotNull(actual);
@@ -73,8 +81,21 @@ public class OrderMapperTest {
         Assert.assertEquals(expected.getBeginDate(), actual.getBeginDate());
         Assert.assertEquals(expected.getEndDate(), actual.getEndDate());
         Assert.assertEquals(expected.getFeedback(), actual.getFeedback());
-        assertThat(actual.getPrice(), Matchers.comparesEqualTo(expected.getPrice()));
+        assertThat(actual.getPrice(), comparesEqualTo(expected.getPrice()));
         Assert.assertEquals(expected.getNutritionType(), actual.getNutritionType());
+    }
+
+    @After
+    public void verifyMocks() throws SQLException{
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getInt(CLIENT_ID_COLUMN);
+        verify(resultSet, times(1)).getInt(TRAINER_ID_COLUMN);
+        verify(resultSet, times(1)).getTimestamp(BEGIN_DATE_COLUMN);
+        verify(resultSet, times(1)).getTimestamp(END_DATE_COLUMN);
+        verify(resultSet, times(1)).getString(FEEDBACK_COLUMN);
+        verify(resultSet, times(1)).getBigDecimal(PRICE_COLUMN);
+        verify(resultSet, times(1)).getString(NUTRITION_TYPE_COLUMN);
+        verifyNoMoreInteractions(resultSet);
     }
 
 }

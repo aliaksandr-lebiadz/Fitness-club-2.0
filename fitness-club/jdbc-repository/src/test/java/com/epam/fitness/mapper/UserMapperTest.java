@@ -2,52 +2,60 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.mockito.Mockito.*;
+import static com.epam.fitness.mapper.UserMapper.ID_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.EMAIL_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.PASSWORD_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.ROLE_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.FIRST_NAME_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.SECOND_NAME_COLUMN;
+import static com.epam.fitness.mapper.UserMapper.DISCOUNT_COLUMN;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.times;
 
 public class UserMapperTest {
 
-    private static final String ID_COLUMN = "id";
-    private static final String EMAIL_COLUMN = "email";
-    private static final String PASSWORD_COLUMN = "password";
-    private static final String ROLE_COLUMN = "role";
-    private static final String FIRST_NAME_COLUMN = "first_name";
-    private static final String SECOND_NAME_COLUMN = "second_name";
-    private static final String DISCOUNT_COLUMN = "discount";
+    private static final int ID = 1;
+    private static final String EMAIL = "email@mail.ru";
+    private static final String PASSWORD = "MyPass";
+    private static final String USER_ROLE_VALUE = "ADMIN";
+    private static final String FIRST_NAME = "Alex";
+    private static final String SECOND_NAME = "Lep";
+    private static final int DISCOUNT = 50;
+    private static final int ROW_INDEX = 15;
 
     private UserMapper mapper = new UserMapper();
+    private ResultSet resultSet = mock(ResultSet.class);
+
+    @Before
+    public void createMocks() throws SQLException{
+        when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
+        when(resultSet.getString(EMAIL_COLUMN)).thenReturn(EMAIL);
+        when(resultSet.getString(PASSWORD_COLUMN)).thenReturn(PASSWORD);
+        when(resultSet.getString(ROLE_COLUMN)).thenReturn(USER_ROLE_VALUE);
+        when(resultSet.getString(FIRST_NAME_COLUMN)).thenReturn(FIRST_NAME);
+        when(resultSet.getString(SECOND_NAME_COLUMN)).thenReturn(SECOND_NAME);
+        when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(DISCOUNT);
+    }
 
     @Test
     public void testBuildShouldReturnBuiltUserEntity() throws SQLException {
         //given
-        final int id = 1;
-        final String email = "email@mail.ru";
-        final String password = "MyPass";
-        final String userRoleValue = "admin";
-        final String firstName = "Alex";
-        final String secondName = "Lep";
-        final int discount = 50;
-        UserRole role = UserRole.valueOf(userRoleValue.toUpperCase());
-        User expected = new User(id, email, password, role, firstName, secondName, discount);
-
-        ResultSet resultSet = mock(ResultSet.class);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getInt(ID_COLUMN)).thenReturn(id);
-        when(resultSet.getString(EMAIL_COLUMN)).thenReturn(email);
-        when(resultSet.getString(PASSWORD_COLUMN)).thenReturn(password);
-        when(resultSet.getString(ROLE_COLUMN)).thenReturn(userRoleValue);
-        when(resultSet.getString(FIRST_NAME_COLUMN)).thenReturn(firstName);
-        when(resultSet.getString(SECOND_NAME_COLUMN)).thenReturn(secondName);
-        when(resultSet.getInt(DISCOUNT_COLUMN)).thenReturn(discount);
+        UserRole role = UserRole.valueOf(USER_ROLE_VALUE);
+        User expected = new User(ID, EMAIL, PASSWORD, role, FIRST_NAME, SECOND_NAME, DISCOUNT);
 
         //when
-        User actual = mapper.mapRow(resultSet, ArgumentMatchers.anyInt());
+        User actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
         Assert.assertNotNull(actual);
@@ -58,6 +66,18 @@ public class UserMapperTest {
         Assert.assertEquals(expected.getFirstName(), actual.getFirstName());
         Assert.assertEquals(expected.getSecondName(), actual.getSecondName());
         Assert.assertEquals(expected.getDiscount(), actual.getDiscount());
+    }
+
+    @After
+    public void verifyMocks() throws SQLException{
+        verify(resultSet, times(1)).getInt(ID_COLUMN);
+        verify(resultSet, times(1)).getString(EMAIL_COLUMN);
+        verify(resultSet, times(1)).getString(PASSWORD_COLUMN);
+        verify(resultSet, times(1)).getString(ROLE_COLUMN);
+        verify(resultSet, times(1)).getString(FIRST_NAME_COLUMN);
+        verify(resultSet, times(1)).getString(SECOND_NAME_COLUMN);
+        verify(resultSet, times(1)).getInt(DISCOUNT_COLUMN);
+        verifyNoMoreInteractions(resultSet);
     }
 
 }

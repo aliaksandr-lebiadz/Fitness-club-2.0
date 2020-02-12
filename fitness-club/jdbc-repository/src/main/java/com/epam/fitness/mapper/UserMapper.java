@@ -11,13 +11,13 @@ import java.sql.SQLException;
 @Component
 public class UserMapper implements RowMapper<User> {
 
-    private static final String EMAIL_COLUMN = "email";
-    private static final String PASSWORD_COLUMN = "password";
-    private static final String ROLE_COLUMN = "role";
-    private static final String DISCOUNT_COLUMN = "discount";
-    private static final String ID_COLUMN = "id";
-    private static final String FIRST_NAME_COLUMN = "first_name";
-    private static final String SECOND_NAME_COLUMN = "second_name";
+    /*package-private*/ static final String EMAIL_COLUMN = "email";
+    /*package-private*/ static final String PASSWORD_COLUMN = "password";
+    /*package-private*/ static final String ROLE_COLUMN = "role";
+    /*package-private*/ static final String DISCOUNT_COLUMN = "discount";
+    /*package-private*/ static final String ID_COLUMN = "id";
+    /*package-private*/ static final String FIRST_NAME_COLUMN = "first_name";
+    /*package-private*/ static final String SECOND_NAME_COLUMN = "second_name";
 
     @Override
     public User mapRow(ResultSet resultSet, int index) throws SQLException {
