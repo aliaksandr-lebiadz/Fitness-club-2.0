@@ -12,6 +12,7 @@
         <module>service</module>
         <module>web</module>
         <module>jpa-repository</module>
+        <module>model</module>
     </modules>
     <packaging>pom</packaging>
 
