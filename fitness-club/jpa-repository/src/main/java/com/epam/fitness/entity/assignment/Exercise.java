@@ -22,14 +22,6 @@ public class Exercise implements Identifiable, Serializable {
 
     public Exercise() {}
 
-    public Exercise(int id){
-        this.id = id;
-    }
-
-    public Exercise(String name){
-        this.name = name;
-    }
-
     public Exercise(int id, String name){
         this.id = id;
         this.name = name;

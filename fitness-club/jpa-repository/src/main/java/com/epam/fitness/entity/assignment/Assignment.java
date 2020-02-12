@@ -49,24 +49,14 @@ public class Assignment implements Identifiable, Serializable {
 
     public Assignment() {}
 
-    public Assignment(Exercise exercise, int amountOfSets, int amountOfReps,
-                      LocalDate workoutDate, AssignmentStatus status){
-        this.exercise = exercise;
-        this.amountOfSets = amountOfSets;
-        this.amountOfReps = amountOfReps;
-        this.workoutDate = workoutDate;
-        this.status = status;
-    }
-
-    public Assignment(Order order, Exercise exercise, int amountOfSets, int amountOfReps, LocalDate workoutDate){
-        this(exercise, amountOfSets, amountOfReps, workoutDate, AssignmentStatus.NEW);
-        this.order = order;
-    }
-
     public Assignment(Integer id, Order order, Exercise exercise, int amountOfSets,
                       int amountOfReps, LocalDate workoutDate, AssignmentStatus status){
-        this(order, exercise, amountOfSets, amountOfReps, workoutDate);
         this.id = id;
+        this.order = order;
+        this.exercise = exercise;
+        this.workoutDate = workoutDate;
+        this.amountOfSets = amountOfSets;
+        this.amountOfReps = amountOfReps;
         this.status = status;
     }
 
