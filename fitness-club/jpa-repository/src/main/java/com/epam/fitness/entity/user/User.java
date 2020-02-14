@@ -119,4 +119,8 @@ public class User implements Identifiable, Serializable {
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

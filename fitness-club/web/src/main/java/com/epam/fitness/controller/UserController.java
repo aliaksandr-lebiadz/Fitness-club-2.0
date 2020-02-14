@@ -56,7 +56,7 @@ public class UserController {
         userService.create(user);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public void updateUser(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
         userService.updateById(id, user);
     }
@@ -79,9 +79,9 @@ public class UserController {
 
     @PostMapping("/{id}/orders")
     public void createOrder(@PathVariable int id,
-                            @RequestBody GymMembershipDto gymMembershipDto)
+                            @RequestParam("gym_membership_id") int gymMembershipId)
             throws ServiceException{
-        orderService.create(id, gymMembershipDto);
+        orderService.create(id, gymMembershipId);
     }
 
 }

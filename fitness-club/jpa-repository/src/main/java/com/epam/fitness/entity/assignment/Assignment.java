@@ -22,7 +22,7 @@ public class Assignment implements Identifiable, Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, updatable = false)
     private Order order;
 
     @Column(name = "workout_date")
@@ -31,12 +31,10 @@ public class Assignment implements Identifiable, Serializable {
 
     @Column(name = "amount_of_sets")
     @Min(1)
-    @Max(100)
     private int amountOfSets;
 
     @Column(name = "amount_of_reps")
     @Min(1)
-    @Max(100)
     private int amountOfReps;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -87,6 +85,10 @@ public class Assignment implements Identifiable, Serializable {
 
     public AssignmentStatus getStatus() {
         return status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setStatus(AssignmentStatus status){

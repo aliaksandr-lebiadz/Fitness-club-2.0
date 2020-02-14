@@ -3,6 +3,7 @@ package com.epam.fitness.service.impl;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.CredentialsDto;
 import com.epam.fitness.entity.SortOrder;
+import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.UserDto;
@@ -72,14 +73,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateById(int id, UserDto userDto) throws ServiceException {
+        User user = mapper.mapToEntity(userDto);
         Optional<User> userOptional = dao.findById(id);
-        User user = userOptional
+        User oldUser = userOptional
                 .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
-        Integer discount = userDto.getDiscount();
-        if(Objects.nonNull(discount)){
-            user.setDiscount(discount);
-            dao.save(user);
-        }
+        List<Order> orders = oldUser.getOrders();
+        user.setOrders(orders);
+        String password = user.getPassword();
+        String passwordHash = hashPassword(password);
+        user.setPassword(passwordHash);
+        user.setId(id);
+        dao.save(user);
     }
 
     @Override

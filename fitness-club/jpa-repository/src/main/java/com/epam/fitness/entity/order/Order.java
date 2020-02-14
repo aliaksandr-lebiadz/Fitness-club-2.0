@@ -24,11 +24,11 @@ public class Order implements Identifiable, Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false, updatable = false)
     private User client;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "trainer_id", nullable = false)
+    @JoinColumn(name = "trainer_id", nullable = false, updatable = false)
     private User trainer;
 
     @Column(name = "begin_date")
@@ -98,6 +98,34 @@ public class Order implements Identifiable, Serializable {
 
     public void setNutritionType(NutritionType nutritionType) {
         this.nutritionType = nutritionType;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
+
+    public void setTrainer(User trainer) {
+        this.trainer = trainer;
+    }
+
+    public void setBeginDate(LocalDateTime beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     public class Builder{

@@ -3,10 +3,12 @@ package com.epam.fitness.entity;
 import com.epam.fitness.entity.order.NutritionType;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class OrderDto implements Identifiable, Serializable {
 
@@ -14,10 +16,14 @@ public class OrderDto implements Identifiable, Serializable {
 
     private Integer id;
     private LocalDateTime beginDate;
+    @NotNull
+    @FutureOrPresent
     private LocalDateTime endDate;
 
     @Length(min = 10, max = 1000)
     private String feedback;
+    @NotNull
+    @PositiveOrZero
     private BigDecimal price;
     private NutritionType nutritionType;
 

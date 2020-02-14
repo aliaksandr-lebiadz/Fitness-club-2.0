@@ -6,14 +6,13 @@ import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
-import com.epam.fitness.entity.order.NutritionType;
+import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.OrderUtils;
-import com.epam.fitness.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -48,11 +46,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void create(int clientId, GymMembershipDto gymMembershipDto) throws ServiceException {
+    public void create(int clientId, int gymMembershipId) throws ServiceException {
         Optional<User> clientOptional = userDao.findById(clientId);
         User client = clientOptional
                 .orElseThrow(() -> new ServiceException("Client with id " + clientId + "not found!"));
-        int gymMembershipId = gymMembershipDto.getId();
         Optional<GymMembership> gymMembershipOptional = gymMembershipDao.findById(gymMembershipId);
         GymMembership gymMembership = gymMembershipOptional
                 .orElseThrow(() -> new ServiceException("Gym membership with id " + gymMembershipId + "not found!"));
@@ -93,20 +90,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateById(int id, OrderDto orderDto) throws ServiceException{
+        Order order = orderMapper.mapToEntity(orderDto);
         Optional<Order> orderOptional = orderDao.findById(id);
-        Order order = orderOptional
+        Order oldOrder = orderOptional
                 .orElseThrow(() -> new ServiceException("Order with id " + id + " not found!"));
-        String feedback = orderDto.getFeedback();
-        if(Objects.nonNull(feedback)){
-            order.setFeedback(feedback);
-        }
-        NutritionType nutritionType = orderDto.getNutritionType();
-        if(Objects.nonNull(nutritionType)){
-            order.setNutritionType(nutritionType);
-        }
-        if(ServiceUtils.hasAtLeastOneNonNullField(feedback, nutritionType)) {
-            orderDao.save(order);
-        }
+        List<Assignment> assignments = oldOrder.getAssignments();
+        order.setAssignments(assignments);
+        order.setId(id);
+        orderDao.save(order);
     }
 
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){

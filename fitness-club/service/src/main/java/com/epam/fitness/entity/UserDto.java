@@ -4,6 +4,7 @@ import com.epam.fitness.entity.user.UserRole;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class UserDto implements Identifiable, Serializable {
@@ -11,15 +12,18 @@ public class UserDto implements Identifiable, Serializable {
     private static final long serialVersionUID = -6287929560717474040L;
 
     private Integer id;
+    @NotNull
     private String email;
+    @NotNull
     private String password;
     private String firstName;
     private String secondName;
+    @NotNull
     private UserRole role;
 
     @Min(0)
     @Max(100)
-    private Integer discount;
+    private int discount;
 
     public UserDto() {}
 
@@ -63,7 +67,7 @@ public class UserDto implements Identifiable, Serializable {
         return role;
     }
 
-    public Integer getDiscount() {
+    public int getDiscount() {
         return discount;
     }
 
@@ -91,7 +95,7 @@ public class UserDto implements Identifiable, Serializable {
         this.role = role;
     }
 
-    public void setDiscount(Integer discount) {
+    public void setDiscount(int discount) {
         this.discount = discount;
     }
 }

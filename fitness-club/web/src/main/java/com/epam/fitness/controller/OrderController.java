@@ -34,7 +34,7 @@ public class OrderController {
         return assignmentService.getAllByOrderId(id);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public void updateOrder(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) throws ServiceException{
         orderService.updateById(id, orderDto);
     }
