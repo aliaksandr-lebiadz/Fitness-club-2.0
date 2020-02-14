@@ -74,7 +74,9 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
         Assignment assignment = assignmentMapper.mapToEntity(assignmentDto);
         assignment.setOrder(order);
-        int exerciseId = assignmentDto.getExercise().getId();
+        int exerciseId = assignmentDto
+                .getExercise()
+                .getId();
         Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
         Exercise exercise = exerciseOptional
                 .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));

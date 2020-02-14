@@ -8,6 +8,7 @@ import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -40,13 +41,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllClients() {
+    public List<UserDto> getAllClients() throws ServiceException{
         List<User> clients = dao.getAllClients();
         return mapper.mapToDto(clients);
     }
 
     @Override
-    public List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order) {
+    public List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order)
+            throws ServiceException{
         List<User> users = dao.findUsersByParameters(firstName, secondName, email, order);
         return mapper.mapToDto(users);
     }
@@ -82,9 +84,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(UserDto userDto) {
+    public void create(UserDto userDto) throws ServiceException{
         User user = mapper.mapToEntity(userDto);
-		String password = user.getPassword();
+;		String password = user.getPassword();
 		String passwordHash = hashPassword(password);
 		user.setPassword(passwordHash);
         dao.save(user);

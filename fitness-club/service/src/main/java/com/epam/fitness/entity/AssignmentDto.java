@@ -4,6 +4,7 @@ import com.epam.fitness.entity.assignment.AssignmentStatus;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class AssignmentDto implements Identifiable, Serializable {
     private Integer amountOfSets;
     @Min(1)
     private Integer amountOfReps;
+    @NotNull
     private ExerciseDto exercise;
     private AssignmentStatus status;
 

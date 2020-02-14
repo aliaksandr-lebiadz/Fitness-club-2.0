@@ -4,6 +4,7 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.GymMembershipDto;
+import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class GymMembershipServiceImpl implements GymMembershipService {
     }
 
     @Override
-    public List<GymMembershipDto> getAll() {
+    public List<GymMembershipDto> getAll() throws ServiceException {
         List<GymMembership> gymMemberships = dao.getAll();
         return mapper.mapToDto(gymMemberships);
     }

@@ -4,6 +4,7 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.GymMembershipDto;
+import com.epam.fitness.exception.ServiceException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,7 +41,7 @@ public class GymMembershipServiceImplTest {
     private GymMembershipServiceImpl gymMembershipService;
 
     @Test
-    public void testGetAll(){
+    public void testGetAll() throws ServiceException {
         //given
         when(gymMembershipDao.getAll()).thenReturn(GYM_MEMBERSHIPS);
         when(gymMembershipMapper.mapToDto(GYM_MEMBERSHIPS)).thenReturn(EXPECTED_GYM_MEMBERSHIPS_DTO);

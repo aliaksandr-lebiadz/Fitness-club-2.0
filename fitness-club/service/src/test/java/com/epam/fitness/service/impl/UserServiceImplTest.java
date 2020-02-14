@@ -56,7 +56,7 @@ public class UserServiceImplTest {
     private UserServiceImpl service;
 
     @Before
-    public void createMocks() {
+    public void createMocks() throws ServiceException{
         when(userDao.findById(EXISTENT_TRAINER_ID)).thenReturn(Optional.of(TRAINER));
         when(userDao.findById(NONEXISTENT_TRAINER_ID)).thenReturn(Optional.empty());
         when(userMapper.mapToDto(CLIENTS)).thenReturn(EXPECTED_CLIENTS_DTO);
@@ -100,7 +100,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testGetAllClients(){
+    public void testGetAllClients() throws ServiceException{
         //given
 
         //when

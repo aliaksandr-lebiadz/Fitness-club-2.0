@@ -11,13 +11,13 @@ public interface UserService {
 
     void updateById(int id, UserDto userDto) throws ServiceException;
     List<UserDto> getClientsByTrainerId(int trainerId) throws ServiceException;
-    List<UserDto> getAllClients();
+    List<UserDto> getAllClients() throws ServiceException;
     List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order)
             throws ServiceException;
     UserDto getUserByEmail(String email) throws ServiceException;
     UserDto getUserWithCredentials(CredentialsDto credentialsDto) throws ServiceException;
 
-    void create(UserDto userDto);
+    void create(UserDto userDto) throws ServiceException;
     UserDto getById(int id) throws ServiceException;
     void deleteById(int id) throws ServiceException;
 }

@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/clients")
-    public List<UserDto> getClients(){
+    public List<UserDto> getClients() throws ServiceException{
         return userService.getAllClients();
     }
 
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping
-    public void createUser(@Valid @RequestBody UserDto user) {
+    public void createUser(@Valid @RequestBody UserDto user) throws ServiceException{
         userService.create(user);
     }
 

@@ -4,6 +4,7 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.ExerciseDto;
 import com.epam.fitness.entity.assignment.Exercise;
+import com.epam.fitness.exception.ServiceException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,7 +42,7 @@ public class ExerciseServiceImplTest {
     private ExerciseServiceImpl exerciseService;
 
     @Test
-    public void testGetAll(){
+    public void testGetAll() throws ServiceException {
         //given
         when(exerciseDao.getAll()).thenReturn(EXERCISES);
         when(exerciseMapper.mapToDto(EXERCISES)).thenReturn(EXPECTED_EXERCISES_DTO);
