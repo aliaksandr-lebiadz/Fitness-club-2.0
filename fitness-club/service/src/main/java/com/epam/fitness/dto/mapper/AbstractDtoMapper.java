@@ -2,7 +2,6 @@ package com.epam.fitness.dto.mapper;
 
 import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.exception.ServiceException;
-import org.apache.logging.log4j.LogManager;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;

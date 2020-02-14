@@ -13,6 +13,7 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.utils.OrderUtils;
+import com.epam.fitness.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -103,7 +104,9 @@ public class OrderServiceImpl implements OrderService {
         if(Objects.nonNull(nutritionType)){
             order.setNutritionType(nutritionType);
         }
-        orderDao.save(order);
+        if(ServiceUtils.hasAtLeastOneNonNullField(feedback, nutritionType)) {
+            orderDao.save(order);
+        }
     }
 
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){

@@ -2,6 +2,7 @@ package com.epam.fitness.dao;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.Identifiable;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -56,6 +57,7 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
 
     @Override
     public void save(T entity){
+        LogManager.getLogger().info("save");
         Session session = getCurrentSession();
         session.saveOrUpdate(entity);
     }

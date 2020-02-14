@@ -12,6 +12,7 @@ import com.epam.fitness.dao.api.AssignmentDao;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.Exercise;
 import com.epam.fitness.service.api.AssignmentService;
+import com.epam.fitness.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +65,9 @@ public class AssignmentServiceImpl implements AssignmentService {
         AssignmentStatus status = assignmentDto.getStatus();
         updateStatus(assignment, status);
 
-        assignmentDao.save(assignment);
+        if(ServiceUtils.hasAtLeastOneNonNullField(workoutDate, amountOfSets, amountOfReps, exerciseDto)){
+            assignmentDao.save(assignment);
+        }
     }
 
     @Override
@@ -84,6 +87,13 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentDao.save(assignment);
     }
 
+    private Exercise mapToEntity(ExerciseDto exerciseDto) throws ServiceException{
+        int exerciseId = exerciseDto.getId();
+        Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
+        return exerciseOptional
+                .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
+    }
+
     private void updateFieldsWhenNonNull(Assignment assignment,
                                          LocalDate workoutDate, Integer amountOfSets,
                                          Integer amountOfReps, ExerciseDto exerciseDto) throws ServiceException{
@@ -100,13 +110,6 @@ public class AssignmentServiceImpl implements AssignmentService {
             Exercise exercise = mapToEntity(exerciseDto);
             assignment.setExercise(exercise);
         }
-    }
-
-    private Exercise mapToEntity(ExerciseDto exerciseDto) throws ServiceException{
-        int exerciseId = exerciseDto.getId();
-        Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
-        return exerciseOptional
-                .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
     }
 
     private void updateStatus(Assignment assignment, AssignmentStatus status){
