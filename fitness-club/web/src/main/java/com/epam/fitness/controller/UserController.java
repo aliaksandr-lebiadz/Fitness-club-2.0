@@ -1,6 +1,5 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.UserDto;
@@ -62,7 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) throws ServiceException{
+    public void deleteUser(@PathVariable int id){
         userService.deleteById(id);
     }
 

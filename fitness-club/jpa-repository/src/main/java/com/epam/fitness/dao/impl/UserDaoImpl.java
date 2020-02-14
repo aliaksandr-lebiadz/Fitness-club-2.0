@@ -5,11 +5,10 @@ import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -25,9 +24,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private static Random random = new Random();
 
-    @Autowired
-    public UserDaoImpl(SessionFactory sessionFactory) {
-        super(sessionFactory, User.class);
+    public UserDaoImpl() {
+        super(User.class);
     }
 
     @Override
@@ -42,7 +40,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 .distinct(true)
                 .where(criteriaBuilder.equal(join.get(TRAINER_PARAMETER), trainer));
 
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
@@ -54,7 +52,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         criteriaQuery
                 .select(user)
                 .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.CLIENT));
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
@@ -66,8 +64,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         criteriaQuery
                 .select(user)
                 .where(criteriaBuilder.equal(user.get(EMAIL_PARAMETER), email));
-        Query<User> query = getQuery(criteriaQuery);
-        return query.uniqueResultOptional();
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        return getOptionalResult(query);
     }
 
     @Override
@@ -81,8 +79,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                         criteriaBuilder.equal(user.get(EMAIL_PARAMETER), email),
                         criteriaBuilder.equal(user.get("password"), password)
                 ));
-        Query<User> query = getQuery(criteriaQuery);
-        return query.uniqueResultOptional();
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        return getOptionalResult(query);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             Order order = getOrder(criteriaBuilder, user.get(FIRST_NAME_PARAMETER), sortOrder);
             criteriaQuery.orderBy(order);
         }
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
@@ -110,9 +108,18 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         criteriaQuery
                 .select(user)
                 .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.TRAINER));
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         List<User> trainers = query.getResultList();
         return getRandomTrainerFromList(trainers);
+    }
+
+    private Optional<User> getOptionalResult(TypedQuery<User> query){
+        try{
+            User user = query.getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException ex){
+            return Optional.empty();
+        }
     }
 
     private Optional<User> getRandomTrainerFromList(List<User> trainers){

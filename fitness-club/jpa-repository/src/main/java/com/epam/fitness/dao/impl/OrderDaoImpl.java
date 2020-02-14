@@ -4,11 +4,9 @@ import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 
@@ -19,11 +17,9 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     private static final String TRAINER_PARAMETER = "trainer";
     private static final String ID_PARAMETER = "id";
 
-    @Autowired
-    public OrderDaoImpl(SessionFactory sessionFactory) {
-        super(sessionFactory, Order.class);
+    public OrderDaoImpl() {
+        super(Order.class);
     }
-
 
     @Override
     public List<Order> findOrdersOfTrainerClient(int clientId, User trainer) {
@@ -35,7 +31,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
         criteriaQuery
                 .select(order)
                 .where(criteriaBuilder.and(trainerEquality, clientIdEquality));
-        Query<Order> query = getQuery(criteriaQuery);
+        TypedQuery<Order> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 

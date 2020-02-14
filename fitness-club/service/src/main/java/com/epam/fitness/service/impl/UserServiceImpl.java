@@ -104,11 +104,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(int id) throws ServiceException {
-        Optional<User> userOptional = dao.findById(id);
-        User user = userOptional
-                .orElseThrow(() -> new ServiceException("User with id " + id + " not found!"));
-        dao.delete(user);
+    public void deleteById(int id) {
+        dao.deleteById(id);
     }
 	
 	private String hashPassword(String password) {

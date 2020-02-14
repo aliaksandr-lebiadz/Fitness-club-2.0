@@ -19,5 +19,5 @@ public interface UserService {
 
     void create(UserDto userDto) throws ServiceException;
     UserDto getById(int id) throws ServiceException;
-    void deleteById(int id) throws ServiceException;
+    void deleteById(int id);
 }

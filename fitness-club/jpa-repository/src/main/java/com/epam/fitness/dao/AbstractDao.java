@@ -2,10 +2,10 @@ package com.epam.fitness.dao;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.Identifiable;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -22,11 +22,11 @@ import java.util.Optional;
  */
 public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
 
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
     private Class<T> entityClass;
 
-    public AbstractDao(SessionFactory sessionFactory, Class<T> entityClass){
-        this.sessionFactory = sessionFactory;
+    public AbstractDao(Class<T> entityClass){
         this.entityClass = entityClass;
     }
 
@@ -39,35 +39,34 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
      */
     @Override
     public Optional<T> findById(int id) {
-        Session session = getCurrentSession();
-        T entity = session.get(entityClass, id);
+        T entity = entityManager.find(entityClass, id);
         return Optional.ofNullable(entity);
     }
 
     @Override
     public List<T> getAll(){
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-        Root<T> root = criteriaQuery.from(entityClass);
+        CriteriaQuery<T> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<T> root = getRoot(criteriaQuery);
         criteriaQuery.select(root);
-        Query<T> query = getCurrentSession().createQuery(criteriaQuery);
+
+        TypedQuery<T> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
     @Override
     public void save(T entity){
-        Session session = getCurrentSession();
-        session.merge(entity);
+        entityManager.merge(entity);
     }
 
     @Override
-    public void delete(T entity){
-        Session session = getCurrentSession();
-        session.delete(entity);
+    public void deleteById(int id){
+        T entity = entityManager.find(entityClass, id);
+        entityManager.remove(entity);
     }
 
     protected CriteriaBuilder getCriteriaBuilder(){
-        return sessionFactory.getCriteriaBuilder();
+        return entityManager.getCriteriaBuilder();
     }
 
     protected CriteriaQuery<T> getCriteriaQuery(CriteriaBuilder criteriaBuilder){
@@ -78,14 +77,8 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
         return criteriaQuery.from(entityClass);
     }
 
-    protected Query<T> getQuery(CriteriaQuery<T> criteriaQuery){
-        Session session = getCurrentSession();
-        return session.createQuery(criteriaQuery);
+    protected TypedQuery<T> getQuery(CriteriaQuery<T> criteriaQuery){
+        return entityManager.createQuery(criteriaQuery);
     }
-
-    private Session getCurrentSession(){
-        return sessionFactory.getCurrentSession();
-    }
-
 
 }
