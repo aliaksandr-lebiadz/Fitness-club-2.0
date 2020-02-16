@@ -55,8 +55,8 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     }
 
     @Override
-    public void save(T entity){
-        entityManager.merge(entity);
+    public T save(T entity){
+        return entityManager.merge(entity);
     }
 
     @Override

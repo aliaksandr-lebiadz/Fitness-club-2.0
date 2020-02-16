@@ -4,11 +4,11 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
-import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.order.Order;
 import com.epam.fitness.entity.user.User;
+import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.service.api.OrderService;
@@ -46,20 +46,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void create(int clientId, int gymMembershipId) throws ServiceException {
+    public OrderDto create(int clientId, int gymMembershipId) throws ServiceException {
         Optional<User> clientOptional = userDao.findById(clientId);
         User client = clientOptional
-                .orElseThrow(() -> new ServiceException("Client with id " + clientId + "not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Client with id " + clientId + " not found!"));
         Optional<GymMembership> gymMembershipOptional = gymMembershipDao.findById(gymMembershipId);
         GymMembership gymMembership = gymMembershipOptional
-                .orElseThrow(() -> new ServiceException("Gym membership with id " + gymMembershipId + "not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Gym membership with id " + gymMembershipId + " not found!"));
         BigDecimal totalPrice = calculateTotalPrice(gymMembership, client);
         LocalDateTime endDate = calculateEndDate(gymMembership);
         Optional<User> randomTrainerOptional = userDao.getRandomTrainer();
         User trainer = randomTrainerOptional
-                .orElseThrow(() -> new ServiceException("Trainers aren't found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Trainers aren't found!"));
         Order order = createOrderWithCurrentBeginDate(client, trainer, endDate, totalPrice);
-        orderDao.save(order);
+        Order savedOrder = orderDao.save(order);
+        return orderMapper.mapToDto(savedOrder);
     }
 
     @Override
@@ -89,15 +90,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateById(int id, OrderDto orderDto) throws ServiceException{
+    public OrderDto updateById(int id, OrderDto orderDto) throws ServiceException{
         Order order = orderMapper.mapToEntity(orderDto);
         Optional<Order> orderOptional = orderDao.findById(id);
         Order oldOrder = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + id + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " not found!"));
         List<Assignment> assignments = oldOrder.getAssignments();
         order.setAssignments(assignments);
         order.setId(id);
-        orderDao.save(order);
+        Order savedOrder = orderDao.save(order);
+        return orderMapper.mapToDto(savedOrder);
     }
 
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){

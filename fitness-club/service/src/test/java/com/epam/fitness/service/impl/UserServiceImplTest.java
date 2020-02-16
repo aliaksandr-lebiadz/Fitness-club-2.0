@@ -5,6 +5,7 @@ import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.entity.UserDto;
+import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -20,12 +21,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doNothing;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class UserServiceImplTest {
 
     private static final String EXISTENT_EMAIL = "admin@gmail.com";
@@ -46,8 +47,6 @@ public class UserServiceImplTest {
     private static final int EXISTENT_TRAINER_ID = 3;
     private static final int NONEXISTENT_TRAINER_ID = 15;
 
-
-
     @Mock
     private UserDao userDao;
     @Mock
@@ -66,10 +65,11 @@ public class UserServiceImplTest {
 
         when(userDao.findById(EXISTENT_USER_ID)).thenReturn(Optional.of(USER));
         when(userDao.findById(NONEXISTENT_USER_ID)).thenReturn(Optional.empty());
-        doNothing().when(userDao).save(USER);
+        when(userDao.save(USER)).thenReturn(USER);
         when(userDao.findUserByEmail(EXISTENT_EMAIL)).thenReturn(Optional.of(USER));
         when(userDao.findUserByEmail(NONEXISTENT_EMAIL)).thenReturn(Optional.empty());
         when(userMapper.mapToDto(USER)).thenReturn(USER_DTO);
+        when(userMapper.mapToEntity(USER_DTO)).thenReturn(USER);
     }
 
     @Test
@@ -147,15 +147,19 @@ public class UserServiceImplTest {
         //given
 
         //when
-        service.updateById(EXISTENT_USER_ID, USER_DTO);
+        UserDto actual = service.updateById(EXISTENT_USER_ID, USER_DTO);
 
         //then
+        Assert.assertEquals(USER_DTO, actual);
+
         verify(userDao, times(1)).findById(EXISTENT_USER_ID);
         verify(userDao, times(1)).save(USER);
+        verify(userMapper, times(1)).mapToEntity(USER_DTO);
+        verify(userMapper, times(1)).mapToDto(USER);
         verifyNoMoreInteractions(userDao, userMapper);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testUpdateByIdShouldThrowExceptionWhenNonexistentUserIdSupplied() throws ServiceException {
         //given
 

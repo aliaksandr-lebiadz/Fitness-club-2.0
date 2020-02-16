@@ -20,8 +20,9 @@ public class AssignmentController {
     }
 
     @PutMapping("/{id}")
-    public void updateAssignment(@PathVariable int id, @Valid @RequestBody AssignmentDto assignmentDto) throws ServiceException {
-        assignmentService.updateById(id, assignmentDto);
+    public AssignmentDto updateAssignment(@PathVariable int id, @Valid @RequestBody AssignmentDto assignmentDto)
+            throws ServiceException {
+        return assignmentService.updateById(id, assignmentDto);
     }
 
 }

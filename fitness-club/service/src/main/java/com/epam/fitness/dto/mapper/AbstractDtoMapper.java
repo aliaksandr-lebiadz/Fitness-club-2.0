@@ -1,7 +1,7 @@
 package com.epam.fitness.dto.mapper;
 
 import com.epam.fitness.entity.Identifiable;
-import com.epam.fitness.exception.ServiceException;
+import com.epam.fitness.exception.DtoMappingException;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
@@ -22,23 +22,23 @@ public abstract class AbstractDtoMapper<E extends Identifiable, D extends Identi
     }
 
     @Override
-    public D mapToDto(E entity) throws ServiceException {
+    public D mapToDto(E entity) throws DtoMappingException {
         if(Objects.isNull(entity)){
-            throw new ServiceException("Supplied entity is null and cannot be mapped!");
+            throw new DtoMappingException("Supplied entity is null and cannot be mapped!");
         }
         return modelMapper.map(entity, dtoClass);
     }
 
     @Override
-    public E mapToEntity(D dto) throws ServiceException{
+    public E mapToEntity(D dto) throws DtoMappingException{
         if(Objects.isNull(dto)){
-            throw new ServiceException("Supplied dto is null and cannot be mapped!");
+            throw new DtoMappingException("Supplied dto is null and cannot be mapped!");
         }
         return modelMapper.map(dto, entityClass);
     }
 
     @Override
-    public List<D> mapToDto(List<E> entities) throws ServiceException{
+    public List<D> mapToDto(List<E> entities) throws DtoMappingException{
         List<D> dtoList = new ArrayList<>();
         for(E entity : entities){
             D dto = mapToDto(entity);

@@ -1,6 +1,5 @@
 package com.epam.fitness.dao.impl;
 
-import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.entity.assignment.Exercise;
 import org.springframework.beans.factory.annotation.Autowired;

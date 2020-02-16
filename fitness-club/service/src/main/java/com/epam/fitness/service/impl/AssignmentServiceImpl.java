@@ -4,6 +4,8 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.AssignmentDto;
 import com.epam.fitness.entity.order.Order;
+import com.epam.fitness.exception.EntityAlreadyExistsException;
+import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.dao.api.OrderDao;
 import com.epam.fitness.dao.api.AssignmentDao;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -47,29 +50,39 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void updateById(int id, AssignmentDto assignmentDto) throws ServiceException{
+    public AssignmentDto updateById(int id, AssignmentDto assignmentDto) throws ServiceException{
         Assignment assignment = assignmentMapper.mapToEntity(assignmentDto);
         mapExerciseFromDtoToEntity(assignmentDto, assignment);
         assignment.setId(id);
-        assignmentDao.save(assignment);
+        Assignment savedAssignment = assignmentDao.save(assignment);
+        return assignmentMapper.mapToDto(savedAssignment);
     }
 
     @Override
-    public void create(int orderId, AssignmentDto assignmentDto) throws ServiceException{
+    public AssignmentDto create(int orderId, AssignmentDto assignmentDto) throws ServiceException{
+        Integer id = assignmentDto.getId();
+        if(Objects.nonNull(id)){
+            Optional<Assignment> assignmentOptional = assignmentDao.findById(id);
+            if(assignmentOptional.isPresent()){
+                throw new EntityAlreadyExistsException("Assignment with id " + id + " already exists!");
+            }
+        }
         Assignment assignment = assignmentMapper.mapToEntity(assignmentDto);
         Optional<Order> orderOptional = orderDao.findById(orderId);
         Order order = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Order with id " + orderId + " not found!"));
         assignment.setOrder(order);
         mapExerciseFromDtoToEntity(assignmentDto, assignment);
-        assignmentDao.save(assignment);
+        Assignment savedAssignment = assignmentDao.save(assignment);
+        return assignmentMapper.mapToDto(savedAssignment);
     }
 
-    private void mapExerciseFromDtoToEntity(AssignmentDto assignmentDto, Assignment assignment) throws ServiceException {
+    private void mapExerciseFromDtoToEntity(AssignmentDto assignmentDto, Assignment assignment)
+            throws EntityNotFoundException {
         int exerciseId = assignmentDto.getExerciseId();
         Optional<Exercise> exerciseOptional = exerciseDao.findById(exerciseId);
         Exercise exercise = exerciseOptional
-                .orElseThrow(() -> new ServiceException("Exercise with id " + exerciseId + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Exercise with id " + exerciseId + " not found!"));
         assignment.setExercise(exercise);
     }
 

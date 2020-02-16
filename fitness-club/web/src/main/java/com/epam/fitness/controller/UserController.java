@@ -7,6 +7,7 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,17 +52,19 @@ public class UserController {
     }
 
     @PostMapping
-    public void createUser(@Valid @RequestBody UserDto user) throws ServiceException{
-        userService.create(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@Valid @RequestBody UserDto user) throws ServiceException{
+        return userService.create(user);
     }
 
     @PutMapping("/{id}")
-    public void updateUser(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
-        userService.updateById(id, user);
+    public UserDto updateUser(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
+        return userService.updateById(id, user);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable int id) throws ServiceException{
         userService.deleteById(id);
     }
 
@@ -77,10 +80,11 @@ public class UserController {
     }
 
     @PostMapping("/{id}/orders")
-    public void createOrder(@PathVariable int id,
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto createOrder(@PathVariable int id,
                             @RequestParam("gym_membership_id") int gymMembershipId)
             throws ServiceException{
-        orderService.create(id, gymMembershipId);
+       return orderService.create(id, gymMembershipId);
     }
 
 }

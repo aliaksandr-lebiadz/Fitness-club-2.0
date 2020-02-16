@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface OrderService {
 
-    void create(int clientId, int gymMembershipId) throws ServiceException;
-    void updateById(int id, OrderDto order) throws ServiceException;
+    OrderDto create(int clientId, int gymMembershipId) throws ServiceException;
+    OrderDto updateById(int id, OrderDto order) throws ServiceException;
     List<OrderDto> getOrdersOfTrainerClient(int clientId, int trainerId) throws ServiceException;
     List<OrderDto> getOrdersByClientId(int clientId) throws ServiceException;
     OrderDto getById(int id) throws ServiceException;

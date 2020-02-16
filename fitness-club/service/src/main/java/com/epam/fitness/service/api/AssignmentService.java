@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AssignmentService {
 
-    void updateById(int id, AssignmentDto assignment) throws ServiceException;
-    void create(int orderId, AssignmentDto assignmentDto) throws ServiceException;
+    AssignmentDto updateById(int id, AssignmentDto assignment) throws ServiceException;
+    AssignmentDto create(int orderId, AssignmentDto assignmentDto) throws ServiceException;
     List<AssignmentDto> getAllByOrderId(int orderId) throws ServiceException;
 
 }

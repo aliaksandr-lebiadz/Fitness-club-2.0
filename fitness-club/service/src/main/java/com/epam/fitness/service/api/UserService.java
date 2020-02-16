@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
 
-    void updateById(int id, UserDto userDto) throws ServiceException;
+    UserDto updateById(int id, UserDto userDto) throws ServiceException;
     List<UserDto> getClientsByTrainerId(int trainerId) throws ServiceException;
     List<UserDto> getAllClients() throws ServiceException;
     List<UserDto> searchUsersByParameters(String firstName, String secondName, String email, SortOrder order)
@@ -17,7 +17,7 @@ public interface UserService {
     UserDto getUserByEmail(String email) throws ServiceException;
     UserDto getUserWithCredentials(CredentialsDto credentialsDto) throws ServiceException;
 
-    void create(UserDto userDto) throws ServiceException;
+    UserDto create(UserDto userDto) throws ServiceException;
     UserDto getById(int id) throws ServiceException;
-    void deleteById(int id);
+    void deleteById(int id) throws ServiceException;
 }

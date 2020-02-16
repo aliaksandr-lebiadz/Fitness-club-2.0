@@ -27,7 +27,7 @@ public interface Dao<T extends Identifiable> {
      *
      * @param entity entity to save
      */
-    void save(T entity);
+    T save(T entity);
 
     /**
      * <p>Deletes the supplied entity.</p>

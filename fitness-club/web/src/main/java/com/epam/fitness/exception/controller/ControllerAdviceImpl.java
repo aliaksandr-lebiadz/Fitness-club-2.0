@@ -1,5 +1,7 @@
 package com.epam.fitness.exception.controller;
 
+import com.epam.fitness.exception.EntityAlreadyExistsException;
+import com.epam.fitness.exception.EntityNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -40,23 +42,37 @@ public class ControllerAdviceImpl extends ResponseEntityExceptionHandler {
                 .body(apiError);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiError> handleObjectNotFoundException(EntityNotFoundException exception) {
+        return createResponse(exception, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleEntityAlreadyExistsException(EntityAlreadyExistsException exception) {
+        return createResponse(exception, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAnyException(Exception exception){
+    public ResponseEntity<ApiError> handleAnyException(Exception exception){
+        return createResponse(exception, HttpStatus.BAD_REQUEST);
+    }
+
+    private List<String> getMessagesFromFieldsErrors(List<FieldError> fieldErrors){
+        Function<FieldError, String> formatter =
+                f -> String.format(ERROR_MESSAGE_FORMAT, f.getField(), f.getDefaultMessage(), f.getRejectedValue());
+        return fieldErrors.stream()
+                .map(formatter)
+                .collect(Collectors.toList());
+    }
+
+    private ResponseEntity<ApiError> createResponse(Exception exception, HttpStatus status) {
         LOGGER.error(exception);
 
         String message = exception.getMessage();
         ApiError apiError = new ApiError(Collections.singletonList(message));
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(status)
                 .body(apiError);
-    }
-
-    private List<String> getMessagesFromFieldsErrors(List<FieldError> fieldErrors){
-        Function<FieldError, String> formatter =
-                (f) -> String.format(ERROR_MESSAGE_FORMAT, f.getField(), f.getDefaultMessage(), f.getRejectedValue());
-        return fieldErrors.stream()
-                .map(formatter)
-                .collect(Collectors.toList());
     }
 
 }
