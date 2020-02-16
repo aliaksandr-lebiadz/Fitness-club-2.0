@@ -6,6 +6,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class UserDto implements Identifiable, Serializable {
 
@@ -97,5 +98,24 @@ public class UserDto implements Identifiable, Serializable {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return discount == userDto.discount &&
+                Objects.equals(id, userDto.id) &&
+                Objects.equals(email, userDto.email) &&
+                Objects.equals(password, userDto.password) &&
+                Objects.equals(firstName, userDto.firstName) &&
+                Objects.equals(secondName, userDto.secondName) &&
+                role == userDto.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, firstName, secondName, role, discount);
     }
 }

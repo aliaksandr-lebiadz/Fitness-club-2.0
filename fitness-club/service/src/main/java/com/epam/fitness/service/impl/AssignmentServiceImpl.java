@@ -44,13 +44,17 @@ public class AssignmentServiceImpl implements AssignmentService {
     public List<AssignmentDto> getAllByOrderId(int orderId) throws ServiceException{
         Optional<Order> orderOptional = orderDao.findById(orderId);
         Order order = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Order with id " + orderId + " not found!"));
         List<Assignment> assignments = assignmentDao.getAllByOrder(order);
         return assignmentMapper.mapToDto(assignments);
     }
 
     @Override
     public AssignmentDto updateById(int id, AssignmentDto assignmentDto) throws ServiceException{
+        Optional<Assignment> assignmentOptional = assignmentDao.findById(id);
+        if(!assignmentOptional.isPresent()){
+            throw new EntityNotFoundException("Assignment with id " + id + " not found!");
+        }
         Assignment assignment = assignmentMapper.mapToEntity(assignmentDto);
         mapExerciseFromDtoToEntity(assignmentDto, assignment);
         assignment.setId(id);

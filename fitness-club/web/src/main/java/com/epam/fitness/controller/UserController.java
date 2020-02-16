@@ -58,13 +58,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDto updateUser(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
+    public UserDto updateUserById(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
         return userService.updateById(id, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable int id) throws ServiceException{
+    public void deleteUserById(@PathVariable int id) throws ServiceException{
         userService.deleteById(id);
     }
 
@@ -82,7 +82,7 @@ public class UserController {
     @PostMapping("/{id}/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@PathVariable int id,
-                            @RequestParam("gym_membership_id") int gymMembershipId)
+                                @RequestParam("gym_membership_id") int gymMembershipId)
             throws ServiceException{
        return orderService.create(id, gymMembershipId);
     }

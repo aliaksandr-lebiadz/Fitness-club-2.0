@@ -26,18 +26,18 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public OrderDto getById(@PathVariable int id) throws ServiceException{
+    public OrderDto getOrderById(@PathVariable int id) throws ServiceException{
         return orderService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public OrderDto updateOrderById(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) throws ServiceException{
+        return orderService.updateById(id, orderDto);
     }
 
     @GetMapping("/{id}/assignments")
     public List<AssignmentDto> getAssignmentsByOrderId(@PathVariable int id) throws ServiceException{
         return assignmentService.getAllByOrderId(id);
-    }
-
-    @PutMapping("/{id}")
-    public OrderDto updateOrder(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) throws ServiceException{
-        return orderService.updateById(id, orderDto);
     }
 
     @PostMapping("/{id}/assignments")

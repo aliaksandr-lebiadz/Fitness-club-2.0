@@ -1,5 +1,7 @@
 package com.epam.fitness.entity;
 
+import java.util.Objects;
+
 public class CredentialsDto {
 
     private String email;
@@ -26,5 +28,19 @@ public class CredentialsDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CredentialsDto that = (CredentialsDto) o;
+        return Objects.equals(email, that.email) &&
+                Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password);
     }
 }

@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class AssignmentDto implements Identifiable, Serializable {
 
@@ -14,7 +15,6 @@ public class AssignmentDto implements Identifiable, Serializable {
 
     private Integer id;
 
-    @NotNull
     @FutureOrPresent
     private LocalDate workoutDate;
 
@@ -44,10 +44,16 @@ public class AssignmentDto implements Identifiable, Serializable {
         this.workoutDate = workoutDate;
     }
 
-    public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps, LocalDate workoutDate){
-        this(amountOfSets, amountOfReps, workoutDate);
+    public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps){
         this.id = id;
         this.exerciseId = exerciseId;
+        this.amountOfSets = amountOfSets;
+        this.amountOfReps = amountOfReps;
+    }
+
+    public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps, LocalDate workoutDate){
+        this(id, exerciseId, amountOfSets, amountOfReps);
+        this.workoutDate = workoutDate;
     }
 
     @Override
@@ -97,5 +103,23 @@ public class AssignmentDto implements Identifiable, Serializable {
 
     public void setStatus(AssignmentStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AssignmentDto that = (AssignmentDto) o;
+        return amountOfSets == that.amountOfSets &&
+                amountOfReps == that.amountOfReps &&
+                exerciseId == that.exerciseId &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(workoutDate, that.workoutDate) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, workoutDate, amountOfSets, amountOfReps, exerciseId, status);
     }
 }

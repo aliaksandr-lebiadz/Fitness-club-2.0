@@ -8,7 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class OrderDto implements Identifiable, Serializable {
 
@@ -16,7 +18,6 @@ public class OrderDto implements Identifiable, Serializable {
 
     private Integer id;
     private LocalDateTime beginDate;
-    @NotNull
     @FutureOrPresent
     private LocalDateTime endDate;
 
@@ -37,6 +38,11 @@ public class OrderDto implements Identifiable, Serializable {
     public OrderDto(int id, NutritionType nutritionType){
         this.id = id;
         this.nutritionType = nutritionType;
+    }
+
+    public OrderDto(int id, String feedback, BigDecimal price) {
+        this(id, feedback);
+        this.price = price;
     }
 
     @Override
@@ -88,4 +94,21 @@ public class OrderDto implements Identifiable, Serializable {
         this.price = price;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDto orderDto = (OrderDto) o;
+        return Objects.equals(id, orderDto.id) &&
+                Objects.equals(beginDate, orderDto.beginDate) &&
+                Objects.equals(endDate, orderDto.endDate) &&
+                Objects.equals(feedback, orderDto.feedback) &&
+                Objects.equals(price, orderDto.price) &&
+                nutritionType == orderDto.nutritionType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, beginDate, endDate, feedback, price, nutritionType);
+    }
 }
