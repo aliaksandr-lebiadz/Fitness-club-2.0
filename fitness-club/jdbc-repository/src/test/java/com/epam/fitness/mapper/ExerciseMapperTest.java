@@ -1,7 +1,6 @@
 package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.assignment.Exercise;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -9,6 +8,8 @@ import java.sql.SQLException;
 
 import static com.epam.fitness.mapper.ExerciseMapper.ID_COLUMN;
 import static com.epam.fitness.mapper.ExerciseMapper.NAME_COLUMN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,7 +26,7 @@ public class ExerciseMapperTest {
     private ResultSet resultSet = mock(ResultSet.class);
 
     @Test
-    public void testBuildShouldReturnBuiltExerciseWhenResultSetWithValidColumnsSupplied() throws SQLException {
+    public void buildWhenValidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getString(NAME_COLUMN)).thenReturn(NAME);
@@ -35,16 +36,16 @@ public class ExerciseMapperTest {
         Exercise actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getId(), actual.getId());
-        Assert.assertEquals(expected.getName(), actual.getName());
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getString(NAME_COLUMN);
         verifyNoMoreInteractions(resultSet);
     }
 
     @Test(expected = SQLException.class)
-    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+    public void buildWithSqlExceptionWhenInvalidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenThrow(SQLException.class);
 

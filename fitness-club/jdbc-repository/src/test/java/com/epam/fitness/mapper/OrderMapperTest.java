@@ -2,7 +2,6 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.order.NutritionType;
 import com.epam.fitness.entity.order.Order;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -18,6 +17,8 @@ import static com.epam.fitness.mapper.OrderMapper.END_DATE_COLUMN;
 import static com.epam.fitness.mapper.OrderMapper.FEEDBACK_COLUMN;
 import static com.epam.fitness.mapper.OrderMapper.PRICE_COLUMN;
 import static com.epam.fitness.mapper.OrderMapper.NUTRITION_TYPE_COLUMN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -42,7 +43,7 @@ public class OrderMapperTest {
     private ResultSet resultSet = mock(ResultSet.class);
 
     @Test
-    public void testBuildShouldReturnBuiltOrderWhenResultSetWhenValidColumnsSupplied() throws SQLException {
+    public void buildWhenValidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(CLIENT_ID);
@@ -69,15 +70,15 @@ public class OrderMapperTest {
         Order actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getId(), actual.getId());
-        Assert.assertEquals(expected.getClientId(), actual.getClientId());
-        Assert.assertEquals(expected.getTrainerId(), actual.getTrainerId());
-        Assert.assertEquals(expected.getBeginDate(), actual.getBeginDate());
-        Assert.assertEquals(expected.getEndDate(), actual.getEndDate());
-        Assert.assertEquals(expected.getFeedback(), actual.getFeedback());
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getClientId(), actual.getClientId());
+        assertEquals(expected.getTrainerId(), actual.getTrainerId());
+        assertEquals(expected.getBeginDate(), actual.getBeginDate());
+        assertEquals(expected.getEndDate(), actual.getEndDate());
+        assertEquals(expected.getFeedback(), actual.getFeedback());
         assertThat(actual.getPrice(), comparesEqualTo(expected.getPrice()));
-        Assert.assertEquals(expected.getNutritionType(), actual.getNutritionType());
+        assertEquals(expected.getNutritionType(), actual.getNutritionType());
 
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getInt(CLIENT_ID_COLUMN);
@@ -91,7 +92,7 @@ public class OrderMapperTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testBuildShouldThrowExceptionWhenResultSetWhenInvalidColumnsSupplied() throws SQLException {
+    public void buildWithSqlExceptionWhenInvalidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(CLIENT_ID_COLUMN)).thenReturn(CLIENT_ID);

@@ -1,7 +1,7 @@
 package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.GymMembership;
-import org.junit.Assert;
+
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import static com.epam.fitness.mapper.GymMembershipMapper.ID_COLUMN;
 import static com.epam.fitness.mapper.GymMembershipMapper.MONTHS_AMOUNT_COLUMN;
 import static com.epam.fitness.mapper.GymMembershipMapper.PRICE_COLUMN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,7 +32,7 @@ public class GymMembershipMapperTest {
     private ResultSet resultSet = mock(ResultSet.class);
 
     @Test
-    public void testBuildShouldReturnBuiltGymMembershipWhenResultSetWithValidColumnsSupplied() throws SQLException {
+    public void buildWhenValidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(MONTHS_AMOUNT_COLUMN)).thenReturn(MONTHS_AMOUNT);
@@ -41,9 +43,9 @@ public class GymMembershipMapperTest {
         GymMembership actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getId(), actual.getId());
-        Assert.assertEquals(expected.getMonthsAmount(), actual.getMonthsAmount());
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getMonthsAmount(), actual.getMonthsAmount());
         assertThat(actual.getPrice(), comparesEqualTo(expected.getPrice()));
 
         verify(resultSet, times(1)).getInt(ID_COLUMN);
@@ -53,7 +55,7 @@ public class GymMembershipMapperTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+    public void buildWithSqlExceptionWhenInvalidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(MONTHS_AMOUNT_COLUMN)).thenReturn(MONTHS_AMOUNT);

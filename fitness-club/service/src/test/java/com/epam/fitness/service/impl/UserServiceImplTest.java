@@ -7,7 +7,9 @@ import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -73,22 +76,22 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindUserByEmailShouldReturnUserDtoWhenUserWithSuppliedEmailExists() throws ServiceException{
+    public void getUserByEmailWhenUserWithSuppliedEmailExists() throws ServiceException{
         //given
 
         //when
         UserDto actual = service.getUserByEmail(EXISTENT_EMAIL);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
 
         verify(userDao, times(1)).findUserByEmail(EXISTENT_EMAIL);
         verify(userMapper, times(1)).mapToDto(USER);
         verifyNoMoreInteractions(userDao, userDao);
     }
 
-    @Test(expected = ServiceException.class)
-    public void testFindUserByEmailShouldThrowExceptionWhenUserWithSuppliedEmailDoesNotExist() throws ServiceException{
+    @Test(expected = EntityNotFoundException.class)
+    public void getUserByEmailWithEntityNotFoundException() throws ServiceException{
         //given
 
         //when
@@ -100,7 +103,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testGetAllClients() throws ServiceException{
+    public void getAllClients() throws ServiceException{
         //given
 
         //when
@@ -115,7 +118,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testGetClientsByTrainerIdShouldReturnListOfClientsWhenExistentTrainerIdSupplied() throws ServiceException{
+    public void getClientsByTrainerIdWhenExistentTrainerIdSupplied() throws ServiceException{
         //given
 
         //when
@@ -130,8 +133,8 @@ public class UserServiceImplTest {
         verifyNoMoreInteractions(userDao, userMapper);
     }
 
-    @Test(expected = ServiceException.class)
-    public void testGetClientsByTrainerIdShouldThrowExceptionWhenNonexistentTrainerIdSupplied() throws ServiceException{
+    @Test(expected = EntityNotFoundException.class)
+    public void getClientsByTrainerIdWithEntityNotFoundException() throws ServiceException{
         //given
 
         //when
@@ -143,14 +146,14 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testUpdateByIdShouldUpdateUserWhenExistentUserIdSupplied() throws ServiceException {
+    public void updateByIdWhenExistentUserIdSupplied() throws ServiceException {
         //given
 
         //when
         UserDto actual = service.updateById(EXISTENT_USER_ID, USER_DTO);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
 
         verify(userDao, times(1)).findById(EXISTENT_USER_ID);
         verify(userDao, times(1)).save(USER);
@@ -160,7 +163,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void testUpdateByIdShouldThrowExceptionWhenNonexistentUserIdSupplied() throws ServiceException {
+    public void updateByIdWithEntityNotFoundException() throws ServiceException {
         //given
 
         //when

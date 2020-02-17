@@ -42,7 +42,7 @@ public class ExerciseServiceImplTest {
     private ExerciseServiceImpl exerciseService;
 
     @Test
-    public void testGetAll() throws ServiceException {
+    public void getAll() throws ServiceException {
         //given
         when(exerciseDao.getAll()).thenReturn(EXERCISES);
         when(exerciseMapper.mapToDto(EXERCISES)).thenReturn(EXPECTED_EXERCISES_DTO);

@@ -41,7 +41,7 @@ public class GymMembershipServiceImplTest {
     private GymMembershipServiceImpl gymMembershipService;
 
     @Test
-    public void testGetAll() throws ServiceException {
+    public void getAll() throws ServiceException {
         //given
         when(gymMembershipDao.getAll()).thenReturn(GYM_MEMBERSHIPS);
         when(gymMembershipMapper.mapToDto(GYM_MEMBERSHIPS)).thenReturn(EXPECTED_GYM_MEMBERSHIPS_DTO);

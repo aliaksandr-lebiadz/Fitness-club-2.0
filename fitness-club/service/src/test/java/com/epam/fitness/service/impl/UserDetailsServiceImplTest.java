@@ -6,7 +6,6 @@ import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.UserService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Collections;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -54,7 +54,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void testLoadUserByUsernameShouldThrowsExceptionWhenNonexistentEmailSupplied() throws ServiceException{
+    public void loadUserByUsernameWithUserNameNotFoundException() throws ServiceException{
         //given
 
         //when
@@ -66,16 +66,16 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void testLoadUserByUsernameShouldReturnUserDetailsWhenExistentEmailSupplied() throws ServiceException{
+    public void loadUserByUserNameWhenExistentEmailSupplied() throws ServiceException{
         //given
 
         //when
         UserDetails actual = userDetailsService.loadUserByUsername(EXISTENT_EMAIL);
 
         //then
-        Assert.assertEquals(EXISTENT_EMAIL, actual.getUsername());
-        Assert.assertEquals(EXPECTED_PASSWORD, actual.getPassword());
-        Assert.assertEquals(EXPECTED_AUTHORITIES, actual.getAuthorities());
+        assertEquals(EXISTENT_EMAIL, actual.getUsername());
+        assertEquals(EXPECTED_PASSWORD, actual.getPassword());
+        assertEquals(EXPECTED_AUTHORITIES, actual.getAuthorities());
 
         verify(userService, times(1)).getUserByEmail(EXISTENT_EMAIL);
         verify(userDtoMapper, times(1)).mapToEntity(USER_DTO);

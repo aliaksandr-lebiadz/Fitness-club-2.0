@@ -2,7 +2,6 @@ package com.epam.fitness.mapper;
 
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -15,6 +14,8 @@ import static com.epam.fitness.mapper.UserMapper.ROLE_COLUMN;
 import static com.epam.fitness.mapper.UserMapper.FIRST_NAME_COLUMN;
 import static com.epam.fitness.mapper.UserMapper.SECOND_NAME_COLUMN;
 import static com.epam.fitness.mapper.UserMapper.DISCOUNT_COLUMN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,7 +37,7 @@ public class UserMapperTest {
     private ResultSet resultSet = mock(ResultSet.class);
 
     @Test
-    public void testBuildShouldReturnBuiltUserWhenResultSetWithValidColumnsSupplied() throws SQLException {
+    public void buildWhenValidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getString(EMAIL_COLUMN)).thenReturn(EMAIL);
@@ -52,14 +53,14 @@ public class UserMapperTest {
         User actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getId(), actual.getId());
-        Assert.assertEquals(expected.getEmail(), actual.getEmail());
-        Assert.assertEquals(expected.getPassword(), actual.getPassword());
-        Assert.assertEquals(expected.getRole(), actual.getRole());
-        Assert.assertEquals(expected.getFirstName(), actual.getFirstName());
-        Assert.assertEquals(expected.getSecondName(), actual.getSecondName());
-        Assert.assertEquals(expected.getDiscount(), actual.getDiscount());
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getEmail(), actual.getEmail());
+        assertEquals(expected.getPassword(), actual.getPassword());
+        assertEquals(expected.getRole(), actual.getRole());
+        assertEquals(expected.getFirstName(), actual.getFirstName());
+        assertEquals(expected.getSecondName(), actual.getSecondName());
+        assertEquals(expected.getDiscount(), actual.getDiscount());
 
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getString(EMAIL_COLUMN);
@@ -72,7 +73,7 @@ public class UserMapperTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException {
+    public void buildWithSqlExceptionWhenInvalidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getString(EMAIL_COLUMN)).thenThrow(SQLException.class);

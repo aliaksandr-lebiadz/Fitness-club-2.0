@@ -3,7 +3,6 @@ package com.epam.fitness.mapper;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.assignment.AssignmentStatus;
 import com.epam.fitness.entity.assignment.Exercise;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -18,6 +17,8 @@ import static com.epam.fitness.mapper.AssignmentMapper.AMOUNT_OF_SETS_COLUMN;
 import static com.epam.fitness.mapper.AssignmentMapper.AMOUNT_OF_REPS_COLUMN;
 import static com.epam.fitness.mapper.AssignmentMapper.EXERCISE_NAME_COLUMN;
 import static com.epam.fitness.mapper.AssignmentMapper.STATUS_COLUMN;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -40,7 +41,7 @@ public class AssignmentMapperTest {
     private ResultSet resultSet = mock(ResultSet.class);
 
     @Test
-    public void testBuildShouldReturnBuiltAssignmentWhenResultSetWithValidColumnsSupplied() throws SQLException {
+    public void buildWhenValidResultSetSupplied() throws SQLException {
         //given
         when(resultSet.getInt(ID_COLUMN)).thenReturn(ID);
         when(resultSet.getInt(ORDER_ID_COLUMN)).thenReturn(ORDER_ID);
@@ -61,15 +62,15 @@ public class AssignmentMapperTest {
         Assignment actual = mapper.mapRow(resultSet, ROW_INDEX);
 
         //then
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getId(), actual.getId());
-        Assert.assertEquals(expected.getOrderId(), actual.getOrderId());
-        Assert.assertEquals(expected.getExercise().getId(), actual.getExercise().getId());
-        Assert.assertEquals(expected.getExercise().getName(), actual.getExercise().getName());
-        Assert.assertEquals(expected.getAmountOfSets(), actual.getAmountOfSets());
-        Assert.assertEquals(expected.getAmountOfReps(), actual.getAmountOfReps());
-        Assert.assertEquals(expected.getWorkoutDate(), actual.getWorkoutDate());
-        Assert.assertEquals(expected.getStatus(), actual.getStatus());
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getOrderId(), actual.getOrderId());
+        assertEquals(expected.getExercise().getId(), actual.getExercise().getId());
+        assertEquals(expected.getExercise().getName(), actual.getExercise().getName());
+        assertEquals(expected.getAmountOfSets(), actual.getAmountOfSets());
+        assertEquals(expected.getAmountOfReps(), actual.getAmountOfReps());
+        assertEquals(expected.getWorkoutDate(), actual.getWorkoutDate());
+        assertEquals(expected.getStatus(), actual.getStatus());
 
         verify(resultSet, times(1)).getInt(ID_COLUMN);
         verify(resultSet, times(1)).getInt(ORDER_ID_COLUMN);
@@ -83,7 +84,7 @@ public class AssignmentMapperTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testBuildShouldThrowExceptionWhenResultSetWithInvalidColumnsSupplied() throws SQLException{
+    public void buildWithSqlExceptionWhenInvalidResultSetSupplied() throws SQLException{
         //given
         when(resultSet.getInt(ORDER_ID_COLUMN)).thenThrow(SQLException.class);
 

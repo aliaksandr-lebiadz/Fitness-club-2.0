@@ -8,22 +8,20 @@ import com.epam.fitness.exception.DtoMappingException;
 import com.epam.fitness.exception.EntityAlreadyExistsException;
 import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
-import com.epam.fitness.exception.controller.ControllerAdviceImpl;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.service.api.UserService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -84,10 +82,7 @@ public class UserControllerTest extends AbstractControllerTest{
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(controller)
-                .setControllerAdvice(new ControllerAdviceImpl())
-                .build();
+        configureMockMvc(controller);
     }
 
     @Before
@@ -127,7 +122,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetUserByIdShouldReturnUserWhenExistentIdSupplied() throws Exception{
+    public void getUserByIdWhenExistentIdSupplied() throws Exception{
         //given
 
         //when
@@ -140,12 +135,12 @@ public class UserControllerTest extends AbstractControllerTest{
         UserDto actual = mapFromJson(actualJson, UserDto.class);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
         verify(userService, times(1)).getById(EXISTENT_USER_ID);
     }
 
     @Test
-    public void testGetUserByIdShouldReturnNotFoundStatusWhenNonexistentIdSupplied() throws Exception{
+    public void getUserByIdWhenNonexistentIdSupplied() throws Exception{
         //given
 
         //when
@@ -158,7 +153,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testDeleteUserByIdShouldReturnUserWhenExistentIdSupplied() throws Exception{
+    public void deleteUserByIdWhenExistentIdSupplied() throws Exception{
         //given
 
         //when
@@ -171,7 +166,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testDeleteUserByIdShouldReturnNotFoundStatusWhenNonexistentIdSupplied() throws Exception{
+    public void deleteUserByIdWhenNonexistentIdSupplied() throws Exception{
         //given
 
         //when
@@ -184,7 +179,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testUpdateUserByIdShouldReturnUpdatedUserWhenExistentIdSupplied() throws Exception{
+    public void updateUserByIdWhenExistentIdSupplied() throws Exception{
         //given
         String requestBody = mapToJson(USER_DTO);
 
@@ -201,13 +196,13 @@ public class UserControllerTest extends AbstractControllerTest{
         UserDto actual = mapFromJson(actualJson, UserDto.class);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
 
         verify(userService, times(1)).updateById(EXISTENT_USER_ID, USER_DTO);
     }
 
     @Test
-    public void testUpdateUserByIdShouldReturnNotFoundStatusWhenNonexistentIdSupplied() throws Exception{
+    public void updateUserByIdWhenNonexistentIdSupplied() throws Exception{
         //given
         String requestBody = mapToJson(USER_DTO);
 
@@ -223,7 +218,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testUpdateUserByIdShouldReturnBadRequestWhenNullRequestBodySupplied() throws Exception{
+    public void updateUserByIdWhenNullRequestBodySupplied() throws Exception{
         //given
         String requestBody = mapToJson(USER_DTO);
 
@@ -239,7 +234,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testCreateUserShouldReturnCreatedUserWhenUserDoesNotExist() throws Exception{
+    public void createUserWhenSuppliedUserDoesNotExist() throws Exception{
         //given
         String requestBody = mapToJson(USER_DTO);
 
@@ -256,13 +251,13 @@ public class UserControllerTest extends AbstractControllerTest{
         UserDto actual = mapFromJson(actualJson, UserDto.class);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
 
         verify(userService, times(1)).create(USER_DTO);
     }
 
     @Test
-    public void testCreateUserShouldReturnConflictStatusWhenUserAlreadyExists() throws Exception{
+    public void createUserWhenSuppliedUserAlreadyExists() throws Exception{
         //given
         String requestBody = mapToJson(EXISTENT_USER_DTO);
 
@@ -278,7 +273,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetClientsShouldReturnAllClients() throws Exception {
+    public void getClients() throws Exception {
         //given
 
         //when
@@ -299,7 +294,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetClientsByTrainerIdShouldReturnClientsOfTrainerWhenExistentIdSupplied() throws Exception {
+    public void getClientsByTrainerIdWhenExistentIdSupplied() throws Exception {
         //given
 
         //when
@@ -320,7 +315,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetClientsByTrainerIdShouldReturnNotFoundStatusWhenNonexistentIdSupplied() throws Exception {
+    public void getClientsByTrainerIdWhenNonexistentIdSupplied() throws Exception {
         //given
 
         //when
@@ -333,7 +328,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetUsersShouldReturnFoundUsers() throws Exception {
+    public void getUsers() throws Exception {
         //given
 
         //when
@@ -357,7 +352,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetOrderByClientIdShouldReturnOrdersOfClientWhenOnlyExistentIdSupplied() throws Exception {
+    public void getOrderByClientIdWhenOnlyExistentIdSupplied() throws Exception {
         //given
 
         //when
@@ -378,7 +373,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetOrderByClientIdShouldReturnNotFoundStatusWhenOnlyNonexistentIdSupplied() throws Exception {
+    public void getOrderByClientIdWhenOnlyNonexistentIdSupplied() throws Exception {
         //given
 
         //when
@@ -391,7 +386,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetOrderByClientIdShouldReturnOrdersOfTrainerClientWhenExistentTrainerIdSupplied() throws Exception {
+    public void getOrderByClientIdWhenExistentTrainerIdSupplied() throws Exception {
         //given
 
         //when
@@ -413,7 +408,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testGetOrderByClientIdShouldReturnNotFoundStatusWhenNonexistentTrainerIdSupplied() throws Exception {
+    public void getOrderByClientIdWhenNonexistentTrainerIdSupplied() throws Exception {
         //given
 
         //when
@@ -427,7 +422,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testCreateOrderShouldReturnCreatedOrderWhenExistentClientIdAndGymMembershipIdSupplied() throws Exception {
+    public void createOrderWhenExistentClientIdAndGymMembershipIdSupplied() throws Exception {
         //given
 
         //when
@@ -442,13 +437,13 @@ public class UserControllerTest extends AbstractControllerTest{
         OrderDto actual = mapFromJson(actualJson, OrderDto.class);
 
         //then
-        Assert.assertEquals(ORDER_DTO, actual);
+        assertEquals(ORDER_DTO, actual);
 
         verify(orderService, times(1)).create(EXISTENT_USER_ID, EXISTENT_GYM_MEMBERSHIP_ID);
     }
 
     @Test
-    public void testCreateOrderShouldReturnNotFoundStatusWhenNonexistentClientIdSupplied() throws Exception {
+    public void createOrderWhenNonexistentClientIdSupplied() throws Exception {
         //given
 
         //when
@@ -462,7 +457,7 @@ public class UserControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void testCreateOrderShouldReturnNotFoundStatusWhenNonexistentGymMembershipIdSupplied() throws Exception {
+    public void createOrderWhenNonexistentGymMembershipIdSupplied() throws Exception {
         //given
 
         //when
