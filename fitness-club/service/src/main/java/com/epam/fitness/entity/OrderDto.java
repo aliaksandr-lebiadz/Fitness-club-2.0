@@ -45,6 +45,13 @@ public class OrderDto implements Identifiable, Serializable {
         this.price = price;
     }
 
+    public OrderDto(int id, LocalDateTime beginDate, LocalDateTime endDate, BigDecimal price){
+        this.id = id;
+        this.beginDate = beginDate;
+        this.endDate = endDate;
+        this.price = price;
+    }
+
     @Override
     public Integer getId() {
         return id;

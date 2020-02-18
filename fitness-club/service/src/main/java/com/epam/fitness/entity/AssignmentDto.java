@@ -39,12 +39,14 @@ public class AssignmentDto implements Identifiable, Serializable {
     }
 
     public AssignmentDto(int amountOfSets, int amountOfReps, LocalDate workoutDate){
+        this();
         this.amountOfSets = amountOfSets;
         this.amountOfReps = amountOfReps;
         this.workoutDate = workoutDate;
     }
 
     public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps){
+        this();
         this.id = id;
         this.exerciseId = exerciseId;
         this.amountOfSets = amountOfSets;

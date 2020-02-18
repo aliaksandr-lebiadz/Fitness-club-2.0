@@ -22,8 +22,12 @@ public class Exercise implements Identifiable, Serializable {
 
     public Exercise() {}
 
-    public Exercise(int id, String name){
+    public Exercise(int id){
         this.id = id;
+    }
+
+    public Exercise(int id, String name){
+        this(id);
         this.name = name;
     }
 
@@ -34,6 +38,22 @@ public class Exercise implements Identifiable, Serializable {
 
     public String getName(){
         return name;
+    }
+
+    public List<Assignment> getAssignments(){
+        return assignments;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     @Override

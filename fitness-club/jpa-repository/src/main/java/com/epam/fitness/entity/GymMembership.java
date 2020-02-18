@@ -43,4 +43,16 @@ public class GymMembership implements Identifiable, Serializable {
     public BigDecimal getPrice() {
         return price;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setMonthsAmount(int monthsAmount) {
+        this.monthsAmount = monthsAmount;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 }
