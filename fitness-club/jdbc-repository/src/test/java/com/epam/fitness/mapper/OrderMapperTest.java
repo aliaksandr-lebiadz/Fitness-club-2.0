@@ -19,6 +19,7 @@ import static com.epam.fitness.mapper.OrderMapper.PRICE_COLUMN;
 import static com.epam.fitness.mapper.OrderMapper.NUTRITION_TYPE_COLUMN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -106,6 +107,19 @@ public class OrderMapperTest {
         verify(resultSet, times(1)).getInt(CLIENT_ID_COLUMN);
         verify(resultSet, times(1)).getInt(TRAINER_ID_COLUMN);
         verifyNoMoreInteractions(resultSet);
+    }
+
+    @Test
+    public void buildWhenNullNutritionTypeSupplied() throws SQLException{
+        //given
+        when(resultSet.getString(NUTRITION_TYPE_COLUMN)).thenReturn(null);
+
+        //when
+        Order actual = mapper.mapRow(resultSet, ROW_INDEX);
+
+        //then
+        assertNotNull(actual);
+        assertNull(actual.getNutritionType());
     }
 
 }
