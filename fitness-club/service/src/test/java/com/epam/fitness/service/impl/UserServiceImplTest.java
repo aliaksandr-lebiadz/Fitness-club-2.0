@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class UserServiceImplTest {
 
     private static final String EXISTENT_EMAIL = "admin@gmail.com";
