@@ -56,20 +56,6 @@ public class AssignmentDtoMapperTest {
         AssignmentDto actual = mapper.mapToDto(FIRST_ASSIGNMENT);
 
         //then
-        System.out.println(actual.getId());
-        System.out.println(actual.getExerciseId());
-        System.out.println(actual.getWorkoutDate());
-        System.out.println(actual.getAmountOfReps());
-        System.out.println(actual.getAmountOfSets());
-        System.out.println(actual.getStatus());
-
-        System.out.println(FIRST_ASSIGNMENT_DTO.getId());
-        System.out.println(FIRST_ASSIGNMENT_DTO.getExerciseId());
-        System.out.println(FIRST_ASSIGNMENT_DTO.getWorkoutDate());
-        System.out.println(FIRST_ASSIGNMENT_DTO.getAmountOfReps());
-        System.out.println(FIRST_ASSIGNMENT_DTO.getAmountOfSets());
-        System.out.println(FIRST_ASSIGNMENT_DTO.getStatus());
-
         assertEquals(FIRST_ASSIGNMENT_DTO, actual);
     }
 

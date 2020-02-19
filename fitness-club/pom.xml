@@ -27,6 +27,7 @@
         <build.timestamp>${build.timestamp}</build.timestamp>
         <spring.version>5.2.1.RELEASE</spring.version>
         <jackson.version>2.9.4</jackson.version>
+        <tomcat.version>9.0.29</tomcat.version>
     </properties>
 
     <dependencies>
@@ -39,17 +40,6 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>displaytag</groupId>
-            <artifactId>displaytag</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tngtech.java</groupId>
-            <artifactId>junit-dataprovider</artifactId>
-            <version>1.10.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -98,23 +88,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-taglibs</artifactId>
-            <version>5.1.5.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.28</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -185,37 +160,21 @@
                 <version>6.1.0.Final</version>
             </dependency>
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>2.2.6</version>
+                <version>3.1.0</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
         <finalName>fitness</finalName>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+        <pluginManagement>
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
-                <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.2</version>
@@ -248,6 +207,20 @@
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>2.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <charset>UTF-8</charset>
+                        <url>http://localhost:8080/manager/text</url>
+                        <port>8080</port>
+                        <username>admin</username>
+                        <password>admin</password>
+                        <server>TomcatServer</server>
+                        <path>/fitness</path>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
