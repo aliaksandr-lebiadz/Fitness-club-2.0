@@ -47,4 +47,8 @@ public class OrderUtils {
         return initialPrice.multiply(discountRate);
     }
 
+    public LocalDateTime getCurrentDateTime() {
+        return LocalDateTime.now();
+    }
+
 }

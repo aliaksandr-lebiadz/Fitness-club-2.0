@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrdersOfTrainerClient(int clientId, int trainerId) throws ServiceException{
         Optional<User> trainerOptional = userDao.findById(trainerId);
         User trainer = trainerOptional
-                .orElseThrow(() -> new ServiceException("Trainer with id " + trainerId + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Trainer with id " + trainerId + " not found!"));
         List<Order> orders = orderDao.findOrdersOfTrainerClient(clientId, trainer);
         return orderMapper.mapToDto(orders);
     }
@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrdersByClientId(int clientId) throws ServiceException{
         Optional<User> clientOptional = userDao.findById(clientId);
         User client = clientOptional
-                .orElseThrow(() ->  new ServiceException("Client with id " + clientId + " not found!"));
+                .orElseThrow(() ->  new EntityNotFoundException("Client with id " + clientId + " not found!"));
         List<Order> orders =  orderDao.findOrdersOfClient(client);
         return orderMapper.mapToDto(orders);
     }
@@ -85,17 +85,17 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto getById(int id) throws ServiceException {
         Optional<Order> orderOptional = orderDao.findById(id);
         Order order = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + id + " not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " not found!"));
         return orderMapper.mapToDto(order);
     }
 
     @Override
     public OrderDto updateById(int id, OrderDto orderDto) throws ServiceException{
-        Order order = orderMapper.mapToEntity(orderDto);
         Optional<Order> orderOptional = orderDao.findById(id);
         Order oldOrder = orderOptional
                 .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " not found!"));
         List<Assignment> assignments = oldOrder.getAssignments();
+        Order order = orderMapper.mapToEntity(orderDto);
         order.setAssignments(assignments);
         order.setId(id);
         Order savedOrder = orderDao.save(order);
@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){
         BigDecimal initialPrice = gymMembership.getPrice();
         int clientDiscount = client.getDiscount();
-        return  utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
+        return utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
     }
 
     private LocalDateTime calculateEndDate(GymMembership gymMembership){
@@ -114,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order createOrderWithCurrentBeginDate(User client, User trainer, LocalDateTime endDate, BigDecimal price){
-        LocalDateTime beginDate = LocalDateTime.now();
+        LocalDateTime beginDate = utils.getCurrentDateTime();
         return Order.createBuilder()
                 .setClient(client)
                 .setTrainer(trainer)
