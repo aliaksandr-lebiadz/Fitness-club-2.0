@@ -2,7 +2,14 @@ package com.epam.fitness.entity.assignment;
 
 import com.epam.fitness.entity.Identifiable;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -26,12 +33,8 @@ public class Exercise implements Identifiable, Serializable {
         this.id = id;
     }
 
-    public Exercise(String name){
-        this.name = name;
-    }
-
     public Exercise(int id, String name){
-        this.id = id;
+        this(id);
         this.name = name;
     }
 
@@ -42,6 +45,22 @@ public class Exercise implements Identifiable, Serializable {
 
     public String getName(){
         return name;
+    }
+
+    public List<Assignment> getAssignments(){
+        return assignments;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     @Override

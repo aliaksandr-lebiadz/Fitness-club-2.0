@@ -5,13 +5,26 @@ import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.user.User;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "client_order")
@@ -24,11 +37,11 @@ public class Order implements Identifiable, Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false, updatable = false)
     private User client;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "trainer_id", nullable = false)
+    @JoinColumn(name = "trainer_id", nullable = false, updatable = false)
     private User trainer;
 
     @Column(name = "begin_date")
@@ -100,6 +113,34 @@ public class Order implements Identifiable, Serializable {
         this.nutritionType = nutritionType;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
+
+    public void setTrainer(User trainer) {
+        this.trainer = trainer;
+    }
+
+    public void setBeginDate(LocalDateTime beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+
     public class Builder{
 
         private Builder() {
@@ -149,5 +190,23 @@ public class Order implements Identifiable, Serializable {
         public Order build(){
             return Order.this;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) &&
+                Objects.equals(beginDate, order.beginDate) &&
+                Objects.equals(endDate, order.endDate) &&
+                Objects.equals(feedback, order.feedback) &&
+                Objects.equals(price, order.price) &&
+                nutritionType == order.nutritionType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, client, trainer, beginDate, endDate, feedback, price, nutritionType);
     }
 }

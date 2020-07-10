@@ -1,6 +1,5 @@
 package com.epam.fitness.controller;
 
-import com.epam.fitness.entity.GymMembershipDto;
 import com.epam.fitness.entity.OrderDto;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.UserDto;
@@ -8,6 +7,7 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.OrderService;
 import com.epam.fitness.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/clients")
-    public List<UserDto> getClients(){
+    public List<UserDto> getClients() throws ServiceException{
         return userService.getAllClients();
     }
 
@@ -45,23 +45,26 @@ public class UserController {
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(value = "first_name", required = false) String firstName,
                                   @RequestParam(value = "second_name", required = false) String secondName,
-                                  @RequestParam(required = false) String email)
+                                  @RequestParam(required = false) String email,
+                                  @RequestParam(required = false) SortOrder order)
             throws ServiceException{
-        return userService.searchUsersByParameters(firstName, secondName, email);
+        return userService.searchUsersByParameters(firstName, secondName, email, order);
     }
 
     @PostMapping
-    public void createUser(@Valid @RequestBody UserDto user) {
-        userService.create(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@Valid @RequestBody UserDto user) throws ServiceException{
+        return userService.create(user);
     }
 
-    @PatchMapping("/{id}")
-    public void updateUser(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
-        userService.updateById(id, user);
+    @PutMapping("/{id}")
+    public UserDto updateUserById(@PathVariable int id, @Valid @RequestBody UserDto user) throws ServiceException{
+        return userService.updateById(id, user);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) throws ServiceException{
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable int id) throws ServiceException{
         userService.deleteById(id);
     }
 
@@ -77,15 +80,11 @@ public class UserController {
     }
 
     @PostMapping("/{id}/orders")
-    public void createOrder(@PathVariable int id,
-                            @RequestBody GymMembershipDto gymMembershipDto)
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto createOrder(@PathVariable int id,
+                                @RequestParam("gym_membership_id") int gymMembershipId)
             throws ServiceException{
-        orderService.create(id, gymMembershipDto);
-    }
-
-    @GetMapping("/sort")
-    public List<UserDto> sortUsersByName(@RequestParam(required = false, defaultValue = "ASCENDING") SortOrder order){
-        return userService.sortUsersByName(order);
+       return orderService.create(id, gymMembershipId);
     }
 
 }

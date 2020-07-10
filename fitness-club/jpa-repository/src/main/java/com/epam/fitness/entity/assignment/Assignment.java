@@ -3,8 +3,17 @@ package com.epam.fitness.entity.assignment;
 import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.entity.order.Order;
 
-import javax.persistence.*;
-import javax.validation.constraints.Max;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,7 +31,7 @@ public class Assignment implements Identifiable, Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, updatable = false)
     private Order order;
 
     @Column(name = "workout_date")
@@ -31,12 +40,10 @@ public class Assignment implements Identifiable, Serializable {
 
     @Column(name = "amount_of_sets")
     @Min(1)
-    @Max(100)
     private int amountOfSets;
 
     @Column(name = "amount_of_reps")
     @Min(1)
-    @Max(100)
     private int amountOfReps;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -49,25 +56,19 @@ public class Assignment implements Identifiable, Serializable {
 
     public Assignment() {}
 
-    public Assignment(Exercise exercise, int amountOfSets, int amountOfReps,
-                      LocalDate workoutDate, AssignmentStatus status){
-        this.exercise = exercise;
+    public Assignment(int id, LocalDate workoutDate, int amountOfSets, int amountOfReps, Exercise exercise, AssignmentStatus status){
+        this.id = id;
+        this.workoutDate = workoutDate;
         this.amountOfSets = amountOfSets;
         this.amountOfReps = amountOfReps;
-        this.workoutDate = workoutDate;
         this.status = status;
-    }
-
-    public Assignment(Order order, Exercise exercise, int amountOfSets, int amountOfReps, LocalDate workoutDate){
-        this(exercise, amountOfSets, amountOfReps, workoutDate, AssignmentStatus.NEW);
-        this.order = order;
+        this.exercise = exercise;
     }
 
     public Assignment(Integer id, Order order, Exercise exercise, int amountOfSets,
                       int amountOfReps, LocalDate workoutDate, AssignmentStatus status){
-        this(order, exercise, amountOfSets, amountOfReps, workoutDate);
-        this.id = id;
-        this.status = status;
+        this(id, workoutDate, amountOfSets, amountOfReps, exercise, status);
+        this.order = order;
     }
 
     @Override
@@ -97,6 +98,10 @@ public class Assignment implements Identifiable, Serializable {
 
     public AssignmentStatus getStatus() {
         return status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setStatus(AssignmentStatus status){

@@ -2,7 +2,6 @@ package com.epam.fitness.dao.api;
 
 import com.epam.fitness.entity.Identifiable;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +11,6 @@ import java.util.Optional;
  * @param <T> a class, which implements {@link Identifiable} interface
  * @see Identifiable
  */
-@Transactional
 public interface Dao<T extends Identifiable> {
 
 
@@ -29,12 +27,12 @@ public interface Dao<T extends Identifiable> {
      *
      * @param entity entity to save
      */
-    void save(T entity);
+    T save(T entity);
 
     /**
      * <p>Deletes the supplied entity.</p>
      */
-    void delete(T entity);
+    void deleteById(int id);
 
     /**
      * <p>Finds an entity by id.</p>

@@ -4,10 +4,15 @@ import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.GymMembershipDto;
+import com.epam.fitness.exception.DtoMappingException;
+import com.epam.fitness.exception.ServiceException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
@@ -15,8 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GymMembershipServiceImplTest {
@@ -35,11 +45,17 @@ public class GymMembershipServiceImplTest {
     @InjectMocks
     private GymMembershipServiceImpl gymMembershipService;
 
-    @Test
-    public void testGetAll(){
-        //given
+    @Before
+    public void createMocks() throws DtoMappingException {
+        MockitoAnnotations.initMocks(this);
+
         when(gymMembershipDao.getAll()).thenReturn(GYM_MEMBERSHIPS);
         when(gymMembershipMapper.mapToDto(GYM_MEMBERSHIPS)).thenReturn(EXPECTED_GYM_MEMBERSHIPS_DTO);
+    }
+
+    @Test
+    public void getAll() throws ServiceException {
+        //given
 
         //when
         List<GymMembershipDto> actual = gymMembershipService.getAll();
@@ -49,7 +65,12 @@ public class GymMembershipServiceImplTest {
 
         verify(gymMembershipDao, times(1)).getAll();
         verify(gymMembershipMapper, times(1)).mapToDto(GYM_MEMBERSHIPS);
+    }
+
+    @After
+    public void verifyMocks() {
         verifyNoMoreInteractions(gymMembershipDao, gymMembershipMapper);
+        reset(gymMembershipDao, gymMembershipMapper);
     }
 
 }

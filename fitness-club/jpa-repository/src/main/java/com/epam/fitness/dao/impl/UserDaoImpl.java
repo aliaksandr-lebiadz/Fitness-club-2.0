@@ -5,13 +5,22 @@ import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.entity.SortOrder;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.*;
-import java.util.*;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 @Repository
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
@@ -25,9 +34,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private static Random random = new Random();
 
-    @Autowired
-    public UserDaoImpl(SessionFactory sessionFactory) {
-        super(sessionFactory, User.class);
+    public UserDaoImpl() {
+        super(User.class);
     }
 
     @Override
@@ -42,7 +50,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 .distinct(true)
                 .where(criteriaBuilder.equal(join.get(TRAINER_PARAMETER), trainer));
 
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
@@ -54,7 +62,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         criteriaQuery
                 .select(user)
                 .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.CLIENT));
-        Query<User> query = getQuery(criteriaQuery);
+        TypedQuery<User> query = getQuery(criteriaQuery);
         return query.getResultList();
     }
 
@@ -66,15 +74,76 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         criteriaQuery
                 .select(user)
                 .where(criteriaBuilder.equal(user.get(EMAIL_PARAMETER), email));
-        Query<User> query = getQuery(criteriaQuery);
-        return query.uniqueResultOptional();
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        return getOptionalResult(query);
     }
 
     @Override
-    public List<User> findUsersByParameters(String firstName, String secondName, String email) {
+    public Optional<User> findUserByEmailAndPassword(String email, String password) {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
         Root<User> user = getRoot(criteriaQuery);
+        criteriaQuery
+                .select(user)
+                .where(criteriaBuilder.and(
+                        criteriaBuilder.equal(user.get(EMAIL_PARAMETER), email),
+                        criteriaBuilder.equal(user.get("password"), password)
+                ));
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        return getOptionalResult(query);
+    }
+
+    @Override
+    public List<User> findUsersByParameters(String firstName, String secondName, String email, SortOrder sortOrder) {
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<User> user = getRoot(criteriaQuery);
+        List<Predicate> predicates = getSearchPredicates(criteriaBuilder, user, firstName, secondName, email);
+        criteriaQuery
+                .select(user)
+                .where(convert(predicates));
+        if(Objects.nonNull(sortOrder)) {
+            Order order = getOrder(criteriaBuilder, user.get(FIRST_NAME_PARAMETER), sortOrder);
+            criteriaQuery.orderBy(order);
+        }
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
+    @Override
+    public Optional<User> getRandomTrainer() {
+        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
+        Root<User> user = getRoot(criteriaQuery);
+        criteriaQuery
+                .select(user)
+                .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.TRAINER));
+        TypedQuery<User> query = getQuery(criteriaQuery);
+        List<User> trainers = query.getResultList();
+        return getRandomTrainerFromList(trainers);
+    }
+
+    private Optional<User> getOptionalResult(TypedQuery<User> query){
+        try{
+            User user = query.getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException ex){
+            return Optional.empty();
+        }
+    }
+
+    private Optional<User> getRandomTrainerFromList(List<User> trainers){
+        if(trainers.isEmpty()){
+            return Optional.empty();
+        }
+
+        int size = trainers.size();
+        User trainer = trainers.get(random.nextInt(size));
+        return Optional.of(trainer);
+    }
+
+    private List<Predicate> getSearchPredicates(CriteriaBuilder criteriaBuilder, Root<User> user,
+                                                String firstName, String secondName, String email){
         List<Predicate> predicates = new ArrayList<>();
         if(Objects.nonNull(firstName)){
             Predicate firstNamePredicate = criteriaBuilder.like(
@@ -91,47 +160,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     criteriaBuilder.lower(user.get(EMAIL_PARAMETER)), "%" + email.toLowerCase() + "%");
             predicates.add(emailPredicate);
         }
-        criteriaQuery
-                .select(user)
-                .where(convert(predicates));
-        Query<User> query = getQuery(criteriaQuery);
-        return query.getResultList();
-    }
-
-    @Override
-    public Optional<User> getRandomTrainer() {
-        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
-        Root<User> user = getRoot(criteriaQuery);
-        criteriaQuery
-                .select(user)
-                .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.TRAINER));
-        Query<User> query = getQuery(criteriaQuery);
-        List<User> trainers = query.getResultList();
-        return getRandomTrainerFromList(trainers);
-    }
-
-    @Override
-    public List<User> sortUsersByName(SortOrder sortOrder) {
-        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
-        Root<User> userRoot = getRoot(criteriaQuery);
-        Order order = getOrder(criteriaBuilder, userRoot.get(FIRST_NAME_PARAMETER), sortOrder);
-        criteriaQuery
-                .select(userRoot)
-                .orderBy(order);
-        Query<User> query = getQuery(criteriaQuery);
-        return query.getResultList();
-    }
-
-    private Optional<User> getRandomTrainerFromList(List<User> trainers){
-        if(trainers.isEmpty()){
-            return Optional.empty();
-        }
-
-        int size = trainers.size();
-        User trainer = trainers.get(random.nextInt(size));
-        return Optional.of(trainer);
+        return predicates;
     }
 
     private Order getOrder(CriteriaBuilder criteriaBuilder, Expression<User> expression, SortOrder order){

@@ -13,14 +13,14 @@ import java.util.Date;
 @Component
 public class OrderMapper implements RowMapper<Order> {
 
-    private static final String ID_COLUMN = "id";
-    private static final String BEGIN_DATE_COLUMN = "begin_date";
-    private static final String END_DATE_COLUMN = "end_date";
-    private static final String FEEDBACK_COLUMN = "feedback";
-    private static final String PRICE_COLUMN = "price";
-    private static final String TRAINER_ID_COLUMN = "trainer_id";
-    private static final String CLIENT_ID_COLUMN = "client_id";
-    private static final String NUTRITION_TYPE_COLUMN = "nutrition_type";
+    /*package-private*/ static final String ID_COLUMN = "id";
+    /*package-private*/ static final String BEGIN_DATE_COLUMN = "begin_date";
+    /*package-private*/ static final String END_DATE_COLUMN = "end_date";
+    /*package-private*/ static final String FEEDBACK_COLUMN = "feedback";
+    /*package-private*/ static final String PRICE_COLUMN = "price";
+    /*package-private*/ static final String TRAINER_ID_COLUMN = "trainer_id";
+    /*package-private*/ static final String CLIENT_ID_COLUMN = "client_id";
+    /*package-private*/ static final String NUTRITION_TYPE_COLUMN = "nutrition_type";
 
     @Override
     public Order mapRow(ResultSet resultSet, int index) throws SQLException {

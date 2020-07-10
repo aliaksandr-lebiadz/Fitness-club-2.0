@@ -4,8 +4,6 @@ import com.epam.fitness.dao.AbstractDao;
 import com.epam.fitness.dao.api.AssignmentDao;
 import com.epam.fitness.entity.assignment.Assignment;
 import com.epam.fitness.entity.order.Order;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +11,8 @@ import java.util.List;
 @Repository
 public class AssignmentDaoImpl extends AbstractDao<Assignment> implements AssignmentDao {
 
-    @Autowired
-    public AssignmentDaoImpl(SessionFactory sessionFactory) {
-        super(sessionFactory, Assignment.class);
+    public AssignmentDaoImpl() {
+        super(Assignment.class);
     }
 
     @Override

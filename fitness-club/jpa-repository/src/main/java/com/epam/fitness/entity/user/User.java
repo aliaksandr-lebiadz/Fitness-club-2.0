@@ -3,7 +3,17 @@ package com.epam.fitness.entity.user;
 import com.epam.fitness.entity.Identifiable;
 import com.epam.fitness.entity.order.Order;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -118,5 +128,9 @@ public class User implements Identifiable, Serializable {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

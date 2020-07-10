@@ -1,6 +1,8 @@
 **/.idea/*
 **/target/*
 **/doc/*
+**/node_modules/*
+**/build/*
 
 *.iml
 *.log

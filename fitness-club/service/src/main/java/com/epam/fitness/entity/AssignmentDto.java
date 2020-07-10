@@ -4,21 +4,29 @@ import com.epam.fitness.entity.assignment.AssignmentStatus;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class AssignmentDto implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -2057066388628609370L;
 
     private Integer id;
+
     @FutureOrPresent
     private LocalDate workoutDate;
+
+    @NotNull
     @Min(1)
-    private Integer amountOfSets;
+    private int amountOfSets;
+
+    @NotNull
     @Min(1)
-    private Integer amountOfReps;
-    private ExerciseDto exercise;
+    private int amountOfReps;
+
+    private int exerciseId;
     private AssignmentStatus status;
 
     public AssignmentDto() {
@@ -31,15 +39,23 @@ public class AssignmentDto implements Identifiable, Serializable {
     }
 
     public AssignmentDto(int amountOfSets, int amountOfReps, LocalDate workoutDate){
+        this();
         this.amountOfSets = amountOfSets;
         this.amountOfReps = amountOfReps;
         this.workoutDate = workoutDate;
     }
 
-    public AssignmentDto(int id, ExerciseDto exercise, int amountOfSets, int amountOfReps, LocalDate workoutDate){
-        this(amountOfSets, amountOfReps, workoutDate);
+    public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps){
+        this();
         this.id = id;
-        this.exercise = exercise;
+        this.exerciseId = exerciseId;
+        this.amountOfSets = amountOfSets;
+        this.amountOfReps = amountOfReps;
+    }
+
+    public AssignmentDto(int id, int exerciseId, int amountOfSets, int amountOfReps, LocalDate workoutDate){
+        this(id, exerciseId, amountOfSets, amountOfReps);
+        this.workoutDate = workoutDate;
     }
 
     @Override
@@ -59,28 +75,28 @@ public class AssignmentDto implements Identifiable, Serializable {
         this.workoutDate = workoutDate;
     }
 
-    public Integer getAmountOfSets() {
+    public int getAmountOfSets() {
         return amountOfSets;
     }
 
-    public void setAmountOfSets(Integer amountOfSets) {
+    public void setAmountOfSets(int amountOfSets) {
         this.amountOfSets = amountOfSets;
     }
 
-    public Integer getAmountOfReps() {
+    public int getAmountOfReps() {
         return amountOfReps;
     }
 
-    public void setAmountOfReps(Integer amountOfReps) {
+    public void setAmountOfReps(int amountOfReps) {
         this.amountOfReps = amountOfReps;
     }
 
-    public ExerciseDto getExercise() {
-        return exercise;
+    public int getExerciseId() {
+        return exerciseId;
     }
 
-    public void setExercise(ExerciseDto exercise) {
-        this.exercise = exercise;
+    public void setExerciseId(int exerciseId) {
+        this.exerciseId = exerciseId;
     }
 
     public AssignmentStatus getStatus() {
@@ -89,5 +105,23 @@ public class AssignmentDto implements Identifiable, Serializable {
 
     public void setStatus(AssignmentStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AssignmentDto that = (AssignmentDto) o;
+        return amountOfSets == that.amountOfSets &&
+                amountOfReps == that.amountOfReps &&
+                exerciseId == that.exerciseId &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(workoutDate, that.workoutDate) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, workoutDate, amountOfSets, amountOfReps, exerciseId, status);
     }
 }

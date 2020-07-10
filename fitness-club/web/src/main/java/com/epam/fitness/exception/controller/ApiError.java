@@ -1,19 +1,17 @@
 package com.epam.fitness.exception.controller;
 
+import java.util.List;
+
 public class ApiError {
 
-    private String message;
+    private List<String> messages;
 
-    public ApiError(String message) {
-        this.message = message;
+    /*package-private*/ ApiError(List<String> messages) {
+        this.messages = messages;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public List<String> getMessages() {
+        return messages;
     }
 
 }

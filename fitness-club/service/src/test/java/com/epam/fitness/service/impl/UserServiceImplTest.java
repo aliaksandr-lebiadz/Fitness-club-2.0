@@ -5,20 +5,29 @@ import com.epam.fitness.dto.mapper.DtoMapper;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.entity.UserDto;
+import com.epam.fitness.exception.EntityNotFoundException;
 import com.epam.fitness.exception.ServiceException;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
@@ -41,8 +50,6 @@ public class UserServiceImplTest {
     private static final int EXISTENT_TRAINER_ID = 3;
     private static final int NONEXISTENT_TRAINER_ID = 15;
 
-
-
     @Mock
     private UserDao userDao;
     @Mock
@@ -51,51 +58,52 @@ public class UserServiceImplTest {
     private UserServiceImpl service;
 
     @Before
-    public void createMocks() {
+    public void createMocks() throws ServiceException{
+        MockitoAnnotations.initMocks(this);
+
         when(userDao.findById(EXISTENT_TRAINER_ID)).thenReturn(Optional.of(TRAINER));
         when(userDao.findById(NONEXISTENT_TRAINER_ID)).thenReturn(Optional.empty());
-        when(userMapper.mapToDto(CLIENTS)).thenReturn(EXPECTED_CLIENTS_DTO);
-        when(userDao.findClientsOfTrainer(TRAINER)).thenReturn(CLIENTS);
-
-        when(userDao.getAllClients()).thenReturn(CLIENTS);
-
         when(userDao.findById(EXISTENT_USER_ID)).thenReturn(Optional.of(USER));
         when(userDao.findById(NONEXISTENT_USER_ID)).thenReturn(Optional.empty());
-        doNothing().when(userDao).save(USER);
+        when(userDao.findClientsOfTrainer(TRAINER)).thenReturn(CLIENTS);
+        when(userDao.getAllClients()).thenReturn(CLIENTS);
+        when(userDao.save(USER)).thenReturn(USER);
         when(userDao.findUserByEmail(EXISTENT_EMAIL)).thenReturn(Optional.of(USER));
         when(userDao.findUserByEmail(NONEXISTENT_EMAIL)).thenReturn(Optional.empty());
+
+        when(userMapper.mapToDto(CLIENTS)).thenReturn(EXPECTED_CLIENTS_DTO);
         when(userMapper.mapToDto(USER)).thenReturn(USER_DTO);
+        when(userMapper.mapToEntity(USER_DTO)).thenReturn(USER);
     }
 
     @Test
-    public void testFindUserByEmailShouldReturnUserDtoWhenUserWithSuppliedEmailExists() throws ServiceException{
+    public void getUserByEmailWhenUserWithSuppliedEmailExists() throws ServiceException{
         //given
 
         //when
         UserDto actual = service.getUserByEmail(EXISTENT_EMAIL);
 
         //then
-        Assert.assertEquals(USER_DTO, actual);
+        assertEquals(USER_DTO, actual);
 
-        verify(userDao, times(1)).findUserByEmail(EXISTENT_EMAIL);
-        verify(userMapper, times(1)).mapToDto(USER);
-        verifyNoMoreInteractions(userDao, userDao);
+        verify(userDao).findUserByEmail(EXISTENT_EMAIL);
+        verify(userMapper).mapToDto(USER);
     }
 
-    @Test(expected = ServiceException.class)
-    public void testFindUserByEmailShouldThrowExceptionWhenUserWithSuppliedEmailDoesNotExist() throws ServiceException{
+    @Test(expected = EntityNotFoundException.class)
+    public void getUserByEmailWithEntityNotFoundException() throws ServiceException{
         //given
 
-        //when
-        service.getUserByEmail(NONEXISTENT_EMAIL);
-
-        //then
-        verify(userDao, times(1)).findUserByEmail(NONEXISTENT_EMAIL);
-        verifyNoMoreInteractions(userDao);
+        //when/then
+        try{
+            service.getUserByEmail(NONEXISTENT_EMAIL);
+        } finally {
+            verify(userDao).findUserByEmail(NONEXISTENT_EMAIL);
+        }
     }
 
     @Test
-    public void testGetAllClients(){
+    public void getAllClients() throws ServiceException{
         //given
 
         //when
@@ -104,13 +112,12 @@ public class UserServiceImplTest {
         //then
         assertThat(actual, is(equalTo(EXPECTED_CLIENTS_DTO)));
 
-        verify(userDao, times(1)).getAllClients();
-        verify(userMapper, times(1)).mapToDto(CLIENTS);
-        verifyNoMoreInteractions(userDao, userMapper);
+        verify(userDao).getAllClients();
+        verify(userMapper).mapToDto(CLIENTS);
     }
 
     @Test
-    public void testGetClientsByTrainerIdShouldReturnListOfClientsWhenExistentTrainerIdSupplied() throws ServiceException{
+    public void getClientsByTrainerIdWhenExistentTrainerIdSupplied() throws ServiceException{
         //given
 
         //when
@@ -119,47 +126,56 @@ public class UserServiceImplTest {
         //then
         assertThat(actual, is(equalTo(EXPECTED_CLIENTS_DTO)));
 
-        verify(userDao, times(1)).findClientsOfTrainer(TRAINER);
-        verify(userDao, times(1)).findById(EXISTENT_TRAINER_ID);
-        verify(userMapper, times(1)).mapToDto(CLIENTS);
-        verifyNoMoreInteractions(userDao, userMapper);
+        verify(userDao).findClientsOfTrainer(TRAINER);
+        verify(userDao).findById(EXISTENT_TRAINER_ID);
+        verify(userMapper).mapToDto(CLIENTS);
     }
 
-    @Test(expected = ServiceException.class)
-    public void testGetClientsByTrainerIdShouldThrowExceptionWhenNonexistentTrainerIdSupplied() throws ServiceException{
+    @Test(expected = EntityNotFoundException.class)
+    public void getClientsByTrainerIdWithEntityNotFoundException() throws ServiceException{
         //given
 
-        //when
-        service.getClientsByTrainerId(NONEXISTENT_TRAINER_ID);
-
-        //then
-        verify(userDao, times(1)).findById(NONEXISTENT_TRAINER_ID);
-        verifyNoMoreInteractions(userDao, userMapper);
+        //when/then
+        try{
+            service.getClientsByTrainerId(NONEXISTENT_TRAINER_ID);
+        } finally {
+            verify(userDao).findById(NONEXISTENT_TRAINER_ID);
+        }
     }
 
     @Test
-    public void testUpdateByIdShouldUpdateUserWhenExistentUserIdSupplied() throws ServiceException {
+    public void updateByIdWhenExistentUserIdSupplied() throws ServiceException {
         //given
 
         //when
-        service.updateById(EXISTENT_USER_ID, USER_DTO);
+        UserDto actual = service.updateById(EXISTENT_USER_ID, USER_DTO);
 
         //then
-        verify(userDao, times(1)).findById(EXISTENT_USER_ID);
-        verify(userDao, times(1)).save(USER);
-        verifyNoMoreInteractions(userDao, userMapper);
+        assertEquals(USER_DTO, actual);
+
+        verify(userDao).findById(EXISTENT_USER_ID);
+        verify(userDao).save(USER);
+        verify(userMapper).mapToEntity(USER_DTO);
+        verify(userMapper).mapToDto(USER);
     }
 
-    @Test(expected = ServiceException.class)
-    public void testUpdateByIdShouldThrowExceptionWhenNonexistentUserIdSupplied() throws ServiceException {
+    @Test(expected = EntityNotFoundException.class)
+    public void updateByIdWithEntityNotFoundException() throws ServiceException {
         //given
 
-        //when
-        service.updateById(NONEXISTENT_USER_ID, USER_DTO);
+        //when/then
+        try{
+            service.updateById(NONEXISTENT_USER_ID, USER_DTO);
+        } finally {
+            verify(userMapper).mapToEntity(USER_DTO);
+            verify(userDao).findById(NONEXISTENT_USER_ID);
+        }
+    }
 
-        //then
-        verify(userDao, times(1)).findById(NONEXISTENT_USER_ID);
+    @After
+    public void verifyMocks() {
         verifyNoMoreInteractions(userDao, userMapper);
+        reset(userDao, userMapper);
     }
 
 }

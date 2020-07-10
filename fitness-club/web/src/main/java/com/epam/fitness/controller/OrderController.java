@@ -6,6 +6,7 @@ import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.AssignmentService;
 import com.epam.fitness.service.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,8 +26,13 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public OrderDto getById(@PathVariable int id) throws ServiceException{
+    public OrderDto getOrderById(@PathVariable int id) throws ServiceException{
         return orderService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public OrderDto updateOrderById(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) throws ServiceException{
+        return orderService.updateById(id, orderDto);
     }
 
     @GetMapping("/{id}/assignments")
@@ -34,14 +40,11 @@ public class OrderController {
         return assignmentService.getAllByOrderId(id);
     }
 
-    @PatchMapping("/{id}")
-    public void updateOrder(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) throws ServiceException{
-        orderService.updateById(id, orderDto);
-    }
-
     @PostMapping("/{id}/assignments")
-    public void createAssignment(@PathVariable int id, @Valid @RequestBody AssignmentDto assignmentDto) throws ServiceException{
-        assignmentService.create(id, assignmentDto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public AssignmentDto createAssignment(@PathVariable int id, @Valid @RequestBody AssignmentDto assignmentDto)
+            throws ServiceException{
+        return assignmentService.create(id, assignmentDto);
     }
 
 }

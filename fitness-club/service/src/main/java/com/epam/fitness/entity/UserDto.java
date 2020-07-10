@@ -4,22 +4,27 @@ import com.epam.fitness.entity.user.UserRole;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class UserDto implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -6287929560717474040L;
 
     private Integer id;
+    @NotNull
     private String email;
+    @NotNull
     private String password;
     private String firstName;
     private String secondName;
+    @NotNull
     private UserRole role;
 
     @Min(0)
     @Max(100)
-    private Integer discount;
+    private int discount;
 
     public UserDto() {}
 
@@ -63,7 +68,7 @@ public class UserDto implements Identifiable, Serializable {
         return role;
     }
 
-    public Integer getDiscount() {
+    public int getDiscount() {
         return discount;
     }
 
@@ -91,7 +96,26 @@ public class UserDto implements Identifiable, Serializable {
         this.role = role;
     }
 
-    public void setDiscount(Integer discount) {
+    public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return discount == userDto.discount &&
+                Objects.equals(id, userDto.id) &&
+                Objects.equals(email, userDto.email) &&
+                Objects.equals(password, userDto.password) &&
+                Objects.equals(firstName, userDto.firstName) &&
+                Objects.equals(secondName, userDto.secondName) &&
+                role == userDto.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, firstName, secondName, role, discount);
     }
 }

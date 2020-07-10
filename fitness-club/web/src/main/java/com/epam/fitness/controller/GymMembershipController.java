@@ -1,6 +1,7 @@
 package com.epam.fitness.controller;
 
 import com.epam.fitness.entity.GymMembershipDto;
+import com.epam.fitness.exception.ServiceException;
 import com.epam.fitness.service.api.GymMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class GymMembershipController {
     }
 
     @GetMapping
-    public List<GymMembershipDto> getGymMemberships(){
+    public List<GymMembershipDto> getGymMemberships() throws ServiceException {
         return gymMembershipService.getAll();
     }
 

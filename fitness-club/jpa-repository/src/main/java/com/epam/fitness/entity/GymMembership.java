@@ -1,6 +1,10 @@
 package com.epam.fitness.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -42,5 +46,17 @@ public class GymMembership implements Identifiable, Serializable {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setMonthsAmount(int monthsAmount) {
+        this.monthsAmount = monthsAmount;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

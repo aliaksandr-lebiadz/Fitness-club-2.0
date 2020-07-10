@@ -32,16 +32,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        UserDto userDto = getUserByEmail(email);
-        User user = mapper.mapToEntity(userDto);
+        User user = getUserByEmail(email);
         String password = user.getPassword();
         Set<GrantedAuthority> authorities = getAuthorities(user);
         return new org.springframework.security.core.userdetails.User(email, password, authorities);
     }
 
-    private UserDto getUserByEmail(String email) throws UsernameNotFoundException{
+    private User getUserByEmail(String email) throws UsernameNotFoundException{
         try{
-            return service.getUserByEmail(email);
+            UserDto userDto = service.getUserByEmail(email);
+            return mapper.mapToEntity(userDto);
         } catch (ServiceException ex){
             throw new UsernameNotFoundException(ex.getMessage(), ex);
         }
