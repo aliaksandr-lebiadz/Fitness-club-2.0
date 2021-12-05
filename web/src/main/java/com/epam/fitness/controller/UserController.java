@@ -66,6 +66,7 @@ public class UserController {
         try{
             service.signUp(signUpRequestDto);
         } catch (ServiceException e) {
+            System.out.println(e.getMessage());
             return ControllerUtils.createRedirect(SIGN_UP_PAGE_URL_WITH_FAIL_PARAM);
         }
         return ControllerUtils.createRedirect(LOGIN_PAGE_URL);

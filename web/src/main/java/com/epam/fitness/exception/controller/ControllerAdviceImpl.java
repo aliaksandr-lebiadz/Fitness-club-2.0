@@ -15,6 +15,7 @@ public class ControllerAdviceImpl {
     @ExceptionHandler(Exception.class)
     public String handleAnyException(Exception ex){
         LOGGER.error(ex);
+        System.out.println(ex.getMessage());
         return ControllerUtils.createRedirect(ERROR_PAGE_URL);
     }
 
