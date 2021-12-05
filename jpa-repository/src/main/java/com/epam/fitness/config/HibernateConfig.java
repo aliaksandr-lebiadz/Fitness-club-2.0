@@ -32,7 +32,7 @@ public class HibernateConfig {
 
     @Value("${database.driver_name}")
     private String driverName;
-    @Value("${database.url}")
+    @Value("${database.url.1}")
     private String url;
     @Value("${database.user}")
     private String username;
