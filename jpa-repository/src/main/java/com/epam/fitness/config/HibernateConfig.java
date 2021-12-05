@@ -73,8 +73,8 @@ public class HibernateConfig {
 
     private Map<String, String> getSettings(){
         Map<String, String> settings = new HashMap<>();
-        settings.put(Environment.DIALECT, dialect);
-        settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, sessionContext);
+        settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL9Dialect");
+        settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "org.springframework.orm.hibernate5.SpringSessionContext");
         return settings;
     }
 
@@ -89,10 +89,10 @@ public class HibernateConfig {
 
     private DataSource getDataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://ec2-52-213-167-210.eu-west-1.compute.amazonaws.com:5432/d56l8cvnlvopdb");
+        dataSource.setUsername("zsiooczhpfhmzb");
+        dataSource.setPassword("943172ebe84251af4b61e8d86a41fbe0ad17e29486cd8df3b27fa3b4f5f9f816");
         return dataSource;
     }
 }
