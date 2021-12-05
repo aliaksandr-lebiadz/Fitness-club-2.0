@@ -3,6 +3,7 @@ package com.epam.fitness.entity;
 import com.epam.fitness.entity.user.UserRole;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class UserDto implements Identifiable, Serializable {
 
@@ -18,12 +19,12 @@ public class UserDto implements Identifiable, Serializable {
 
     public UserDto() {}
 
-    public UserDto(int id, int discount) {
+    public UserDto(Integer id, int discount) {
         this.id = id;
         this.discount = discount;
     }
 
-    public UserDto(int id, String email, String password, UserRole role,
+    public UserDto(Integer id, String email, String password, UserRole role,
                    String firstName, String secondName, int discount) {
         this(id, discount);
         this.email = email;
@@ -90,4 +91,35 @@ public class UserDto implements Identifiable, Serializable {
         this.discount = discount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return discount == userDto.discount &&
+                Objects.equals(id, userDto.id) &&
+                Objects.equals(email, userDto.email) &&
+                Objects.equals(password, userDto.password) &&
+                Objects.equals(firstName, userDto.firstName) &&
+                Objects.equals(secondName, userDto.secondName) &&
+                role == userDto.role;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", role=" + role +
+                ", discount=" + discount +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, firstName, secondName, role, discount);
+    }
 }

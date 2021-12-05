@@ -12,7 +12,6 @@ import java.util.Optional;
  *
  * @see User
  */
-@Transactional
 public interface UserDao extends Dao<User> {
 
     /**
@@ -23,13 +22,6 @@ public interface UserDao extends Dao<User> {
     List<User> findClientsOfTrainer(User trainer);
 
     /**
-     * <p>Finds all clients.</p>
-     *
-     * @return a list of found clients
-     */
-    List<User> getAllClients();
-
-    /**
      * <p>Finds a user with the given email.</p>
      *
      * @param email a user's email
@@ -38,5 +30,5 @@ public interface UserDao extends Dao<User> {
      */
     Optional<User> findUserByEmail(String email);
 
-    Optional<User> getRandomTrainer();
+    User getRandomTrainer();
 }

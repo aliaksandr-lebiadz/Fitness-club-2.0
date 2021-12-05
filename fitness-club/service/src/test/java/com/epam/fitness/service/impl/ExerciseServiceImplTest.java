@@ -40,7 +40,7 @@ public class ExerciseServiceImplTest {
     private ExerciseServiceImpl exerciseService;
 
     @Test
-    public void testGetAll(){
+    public void getAll_withExistentExercises_listOfExercises(){
         //given
         when(exerciseDao.getAll()).thenReturn(EXERCISES);
         when(exerciseDtoMapper.mapToDto(SQUAT_EXERCISE)).thenReturn(SQUAT_EXERCISE_DTO);

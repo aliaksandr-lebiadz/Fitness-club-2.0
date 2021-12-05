@@ -43,7 +43,7 @@ public class GymMembershipServiceImplTest {
     private GymMembershipServiceImpl gymMembershipService;
 
     @Test
-    public void testGetAll(){
+    public void getAll_withExistentMemberships_listOfMemberships(){
         //given
         when(gymMembershipDao.getAll()).thenReturn(GYM_MEMBERSHIPS);
         when(gymMembershipDtoMapper.mapToDto(ONE_MONTH_MEMBERSHIP)).thenReturn(ONE_MONTH_MEMBERSHIP_DTO);

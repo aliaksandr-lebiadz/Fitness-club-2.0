@@ -46,18 +46,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public List<User> getAllClients() {
-        CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
-        Root<User> user = getRoot(criteriaQuery);
-        criteriaQuery
-                .select(user)
-                .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.CLIENT));
-        Query<User> query = getQuery(criteriaQuery);
-        return query.getResultList();
-    }
-
-    @Override
     public Optional<User> findUserByEmail(String email){
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
@@ -70,7 +58,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public Optional<User> getRandomTrainer() {
+    public User getRandomTrainer() {
         CriteriaBuilder criteriaBuilder = getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = getCriteriaQuery(criteriaBuilder);
         Root<User> user = getRoot(criteriaQuery);
@@ -79,16 +67,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 .where(criteriaBuilder.equal(user.get(ROLE_PARAMETER), UserRole.TRAINER));
         Query<User> query = getQuery(criteriaQuery);
         List<User> trainers = query.getResultList();
-        return getRandomTrainerFromList(trainers);
-    }
-
-    private Optional<User> getRandomTrainerFromList(List<User> trainers){
-        if(trainers.isEmpty()){
-            return Optional.empty();
-        }
-
-        int size = trainers.size();
-        User trainer = trainers.get(random.nextInt(size));
-        return Optional.of(trainer);
+        return trainers.get(random.nextInt(trainers.size()));
     }
 }

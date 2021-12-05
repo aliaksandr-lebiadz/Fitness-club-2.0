@@ -1,13 +1,17 @@
 @media screen and (min-width:1025px){
     body #login-container{
-        width: 16%;
-        height: 35%;
+        width: 19%;
+        height: 45%;
+    },
+    body #sign-up-container{
+        margin: -50px -50px;
+        height: 70%;
     }
 }
 @media screen and (max-width:1024px){
     body #login-container{
         margin: 20px -50px;
-        height: 30%;
+        height: 45%;
     }
 }
 @media screen and (max-width:768px){
@@ -68,10 +72,10 @@
     background-size: cover;
 }
 
-#login-container{
+#login-container, #sign-up-container {
     background-color: rgba(44, 44, 44, 0.85);
     width: 20%;
-    height: 50%;
+    height: 55%;
     min-width: 265px;
     min-height: 320px;
     position: fixed;
@@ -80,6 +84,11 @@
     border-radius: 5px;
     border: none;
     text-align: center;
+}
+
+#sign-up-container {
+    height: 69%;
+    top: 17%;
 }
 
 label{
@@ -121,7 +130,16 @@ input{
 
 #login-fail{
     display: block;
-    margin-top: 10px;
+    margin-top: 5px;
     font-size: 12px;
     color: red;
+}
+
+.hint {
+    margin-top: 10px;
+}
+
+.link {
+    color: white;
+    text-decoration: underline;
 }

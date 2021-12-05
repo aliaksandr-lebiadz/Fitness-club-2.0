@@ -2,7 +2,7 @@ $(document).ready(function(){
     hidePopUp('.popup');
 });
 function showPopUp(id){
-    if(id === '#purchase-popup' || $('.hidden-id').val() !== '') {
+    if(id === '#purchase-popup' || id === '#add-trainer-popup' || $('.hidden-id').val() !== '') {
         $('#disable-div').show();
         $(id).show();
     }

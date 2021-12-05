@@ -1,7 +1,8 @@
 package com.epam.fitness.controller;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ControllerUtilsTest {
 
@@ -11,25 +12,25 @@ public class ControllerUtilsTest {
     private static final String EXPECTED_FORWARD = "forward:/client/list";
 
     @Test
-    public void testCreateRedirect(){
+    public void createRedirect_withPageToRedirect_redirectWithPage(){
         //given
 
         //when
         String actual = ControllerUtils.createRedirect(PAGE_TO_REDIRECT);
 
         //then
-        Assert.assertEquals(EXPECTED_REDIRECT, actual);
+        assertEquals(EXPECTED_REDIRECT, actual);
     }
 
     @Test
-    public void testCreateForward(){
+    public void createForwrad_withPageToForward_forwardWithPage(){
         //given
 
         //when
         String actual = ControllerUtils.createForward(PAGE_TO_FORWARD);
 
         //then
-        Assert.assertEquals(EXPECTED_FORWARD, actual);
+        assertEquals(EXPECTED_FORWARD, actual);
     }
 
 }

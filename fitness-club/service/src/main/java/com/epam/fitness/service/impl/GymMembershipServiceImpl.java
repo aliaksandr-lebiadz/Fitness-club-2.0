@@ -14,21 +14,20 @@ import java.util.stream.Collectors;
 @Service
 public class GymMembershipServiceImpl implements GymMembershipService {
 
-    private Dao<GymMembership> dao;
-    private DtoMapper<GymMembership, GymMembershipDto> mapper;
+    private final Dao<GymMembership> dao;
+    private final DtoMapper<GymMembership, GymMembershipDto> mapper;
 
     @Autowired
-    public GymMembershipServiceImpl(Dao<GymMembership> dao,
-                                    DtoMapper<GymMembership, GymMembershipDto> mapper){
+    public GymMembershipServiceImpl(Dao<GymMembership> dao, DtoMapper<GymMembership, GymMembershipDto> mapper){
         this.dao = dao;
         this.mapper = mapper;
     }
 
     @Override
     public List<GymMembershipDto> getAll() {
-        List<GymMembership> exercises = dao.getAll();
-        return exercises.stream()
-                .map(user -> mapper.mapToDto(user))
+        List<GymMembership> gymMemberships = dao.getAll();
+        return gymMemberships.stream()
+                .map(mapper::mapToDto)
                 .collect(Collectors.toList());
     }
 }

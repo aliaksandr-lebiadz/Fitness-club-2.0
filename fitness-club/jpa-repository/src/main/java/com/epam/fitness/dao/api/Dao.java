@@ -1,6 +1,8 @@
 package com.epam.fitness.dao.api;
 
 import com.epam.fitness.entity.Identifiable;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
  * @see Identifiable
  */
 @Transactional
+@Component
 public interface Dao<T extends Identifiable> {
 
 
@@ -29,14 +32,7 @@ public interface Dao<T extends Identifiable> {
      *
      * @param entity entity to save
      */
-    void save(T entity);
-
-    /**
-     * <p>Deletes an entity by id.</p>
-     *
-     * @param id id of the entity to delete
-     */
-    void deleteById(int id);
+    T save(T entity);
 
     /**
      * <p>Finds an entity by id.</p>

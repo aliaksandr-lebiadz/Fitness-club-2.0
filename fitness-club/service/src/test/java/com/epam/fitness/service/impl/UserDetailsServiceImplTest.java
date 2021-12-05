@@ -45,27 +45,24 @@ public class UserDetailsServiceImplTest {
     private UserDetailsServiceImpl userDetailsService;
 
     @Before
-    public void createMocks() throws EntityMappingException {
+    public void setUp() throws EntityMappingException {
         when(userService.findUserByEmail(NONEXISTENT_EMAIL)).thenReturn(Optional.empty());
         when(userService.findUserByEmail(EXISTENT_EMAIL)).thenReturn(Optional.of(USER_DTO));
         when(userDtoMapper.mapToEntity(USER_DTO)).thenReturn(USER);
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void testLoadUserByUsernameShouldThrowsExceptionWhenNonexistentEmailSupplied(){
+    public void loadUserByUsername_checkWithNonexistentEmail_usernameNotFoundException() {
         //given
 
         //when
         userDetailsService.loadUserByUsername(NONEXISTENT_EMAIL);
 
         //then
-        verify(userService, times(1)).findUserByEmail(NONEXISTENT_EMAIL);
-        verifyNoMoreInteractions(userService);
     }
 
     @Test
-    public void testLoadUserByUsernameShouldReturnUserDetailsWhenExistentEmailSupplied()
-            throws EntityMappingException{
+    public void loadUserByUsername_checkWithExistentEmail_foundUser() throws EntityMappingException{
         //given
 
         //when
@@ -80,5 +77,17 @@ public class UserDetailsServiceImplTest {
         verify(userDtoMapper, times(1)).mapToEntity(USER_DTO);
         verifyNoMoreInteractions(userService, userDtoMapper);
     }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void loadUserByUsername_withMappingException_usernameNotFoundException() throws EntityMappingException {
+        //given
+        when(userDtoMapper.mapToEntity(USER_DTO)).thenThrow(EntityMappingException.class);
+
+        //when
+        userDetailsService.loadUserByUsername(EXISTENT_EMAIL);
+
+        //then
+    }
+
 
 }

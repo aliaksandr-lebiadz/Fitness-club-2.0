@@ -1,58 +1,41 @@
 package com.epam.fitness.utils;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@RunWith(DataProviderRunner.class)
 public class OrderUtilsTest {
 
-    private static final double DOUBLE_DELTA = 1e-7;
-
-    private OrderUtils utils = new OrderUtils();
-
-    @Test
-    public void testCalculatePriceWithDiscountShouldReturnSamePriceWhenZeroSupplied(){
-        //given
-        final int discount = 0;
-        final BigDecimal initialPrice = BigDecimal.valueOf(2.55);
-        final BigDecimal expected = BigDecimal.valueOf(2.55);
-
-        //when
-        BigDecimal actual = utils.calculatePriceWithDiscount(initialPrice, discount);
-
-        //then
-        assertThat(actual, Matchers.comparesEqualTo(expected));
+    @DataProvider
+    public static Object[][] dataProvider() {
+        return new Object[][] {
+                { BigDecimal.ZERO, 56, BigDecimal.ZERO },
+                { BigDecimal.valueOf(52.23), 100, BigDecimal.valueOf(0) },
+                { BigDecimal.valueOf(15.2), 0, BigDecimal.valueOf(15.2) },
+                { BigDecimal.valueOf(11.22), 50, BigDecimal.valueOf(5.61) }
+        };
     }
 
-    @Test
-    public void testCalculatePriceWithDiscountShouldReturnZeroWhenOneHundredPercentDiscountSupplied(){
-        //given
-        final int discount = 100;
-        final BigDecimal initialPrice = BigDecimal.valueOf(52.1);
-        final double expected = 0.0;
-
-        //when
-        BigDecimal actual = utils.calculatePriceWithDiscount(initialPrice, discount);
-
-        //then
-        Assert.assertEquals(expected, actual.doubleValue(), DOUBLE_DELTA);
-    }
+    private final OrderUtils utils = new OrderUtils();
 
     @Test
-    public void testCalculatePriceWithDiscountShouldReturnHalfOfPriceWhenFiftyPercentDiscountSupplied(){
+    @UseDataProvider("dataProvider")
+    public void calculatePriceWithDiscount_calculationParams_priceWithDiscount(BigDecimal initialPrice, int discount, BigDecimal expectedPriceWithDiscount){
         //given
-        final int discount = 50;
-        final BigDecimal initialPrice = BigDecimal.valueOf(11.77);
-        final double expected = 5.885;
 
         //when
-        BigDecimal actual = utils.calculatePriceWithDiscount(initialPrice, discount);
+        BigDecimal actualPriceWithDiscount = utils.calculatePriceWithDiscount(initialPrice, discount);
 
         //then
-        Assert.assertEquals(expected, actual.doubleValue(), DOUBLE_DELTA);
+        assertThat(actualPriceWithDiscount, Matchers.comparesEqualTo(expectedPriceWithDiscount));
     }
 
 }

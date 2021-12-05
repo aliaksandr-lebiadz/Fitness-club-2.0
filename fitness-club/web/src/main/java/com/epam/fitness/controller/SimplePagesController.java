@@ -20,8 +20,10 @@ public class SimplePagesController{
     private static final String GET_MEMBERSHIP_PAGE = "get_membership";
     private static final String HOME_PAGE = "home";
     private static final String LOGIN_PAGE = "login";
+    private static final String SIGN_UP_PAGE = "sign_up";
     private static final String ERROR_PAGE = "error_page";
     private static final String LOGIN_FAIL_PARAMETER = "login_fail";
+    private static final String SIGN_UP_FAIL_PARAMETER = "sign_up_fail";
     private static final String DISCOUNT_ATTRIBUTE = "discount";
     private static final String GYM_MEMBERSHIPS_ATTRIBUTE = "gymMembershipList";
     private static final String LOGIN_PAGE_URL = "/login";
@@ -47,14 +49,22 @@ public class SimplePagesController{
 
     @GetMapping("/login")
     @PreAuthorize("isAnonymous()")
-    public String getLoginPage(
-            @RequestParam("login_fail") Optional<String> optionalFail,
-            Model model){
+    public String getLoginPage(@RequestParam(LOGIN_FAIL_PARAMETER) Optional<String> optionalFail, Model model){
         if(optionalFail.isPresent()){
             String fail = optionalFail.get();
             model.addAttribute(LOGIN_FAIL_PARAMETER, fail);
         }
         return LOGIN_PAGE;
+    }
+
+    @GetMapping("/sign-up")
+    @PreAuthorize("isAnonymous()")
+    public String getSignUpPage(@RequestParam(SIGN_UP_FAIL_PARAMETER) Optional<String> optionalFail, Model model) {
+        if(optionalFail.isPresent()){
+            String fail = optionalFail.get();
+            model.addAttribute(SIGN_UP_FAIL_PARAMETER, fail);
+        }
+        return SIGN_UP_PAGE;
     }
 
     @GetMapping("/home")

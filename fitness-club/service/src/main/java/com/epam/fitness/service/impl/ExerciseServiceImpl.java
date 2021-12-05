@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
 
-    private Dao<Exercise> dao;
-    private DtoMapper<Exercise, ExerciseDto> mapper;
+    private final Dao<Exercise> dao;
+    private final DtoMapper<Exercise, ExerciseDto> mapper;
 
     @Autowired
     public ExerciseServiceImpl(Dao<Exercise> dao, DtoMapper<Exercise, ExerciseDto> mapper){
@@ -27,7 +27,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public List<ExerciseDto> getAll() {
         List<Exercise> exercises = dao.getAll();
         return exercises.stream()
-                .map(user -> mapper.mapToDto(user))
+                .map(mapper::mapToDto)
                 .collect(Collectors.toList());
     }
 }

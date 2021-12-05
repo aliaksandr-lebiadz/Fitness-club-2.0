@@ -18,7 +18,7 @@
 
     <div id="intro"></div>
     <div id="error">
-        <form id="error-form" action="<@spring.url '/home'/>">
+        <form id="error-form" action="<@spring.url '/'/>">
             <span>${error}</span>
             <input type="submit" id="home-button" value="${home_button}"/>
         </form>

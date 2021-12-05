@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "client_order")
@@ -57,6 +58,10 @@ public class Order implements Identifiable, Serializable {
 
     public static Builder createBuilder(){
         return new Order().new Builder();
+    }
+
+    public static Builder createBuilder(Order order) {
+        return order.new Builder();
     }
 
     @Override
@@ -146,8 +151,33 @@ public class Order implements Identifiable, Serializable {
             return this;
         }
 
+        public Builder setAssignments(List<Assignment> assignments) {
+            Order.this.assignments = assignments;
+            return this;
+        }
+
         public Order build(){
             return Order.this;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) &&
+                Objects.equals(client, order.client) &&
+                Objects.equals(trainer, order.trainer) &&
+                Objects.equals(endDate, order.endDate) &&
+                Objects.equals(feedback, order.feedback) &&
+                Objects.equals(price, order.price) &&
+                nutritionType == order.nutritionType &&
+                Objects.equals(assignments, order.assignments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, client, trainer, beginDate, endDate, feedback, price, nutritionType, assignments);
     }
 }

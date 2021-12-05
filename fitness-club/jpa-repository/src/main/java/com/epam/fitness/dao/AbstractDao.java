@@ -2,13 +2,19 @@ package com.epam.fitness.dao;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.entity.Identifiable;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.query.Query;
 
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,14 +61,10 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
     }
 
     @Override
-    public void save(T entity){
-        Session session = getCurrentSession();
+    public T save(T entity){
+        Session session = getCurrentSession();;
         session.saveOrUpdate(entity);
-    }
-
-    @Override
-    public void deleteById(int id){
-        throw new UnsupportedOperationException();
+        return entity;
     }
 
     protected CriteriaBuilder getCriteriaBuilder(){
@@ -82,8 +84,12 @@ public abstract class AbstractDao<T extends Identifiable> implements Dao<T> {
         return session.createQuery(criteriaQuery);
     }
 
-    private Session getCurrentSession(){
-        return sessionFactory.getCurrentSession();
+    private Session getCurrentSession() {
+        try {
+            return sessionFactory.getCurrentSession();
+        } catch (HibernateException e) {
+            return sessionFactory.openSession();
+        }
     }
 
 

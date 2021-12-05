@@ -4,6 +4,7 @@ import com.epam.fitness.entity.assignment.AssignmentStatus;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class AssignmentDto implements Identifiable, Serializable {
 
@@ -82,5 +83,23 @@ public class AssignmentDto implements Identifiable, Serializable {
 
     public void setStatus(AssignmentStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AssignmentDto that = (AssignmentDto) o;
+        return amountOfSets == that.amountOfSets &&
+                amountOfReps == that.amountOfReps &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(workoutDate, that.workoutDate) &&
+                Objects.equals(exercise, that.exercise) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, workoutDate, amountOfSets, amountOfReps, exercise, status);
     }
 }

@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "fitness_user")
@@ -57,6 +58,26 @@ public class User implements Identifiable, Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return discount == user.discount &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(password, user.password) &&
+                role == user.role &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(secondName, user.secondName) &&
+                Objects.equals(orders, user.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, role, firstName, secondName, discount, orders);
+    }
+
+    @Override
     public Integer getId() {
         return id;
     }
@@ -92,4 +113,5 @@ public class User implements Identifiable, Serializable {
     public void setDiscount(int discount){
         this.discount = discount;
     }
+
 }

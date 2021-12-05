@@ -4,6 +4,8 @@
 <#assign password_label><@spring.message "login.label.password"/></#assign>
 <#assign login_button><@spring.message "login.button"/></#assign>
 <#assign login_fail_message><@spring.message "login.message.fail"/></#assign>
+<#assign sign_up_switcher><@spring.message "login.message.sign_up_switcher"/></#assign>
+<#assign sign_up_label><@spring.message "sign_up.button"/></#assign>
 
 <!DOCTYPE html>
 <html lang="${.lang}">
@@ -22,11 +24,14 @@
     <div id="login-container">
         <form id="login-form" action="doLogin" method="post">
             <label for="email">${email_label}</label>
-            <input class="text-input" type="email" name="email" id="email" required autofocus/>
+            <input class="text-input" type="email" name="email" id="email" required autofocus minLength="7" maxLength="30"/>
             <label for="password">${password_label}</label>
             <input class="text-input" type="password" name="password" id="password" required/>
             <hr>
             <input type="submit" id="login-button" value="${login_button}"/>
+            <div class="hint">
+                ${sign_up_switcher} <a class="link" href="<@spring.url '/sign-up'/>">${sign_up_label}</a>
+            </div>
             <#if login_fail??>
                 <span id="login-fail">${login_fail_message}</span>
             </#if>

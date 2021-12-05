@@ -6,7 +6,7 @@
 <#assign my_orders_link><@spring.message "header.link.my_orders"/></#assign>
 <#assign my_clients_link><@spring.message "header.link.my_clients"/></#assign>
 <#assign log_out_link><@spring.message "header.link.log_out"/></#assign>
-<#assign clients_link><@spring.message "header.link.clients"/></#assign>
+<#assign users_link><@spring.message "header.link.users"/></#assign>
 
 <!DOCTYPE html>
 <html lang="${.lang}">
@@ -26,7 +26,7 @@
             <@security.authorize access="isAuthenticated()">
                 <a class="navigation_link simple" href="<@spring.url '/home'/>">${home_link}</a>
                 <@security.authorize access="hasAuthority('ADMIN')">
-                    <a class="navigation_link simple" href="<@spring.url '/client/list'/>">${clients_link}</a>
+                    <a class="navigation_link simple" href="<@spring.url '/user/list'/>">${users_link}</a>
                 </@security.authorize>
                 <@security.authorize access="hasAuthority('CLIENT')">
                     <a class="navigation_link simple" href="<@spring.url '/order'/>">${get_membership_link}</a>

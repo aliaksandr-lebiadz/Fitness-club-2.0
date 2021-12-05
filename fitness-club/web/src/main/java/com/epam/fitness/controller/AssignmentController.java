@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -50,9 +51,7 @@ public class AssignmentController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('CLIENT') or hasAuthority('TRAINER')")
-    public String getAssignmentsPage(
-            @RequestParam("order_id") Optional<Integer> optionalOrderId,
-            Model model) throws ServiceException{
+    public String getAssignmentsPage(@RequestParam("order_id") Optional<Integer> optionalOrderId, Model model) throws ServiceException{
         if(optionalOrderId.isPresent()){
             int orderId = optionalOrderId.get();
             List<AssignmentDto> assignments = assignmentService.getAllByOrderId(orderId);
@@ -61,10 +60,10 @@ public class AssignmentController {
             model.addAttribute(NUTRITION_TYPE_ATTRIBUTE, nutritionType);
             List<ExerciseDto> exercises = exerciseService.getAll();
             model.addAttribute(EXERCISES_ATTRIBUTE, exercises);
+            return ASSIGNMENTS_PAGE;
         } else{
             return ControllerUtils.createRedirect(ORDERS_PAGE_URL);
         }
-        return ASSIGNMENTS_PAGE;
     }
 
     @PostMapping("/setStatus")
@@ -74,12 +73,15 @@ public class AssignmentController {
                             HttpServletRequest request)
             throws ServiceException {
         AssignmentStatus status = getStatus(assignmentAction);
+        if(Objects.isNull(status)) {
+            throw new ServiceException("Invalid assignment action: " + assignmentAction);
+        }
         assignmentService.updateStatusById(assignmentId, status);
         String currentPage = CurrentPageGetter.getCurrentPage(request);
         return ControllerUtils.createRedirect(currentPage);
     }
 
-    private AssignmentStatus getStatus(String assignmentAction) throws ServiceException{
+    private AssignmentStatus getStatus(String assignmentAction) {
         AssignmentStatus status;
         switch (assignmentAction){
             case ACCEPT_ACTION:
@@ -89,15 +91,14 @@ public class AssignmentController {
                 status = AssignmentStatus.CANCELED;
                 break;
             default:
-                throw new ServiceException("Invalid assignment action: " + assignmentAction);
+                status = null;
         }
         return status;
     }
 
     private NutritionType getNutritionTypeByOrderId(int orderId) throws ServiceException{
         Optional<OrderDto> orderOptional = orderService.getById(orderId);
-        OrderDto orderDto = orderOptional
-                .orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
+        OrderDto orderDto = orderOptional.orElseThrow(() -> new ServiceException("Order with id " + orderId + " not found!"));
         return orderDto.getNutritionType();
     }
 

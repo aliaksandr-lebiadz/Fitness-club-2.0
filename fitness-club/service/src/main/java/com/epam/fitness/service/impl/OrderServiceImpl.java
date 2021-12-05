@@ -2,7 +2,8 @@ package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dao.api.Dao;
 import com.epam.fitness.dao.api.UserDao;
-import com.epam.fitness.dto.mapper.DtoMapper;
+import com.epam.fitness.dto.mapper.impl.OrderDtoMapper;
+import com.epam.fitness.dto.mapper.impl.UserDtoMapper;
 import com.epam.fitness.entity.GymMembership;
 import com.epam.fitness.entity.OrderDto;
 import com.epam.fitness.entity.UserDto;
@@ -29,16 +30,16 @@ public class OrderServiceImpl implements OrderService {
     private Dao<GymMembership> gymMembershipDao;
     private OrderUtils utils;
     private UserDao userDao;
-    private DtoMapper<Order, OrderDto> orderDtoMapper;
-    private DtoMapper<User, UserDto> userDtoMapper;
+    private OrderDtoMapper orderDtoMapper;
+    private UserDtoMapper userDtoMapper;
 
     @Autowired
     public OrderServiceImpl(OrderDao orderDao,
-                            Dao<GymMembership> gymMembershipDao,
+                            Dao<GymMembership>  gymMembershipDao,
                             UserDao userDao,
                             OrderUtils utils,
-                            DtoMapper<Order, OrderDto> orderDtoMapper,
-                            DtoMapper<User, UserDto> userDtoMapper){
+                            OrderDtoMapper orderDtoMapper,
+                            UserDtoMapper userDtoMapper){
         this.orderDao = orderDao;
         this.gymMembershipDao = gymMembershipDao;
         this.userDao = userDao;
@@ -55,10 +56,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ServiceException("Gym membership with the id " + membershipId + " isn't found!"));
         BigDecimal totalPrice = calculateTotalPrice(gymMembership, client);
         Date endDate = calculateEndDate(gymMembership);
-        Optional<User> randomTrainerOptional = userDao.getRandomTrainer();
-        User trainer = randomTrainerOptional
-                .orElseThrow(() -> new ServiceException("Trainers aren't found!"));
-        Order order = createOrderWithCurrentBeginDate(client, trainer, endDate, totalPrice);
+        User randomTrainer = userDao.getRandomTrainer();
+        Order order = createOrderWithCurrentBeginDate(client, randomTrainer, endDate, totalPrice);
         orderDao.save(order);
     }
 
@@ -77,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrdersOfClient(UserDto clientDto) throws ServiceException{
         try{
             User client = userDtoMapper.mapToEntity(clientDto);
-            List<Order> orders =  orderDao.findOrdersOfClient(client);
+            List<Order> orders = orderDao.findOrdersOfClient(client);
             return mapOrdersToDto(orders);
         } catch (EntityMappingException ex){
             throw new ServiceException(ex.getMessage(), ex);
@@ -109,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal calculateTotalPrice(GymMembership gymMembership, User client){
         BigDecimal initialPrice = gymMembership.getPrice();
         int clientDiscount = client.getDiscount();
-        return  utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
+        return utils.calculatePriceWithDiscount(initialPrice, clientDiscount);
     }
 
     private Date calculateEndDate(GymMembership gymMembership){

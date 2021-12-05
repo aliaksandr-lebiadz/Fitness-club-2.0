@@ -2,24 +2,35 @@ package com.epam.fitness.service.impl;
 
 import com.epam.fitness.dao.api.UserDao;
 import com.epam.fitness.dto.mapper.DtoMapper;
+import com.epam.fitness.entity.SignUpRequestDto;
 import com.epam.fitness.entity.user.User;
 import com.epam.fitness.entity.user.UserRole;
 import com.epam.fitness.entity.UserDto;
 import com.epam.fitness.exception.EntityMappingException;
 import com.epam.fitness.exception.ServiceException;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
@@ -34,17 +45,17 @@ public class UserServiceImplTest {
             new UserDto(103, "user@gmail.com", "user", UserRole.CLIENT,
                     "Mikhail", "Olev", 10);
 
-    private static final List<User> CLIENTS = Collections.singletonList(USER);
-    private static final List<UserDto> EXPECTED_CLIENTS_DTO = Collections.singletonList(USER_DTO_WITH_EXISTENT_ID);
+    private static final List<User> USERS = Collections.singletonList(USER);
+    private static final List<UserDto> USER_DTOS = Collections.singletonList(USER_DTO_WITH_EXISTENT_ID);
     private static final User TRAINER = new User(3, "trainer@gmail.com", "trainer", UserRole.TRAINER,
             "Ivan", "Feoktistov", 10);
     private static final UserDto TRAINER_DTO = new UserDto(3, "trainer@gmail.com", "trainer", UserRole.TRAINER,
             "Ivan", "Feoktistov", 10);
 
-
-
     @Mock
     private UserDao userDao;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @Mock
     private DtoMapper<User, UserDto> userDtoMapper;
     @InjectMocks
@@ -57,18 +68,17 @@ public class UserServiceImplTest {
         when(userDtoMapper.mapToDto(USER)).thenReturn(USER_DTO_WITH_EXISTENT_ID);
         when(userDtoMapper.mapToEntity(USER_DTO_WITH_EXISTENT_ID)).thenReturn(USER);
 
-        when(userDao.getAllClients()).thenReturn(CLIENTS);
+        when(userDao.getAll()).thenReturn(USERS);
 
         when(userDtoMapper.mapToEntity(TRAINER_DTO)).thenReturn(TRAINER);
-        when(userDao.findClientsOfTrainer(TRAINER)).thenReturn(CLIENTS);
+        when(userDao.findClientsOfTrainer(TRAINER)).thenReturn(USERS);
 
-        when(userDtoMapper.mapToEntity(USER_DTO_WITH_NONEXISTENT_ID))
-                .thenThrow(EntityMappingException.class);
-        doNothing().when(userDao).save(USER);
+        when(userDtoMapper.mapToEntity(USER_DTO_WITH_NONEXISTENT_ID)).thenThrow(EntityMappingException.class);
+        when(userDao.save(USER)).thenReturn(USER);
     }
 
     @Test
-    public void testFindUserByEmailShouldReturnOptionalOfUserDtoWhenUserWithSuppliedEmailExists(){
+    public void findUserByEmail_withExistentEmail_foundUser(){
         //given
 
         //when
@@ -77,7 +87,7 @@ public class UserServiceImplTest {
         //then
         Assert.assertTrue(actualOptional.isPresent());
         UserDto actual = actualOptional.get();
-        Assert.assertEquals(USER_DTO_WITH_EXISTENT_ID, actual);
+        assertEquals(USER_DTO_WITH_EXISTENT_ID, actual);
 
         verify(userDao, times(1)).findUserByEmail(EXISTENT_EMAIL);
         verify(userDtoMapper, times(1)).mapToDto(USER);
@@ -85,7 +95,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindUserByEmailShouldReturnEmptyOptionalWhenUserWithSuppliedEmailDoesNotExist(){
+    public void findUserByEmail_withNonexistentEmail_emptyOptional(){
         //given
 
         //when
@@ -99,29 +109,29 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testGetAllClients(){
+    public void getAll_withExistentUsers_listOfUsers(){
         //given
 
         //when
-        List<UserDto> actual = service.getAllClients();
+        List<UserDto> actual = service.getAll();
 
         //then
-        assertThat(actual, is(equalTo(EXPECTED_CLIENTS_DTO)));
+        assertThat(actual, is(equalTo(USER_DTOS)));
 
-        verify(userDao, times(1)).getAllClients();
+        verify(userDao, times(1)).getAll();
         verify(userDtoMapper, times(1)).mapToDto(USER);
         verifyNoMoreInteractions(userDao, userDtoMapper);
     }
 
     @Test
-    public void testGetClientsOfTrainer() throws ServiceException, EntityMappingException{
+    public void getClientsOfTrainer_withExistentClients_trainerClients() throws ServiceException, EntityMappingException{
         //given
 
         //when
         List<UserDto> actual = service.getClientsOfTrainer(TRAINER_DTO);
 
         //then
-        assertThat(actual, is(equalTo(EXPECTED_CLIENTS_DTO)));
+        assertThat(actual, is(equalTo(USER_DTOS)));
 
         verify(userDtoMapper, times(1)).mapToEntity(TRAINER_DTO);
         verify(userDtoMapper, times(1)).mapToDto(USER);
@@ -130,7 +140,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testUpdateShouldUpdateUserWhenExistentUserIdSupplied() throws ServiceException, EntityMappingException {
+    public void update_withExistentUserId_userSuccessfullyUpdated() throws ServiceException, EntityMappingException {
         //given
 
         //when
@@ -143,7 +153,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void testUpdateShouldThrowExceptionWhenMappingCannotBeDone()
+    public void update_withNonexistentUserId_serviceException()
             throws ServiceException, EntityMappingException{
         //given
 
@@ -153,6 +163,47 @@ public class UserServiceImplTest {
         //then
         verify(userDtoMapper, times(1)).mapToEntity(USER_DTO_WITH_NONEXISTENT_ID);
         verifyNoMoreInteractions(userDtoMapper);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void signUp_requestWithExistentEmail_serviceException() throws ServiceException {
+        //given
+        final SignUpRequestDto signUpRequest = new SignUpRequestDto(EXISTENT_EMAIL, "pass", "first-name", "last-name", UserRole.CLIENT);
+
+        //when
+        service.signUp(signUpRequest);
+
+        //then
+    }
+
+    @Test
+    public void signUp_requestWithNonexistentEmail_savedUser() throws ServiceException {
+        //given
+        final String password = "pass";
+        final String firstName = "Alex";
+        final String secondName = "Lomov";
+        final String encodedPassword = "encoded-password";
+        when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
+
+        User user = new User(null, NONEXISTENT_EMAIL, encodedPassword, UserRole.TRAINER, firstName, secondName, 0);
+        UserDto userDto = new UserDto(null, NONEXISTENT_EMAIL, encodedPassword, UserRole.TRAINER, firstName, secondName, 0);
+        when(userDao.save(user)).thenReturn(user);
+        when(userDtoMapper.mapToDto(user)).thenReturn(userDto);
+
+        final SignUpRequestDto signUpRequest = new SignUpRequestDto(NONEXISTENT_EMAIL, password, firstName, secondName, UserRole.TRAINER);
+
+        //when
+        UserDto actual = service.signUp(signUpRequest);
+
+        //then
+        assertEquals(encodedPassword, actual.getPassword());
+        assertEquals(firstName, actual.getFirstName());
+        assertEquals(secondName, actual.getSecondName());
+
+        verify(userDao, times(1)).findUserByEmail(NONEXISTENT_EMAIL);
+        verify(userDao, times(1)).save(eq(user));
+        verify(userDtoMapper, times(1)).mapToDto(user);
+        verifyNoMoreInteractions(userDao, userDtoMapper);
     }
 
 }
