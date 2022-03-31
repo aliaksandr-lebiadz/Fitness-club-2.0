@@ -25,7 +25,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <build.number>SNAPSHOT</build.number>
         <build.timestamp>${build.timestamp}</build.timestamp>
-        <spring.version>5.2.1.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <jackson.version>2.9.4</jackson.version>
         <tomcat.version>9.0.29</tomcat.version>
     </properties>
