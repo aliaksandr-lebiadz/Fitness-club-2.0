@@ -26,7 +26,7 @@
         <build.number>SNAPSHOT</build.number>
         <build.timestamp>${build.timestamp}</build.timestamp>
         <spring.version>5.2.1.RELEASE</spring.version>
-        <jackson.version>2.9.4</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <tomcat.version>9.0.29</tomcat.version>
     </properties>
 
